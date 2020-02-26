@@ -3,12 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.study</groupId>
-    <artifactId>jdk-resource</artifactId>
+    <groupId>com.resource</groupId>
+    <artifactId>JDK8-Resource</artifactId>
     <version>1.8</version>
 
     <properties>
         <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -16,12 +18,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13</version>
         </dependency>
     </dependencies>
-    
+
     <build>
-        <finalName>FastJsonDemo</finalName>
         <plugins>
             <!-- 使用compiler插件可以指定项目源码的jdk版本、编译后的jdk版本、以及编码方式 -->
             <plugin>
