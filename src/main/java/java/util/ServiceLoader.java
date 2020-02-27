@@ -30,14 +30,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.security.AccessController;
 import java.security.AccessControlContext;
+import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 
 /**
@@ -180,24 +175,33 @@ import java.util.NoSuchElementException;
  * @since 1.6
  */
 
-public final class ServiceLoader<S>
-        implements Iterable<S> {
-
+public final class ServiceLoader<S> implements Iterable<S> {
     private static final String PREFIX = "META-INF/services/";
 
-    // The class or interface representing the service being loaded
+    /**
+     * The class or interface representing the service being loaded
+     * 被加载的类或接口
+     */
     private final Class<S> service;
 
-    // The class loader used to locate, load, and instantiate providers
+    /**
+     * The class loader used to locate, load, and instantiate providers
+     */
     private final ClassLoader loader;
 
-    // The access control context taken when the ServiceLoader is created
+    /**
+     * The access control context taken when the ServiceLoader is created
+     */
     private final AccessControlContext acc;
 
-    // Cached providers, in instantiation order
+    /**
+     * Cached providers, in instantiation order
+     */
     private LinkedHashMap<String, S> providers = new LinkedHashMap<>();
 
-    // The current lazy-lookup iterator
+    /**
+     * The current lazy-lookup iterator
+     */
     private LazyIterator lookupIterator;
 
     /**
@@ -223,28 +227,20 @@ public final class ServiceLoader<S>
         reload();
     }
 
-    private static void fail(Class<?> service, String msg, Throwable cause)
-            throws ServiceConfigurationError {
-        throw new ServiceConfigurationError(service.getName() + ": " + msg,
-                cause);
+    private static void fail(Class<?> service, String msg, Throwable cause) throws ServiceConfigurationError {
+        throw new ServiceConfigurationError(service.getName() + ": " + msg, cause);
     }
 
-    private static void fail(Class<?> service, String msg)
-            throws ServiceConfigurationError {
+    private static void fail(Class<?> service, String msg) throws ServiceConfigurationError {
         throw new ServiceConfigurationError(service.getName() + ": " + msg);
     }
 
-    private static void fail(Class<?> service, URL u, int line, String msg)
-            throws ServiceConfigurationError {
+    private static void fail(Class<?> service, URL u, int line, String msg) throws ServiceConfigurationError {
         fail(service, u + ":" + line + ": " + msg);
     }
 
-    // Parse a single line from the given configuration file, adding the name
-    // on the line to the names list.
-    //
-    private int parseLine(Class<?> service, URL u, BufferedReader r, int lc,
-                          List<String> names)
-            throws IOException, ServiceConfigurationError {
+    // Parse a single line from the given configuration file, adding the name on the line to the names list.
+    private int parseLine(Class<?> service, URL u, BufferedReader r, int lc, List<String> names) throws IOException, ServiceConfigurationError {
         String ln = r.readLine();
         if (ln == null) {
             return -1;
@@ -287,8 +283,7 @@ public final class ServiceLoader<S>
     //         If an I/O error occurs while reading from the given URL, or
     //         if a configuration-file format error is detected
     //
-    private Iterator<String> parse(Class<?> service, URL u)
-            throws ServiceConfigurationError {
+    private Iterator<String> parse(Class<?> service, URL u) throws ServiceConfigurationError {
         InputStream in = null;
         BufferedReader r = null;
         ArrayList<String> names = new ArrayList<>();
@@ -312,9 +307,7 @@ public final class ServiceLoader<S>
 
     // Private inner class implementing fully-lazy provider lookup
     //
-    private class LazyIterator
-            implements Iterator<S> {
-
+    private class LazyIterator implements Iterator<S> {
         Class<S> service;
         ClassLoader loader;
         Enumeration<URL> configs = null;
@@ -360,21 +353,17 @@ public final class ServiceLoader<S>
             try {
                 c = Class.forName(cn, false, loader);
             } catch (ClassNotFoundException x) {
-                fail(service,
-                        "Provider " + cn + " not found");
+                fail(service, "Provider " + cn + " not found");
             }
             if (!service.isAssignableFrom(c)) {
-                fail(service,
-                        "Provider " + cn + " not a subtype");
+                fail(service, "Provider " + cn + " not a subtype");
             }
             try {
                 S p = service.cast(c.newInstance());
                 providers.put(cn, p);
                 return p;
             } catch (Throwable x) {
-                fail(service,
-                        "Provider " + cn + " could not be instantiated",
-                        x);
+                fail(service, "Provider " + cn + " could not be instantiated", x);
             }
             throw new Error();          // This cannot happen
         }
@@ -408,7 +397,6 @@ public final class ServiceLoader<S>
         public void remove() {
             throw new UnsupportedOperationException();
         }
-
     }
 
     /**
@@ -458,9 +446,7 @@ public final class ServiceLoader<S>
      */
     public Iterator<S> iterator() {
         return new Iterator<S>() {
-
-            Iterator<Map.Entry<String, S>> knownProviders
-                    = providers.entrySet().iterator();
+            Iterator<Map.Entry<String, S>> knownProviders = providers.entrySet().iterator();
 
             public boolean hasNext() {
                 if (knownProviders.hasNext())
@@ -477,7 +463,6 @@ public final class ServiceLoader<S>
             public void remove() {
                 throw new UnsupportedOperationException();
             }
-
         };
     }
 
@@ -493,8 +478,7 @@ public final class ServiceLoader<S>
      *                used
      * @return A new service loader
      */
-    public static <S> ServiceLoader<S> load(Class<S> service,
-                                            ClassLoader loader) {
+    public static <S> ServiceLoader<S> load(Class<S> service, ClassLoader loader) {
         return new ServiceLoader<>(service, loader);
     }
 
@@ -564,5 +548,4 @@ public final class ServiceLoader<S>
     public String toString() {
         return "java.util.ServiceLoader[" + service.getName() + "]";
     }
-
 }
