@@ -954,7 +954,7 @@ public class Dialog extends Window {
      *          If {@code false}, hides the {@code Dialog} and then causes {@code setVisible(true)}
      *          to return if it is currently blocked.
      *          <p>
-     *          <b>Notes for modal dialogs</b>.
+     *          for modal dialogs</b>.
      *          <ul>
      *          <li>{@code setVisible(true)}:  If the dialog is not already
      *          visible, this call will not return until the dialog is

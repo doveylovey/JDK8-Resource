@@ -9,7 +9,8 @@ package org.omg.PortableInterceptor;
  */
 
 
-/** Type of an object id. This provides the identity of a particular
+/**
+ * Type of an object id. This provides the identity of a particular
  * object that was created by an object adapter.
  */
 abstract public class ObjectIdHelper {

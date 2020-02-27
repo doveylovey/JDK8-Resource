@@ -33,9 +33,9 @@ public interface IORInfoOperations {
      *
      * @param type an int specifying the type of policy to return.
      * @return The effective <code>CORBA.Policy</code> object of the
-     *     requested type. If the given policy type is known, but no policy
-     *     of that type is in effect, then this operation will return a
-     *     nil object reference.
+     * requested type. If the given policy type is known, but no policy
+     * of that type is in effect, then this operation will return a
+     * nil object reference.
      */
     org.omg.CORBA.Policy get_effective_policy(int type);
 
@@ -62,30 +62,34 @@ public interface IORInfoOperations {
      * Any number of components may exist with the same component ID.
      *
      * @param tagged_component The <code>IOP.TaggedComponent</code> to add.
-     * @param profile_id The profile id of the profile to
-     *     which this component will be added.
-     * @exception BAD_PARAM thrown, with a standard minor code of 29, if the
-     *     given profile ID does not define a known profile or it is
-     *     impossible to add components to that profile.
+     * @param profile_id       The profile id of the profile to
+     *                         which this component will be added.
+     * @throws BAD_PARAM thrown, with a standard minor code of 29, if the
+     *                   given profile ID does not define a known profile or it is
+     *                   impossible to add components to that profile.
      */
     void add_ior_component_to_profile(org.omg.IOP.TaggedComponent tagged_component, int profile_id);
 
-    /** Return the adapter manager id of the object adapter
+    /**
+     * Return the adapter manager id of the object adapter
      * that was just created and is running IOR interceptors.
      */
     int manager_id();
 
-    /** Return the adapter state of the object adapter
+    /**
+     * Return the adapter state of the object adapter
      * that was just created and is running IOR interceptors.
      */
     short state();
 
-    /** Return the object reference template of the object adapter
+    /**
+     * Return the object reference template of the object adapter
      * that was just created and is running IOR interceptors.
      */
     org.omg.PortableInterceptor.ObjectReferenceTemplate adapter_template();
 
-    /** On read, returns the current factory that will be used to create
+    /**
+     * On read, returns the current factory that will be used to create
      * object references for the object adapter that was just created
      * and is running IOR interceptors.  By default, this factory is the same
      * as the value of the adapter_template attribute.  The current_factory
@@ -94,7 +98,8 @@ public interface IORInfoOperations {
      */
     org.omg.PortableInterceptor.ObjectReferenceFactory current_factory();
 
-    /** On read, returns the current factory that will be used to create
+    /**
+     * On read, returns the current factory that will be used to create
      * object references for the object adapter that was just created
      * and is running IOR interceptors.  By default, this factory is the same
      * as the value of the adapter_template attribute.  The current_factory

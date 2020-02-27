@@ -38,8 +38,8 @@ public interface DynUnionOperations extends org.omg.DynamicAny.DynAnyOperations 
      * Otherwise, if the discriminator value indicates a named union member, the current position is set to 1
      * (has_no_active_member returns false and component_count returns 2 in this case).
      *
-     * @exception TypeMismatch if the TypeCode of the parameter is not equivalent to the TypeCode
-     *            of the union's discriminator
+     * @throws TypeMismatch if the TypeCode of the parameter is not equivalent to the TypeCode
+     *                      of the union's discriminator
      */
     void set_discriminator(org.omg.DynamicAny.DynAny d) throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch;
 
@@ -47,7 +47,7 @@ public interface DynUnionOperations extends org.omg.DynamicAny.DynAnyOperations 
      * Sets the discriminator to a value that is consistent with the value of the default case of a union.
      * It sets the current position to zero and causes component_count to return 2.
      *
-     * @exception TypeMismatch if the union does not have an explicit default case
+     * @throws TypeMismatch if the union does not have an explicit default case
      */
     void set_to_default_member() throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch;
 
@@ -55,8 +55,8 @@ public interface DynUnionOperations extends org.omg.DynamicAny.DynAnyOperations 
      * Sets the discriminator to a value that does not correspond to any of the unions case labels.
      * It sets the current position to zero and causes component_count to return 1.
      *
-     * @exception TypeMismatch if the union has an explicit default case or if it uses the entire range
-     *            of discriminator values for explicit case labels
+     * @throws TypeMismatch if the union has an explicit default case or if it uses the entire range
+     *                      of discriminator values for explicit case labels
      */
     void set_to_no_active_member() throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch;
 
@@ -77,7 +77,7 @@ public interface DynUnionOperations extends org.omg.DynamicAny.DynAnyOperations 
     /**
      * Returns the TCKind value of the currently active members TypeCode.
      *
-     * @exception InvalidValue if the union does not have a currently active member
+     * @throws InvalidValue if the union does not have a currently active member
      */
     org.omg.CORBA.TCKind member_kind() throws org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 
@@ -86,7 +86,7 @@ public interface DynUnionOperations extends org.omg.DynamicAny.DynAnyOperations 
      * for as long as the currently active member does not change. Using the returned reference
      * beyond the life time of the currently active member raises OBJECT_NOT_EXIST.
      *
-     * @exception InvalidValue if the union has no active member
+     * @throws InvalidValue if the union has no active member
      */
     org.omg.DynamicAny.DynAny member() throws org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 
@@ -94,7 +94,7 @@ public interface DynUnionOperations extends org.omg.DynamicAny.DynAnyOperations 
      * Returns the name of the currently active member. If the unions TypeCode does not contain
      * a member name for the currently active member, the operation returns an empty string.
      *
-     * @exception InvalidValue if the union has no active member
+     * @throws InvalidValue if the union has no active member
      */
     String member_name() throws org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 } // interface DynUnionOperations

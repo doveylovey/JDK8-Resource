@@ -17,7 +17,7 @@ package org.omg.CosNaming;
  * Different names can be bound to an object in the same or different
  * contexts at the same time. Using <tt>NamingContextExt</tt>, you can use
  * URL-based names to bind and resolve. <p>
- *
+ * <p>
  * See <a href="http://www.omg.org/technology/documents/formal/naming_service.htm">
  * CORBA COS
  * Naming Specification.</a>
@@ -29,10 +29,7 @@ public interface NamingContextExtOperations extends org.omg.CosNaming.NamingCont
      * components.
      *
      * @param n Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextExtPackage.InvalidName
-     * Indicates the name does not identify a binding.<p>
-     *
+     * @throws org.omg.CosNaming.NamingContextExtPackage.InvalidName Indicates the name does not identify a binding.<p>
      */
     String to_string(org.omg.CosNaming.NameComponent[] n) throws org.omg.CosNaming.NamingContextPackage.InvalidName;
 
@@ -41,10 +38,7 @@ public interface NamingContextExtOperations extends org.omg.CosNaming.NamingCont
      * of Name Components.
      *
      * @param sn Stringified Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextExtPackage.InvalidName
-     * Indicates the name does not identify a binding.<p>
-     *
+     * @throws org.omg.CosNaming.NamingContextExtPackage.InvalidName Indicates the name does not identify a binding.<p>
      */
     org.omg.CosNaming.NameComponent[] to_name(String sn) throws org.omg.CosNaming.NamingContextPackage.InvalidName;
 
@@ -53,14 +47,10 @@ public interface NamingContextExtOperations extends org.omg.CosNaming.NamingCont
      * from the Stringified Name of the object.
      *
      * @param addr internet based address of the host machine where  Name Service is running <p>
-     * @param sn Stringified Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextExtPackage.InvalidName
-     * Indicates the name does not identify a binding.<p>
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidAddress
-     * Indicates the internet based address of the host machine is
-     * incorrect <p>
-     *
+     * @param sn   Stringified Name of the object <p>
+     * @throws org.omg.CosNaming.NamingContextExtPackage.InvalidName Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidAddress Indicates the internet based address of the host machine is
+     *                                                               incorrect <p>
      */
     String to_url(String addr, String sn) throws org.omg.CosNaming.NamingContextExtPackage.InvalidAddress, org.omg.CosNaming.NamingContextPackage.InvalidName;
 
@@ -69,14 +59,9 @@ public interface NamingContextExtOperations extends org.omg.CosNaming.NamingCont
      * reference.
      *
      * @param sn Stringified Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound
-     * Indicates there is no object reference for the given name. <p>
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed
-     * Indicates that the given compound name is incorrect <p>
-     * @exception org.omg.CosNaming.NamingContextExtPackage.InvalidName
-     * Indicates the name does not identify a binding.<p>
-     *
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound       Indicates there is no object reference for the given name. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed  Indicates that the given compound name is incorrect <p>
+     * @throws org.omg.CosNaming.NamingContextExtPackage.InvalidName Indicates the name does not identify a binding.<p>
      */
     org.omg.CORBA.Object resolve_str(String sn) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName;
 } // interface NamingContextExtOperations

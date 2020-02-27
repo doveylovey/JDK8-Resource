@@ -9,7 +9,9 @@ package org.omg.CORBA;
  */
 
 
-/** An array of Strings */
+/**
+ * An array of Strings
+ */
 abstract public class StringSeqHelper {
     private static String _id = "IDL:omg.org/CORBA/StringSeq:1.0";
 

@@ -9,7 +9,9 @@ package org.omg.IOP;
  */
 
 
-/** Profile ID */
+/**
+ * Profile ID
+ */
 abstract public class ProfileIdHelper {
     private static String _id = "IDL:omg.org/IOP/ProfileId:1.0";
 

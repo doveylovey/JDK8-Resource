@@ -9,7 +9,9 @@ package org.omg.CORBA;
  */
 
 
-/** An array of WStrings */
+/**
+ * An array of WStrings
+ */
 public final class WStringSeqHolder implements org.omg.CORBA.portable.Streamable {
     public String value[] = null;
 

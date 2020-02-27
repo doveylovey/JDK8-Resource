@@ -13,7 +13,7 @@ package org.omg.PortableServer;
  * The IdAssignmentPolicyValue can have the following
  * values. USER_ID - Objects created with that POA are
  * assigned Object Ids only by the application.
- *  SYSTEM_ID - Objects created with that POA are
+ * SYSTEM_ID - Objects created with that POA are
  * assigned Object Ids only by the POA. If the POA also
  * has the PERSISTENT policy, assigned Object Ids must
  * be unique across all instantiations of the same POA.

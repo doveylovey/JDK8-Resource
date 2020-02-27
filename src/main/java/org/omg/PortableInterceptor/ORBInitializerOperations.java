@@ -31,14 +31,14 @@ package org.omg.PortableInterceptor;
  * ORBInitializers are registered via Java ORB properties.
  * <p>
  * The property names are of the form:
- *   <blockquote><code>
- *     org.omg.PortableInterceptor.ORBInitializerClass.&lt;Service&gt;
- *   </code></blockquote>
+ * <blockquote><code>
+ * org.omg.PortableInterceptor.ORBInitializerClass.&lt;Service&gt;
+ * </code></blockquote>
  * where <code>&lt;Service&gt;</code> is the string name of a class
  * which implements
- *   <blockquote><code>
- *     org.omg.PortableInterceptor.ORBInitializer
- *   </code></blockquote>
+ * <blockquote><code>
+ * org.omg.PortableInterceptor.ORBInitializer
+ * </code></blockquote>
  * To avoid name collisions, the reverse DNS name convention should be
  * used. For example, if company X has three initializers, it could define
  * the following properties:
@@ -91,7 +91,7 @@ package org.omg.PortableInterceptor;
  * service, the user could type:
  *   <blockquote><code>
  *     java
- *-Dorg.omg.PortableInterceptor.ORBInitializerClass.com.x.Logging.LoggingService
+ * -Dorg.omg.PortableInterceptor.ORBInitializerClass.com.x.Logging.LoggingService
  *     MyApp
  *   </code></blockquote>
  * <p>
@@ -129,7 +129,7 @@ public interface ORBInitializerOperations {
      * <code>ORBInitInfo.register_initial_reference</code>.
      *
      * @param info provides initialization attributes and operations by
-     *     which Interceptors can be registered.
+     *             which Interceptors can be registered.
      */
     void pre_init(org.omg.PortableInterceptor.ORBInitInfo info);
 
@@ -149,7 +149,7 @@ public interface ORBInitializerOperations {
      * created, no IOR interceptors will be invoked.
      *
      * @param info provides initialization attributes and
-     *     operations by which Interceptors can be registered.
+     *             operations by which Interceptors can be registered.
      */
     void post_init(org.omg.PortableInterceptor.ORBInitInfo info);
 } // interface ORBInitializerOperations

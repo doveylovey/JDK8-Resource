@@ -20,16 +20,16 @@ public interface DynStructOperations extends org.omg.DynamicAny.DynAnyOperations
      * This operation may return an empty string since the TypeCode of the value being
      * manipulated may not contain the names of members.
      *
-     * @exception TypeMismatch if the DynStruct represents an empty exception.
-     * @exception InvalidValue if the current position does not indicate a member
+     * @throws TypeMismatch if the DynStruct represents an empty exception.
+     * @throws InvalidValue if the current position does not indicate a member
      */
     String current_member_name() throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch, org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 
     /**
      * Returns the TCKind associated with the member at the current position.
      *
-     * @exception TypeMismatch if the DynStruct represents an empty exception.
-     * @exception InvalidValue if the current position does not indicate a member
+     * @throws TypeMismatch if the DynStruct represents an empty exception.
+     * @throws InvalidValue if the current position does not indicate a member
      */
     org.omg.CORBA.TCKind current_member_kind() throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch, org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 
@@ -51,10 +51,10 @@ public interface DynStructOperations extends org.omg.DynamicAny.DynAnyOperations
      * of the struct as indicated by the DynStruct's TypeCode or they must be empty strings.
      * The operation makes no attempt to assign member values based on member names.
      *
-     * @exception TypeMismatch if the member names supplied in the passed sequence do not match the
-     *            corresponding member name in the DynStruct's TypeCode and they are not empty strings
-     * @exception InvalidValue if the passed sequence has a number of elements that disagrees
-     *            with the number of members as indicated by the DynStruct's TypeCode
+     * @throws TypeMismatch if the member names supplied in the passed sequence do not match the
+     *                      corresponding member name in the DynStruct's TypeCode and they are not empty strings
+     * @throws InvalidValue if the passed sequence has a number of elements that disagrees
+     *                      with the number of members as indicated by the DynStruct's TypeCode
      */
     void set_members(org.omg.DynamicAny.NameValuePair[] value) throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch, org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 
@@ -76,10 +76,10 @@ public interface DynStructOperations extends org.omg.DynamicAny.DynAnyOperations
      * of the struct as indicated by the DynStruct's TypeCode or they must be empty strings.
      * The operation makes no attempt to assign member values based on member names.
      *
-     * @exception TypeMismatch if the member names supplied in the passed sequence do not match the
-     *            corresponding member name in the DynStruct's TypeCode and they are not empty strings
-     * @exception InvalidValue if the passed sequence has a number of elements that disagrees
-     *            with the number of members as indicated by the DynStruct's TypeCode
+     * @throws TypeMismatch if the member names supplied in the passed sequence do not match the
+     *                      corresponding member name in the DynStruct's TypeCode and they are not empty strings
+     * @throws InvalidValue if the passed sequence has a number of elements that disagrees
+     *                      with the number of members as indicated by the DynStruct's TypeCode
      */
     void set_members_as_dyn_any(org.omg.DynamicAny.NameDynAnyPair[] value) throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch, org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 } // interface DynStructOperations

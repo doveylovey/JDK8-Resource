@@ -8,7 +8,8 @@ package org.omg.PortableInterceptor;
  */
 
 
-/** The object reference template.  An instance of this must
+/**
+ * The object reference template.  An instance of this must
  * exist for each object adapter created in an ORB.  The server_id,
  * orb_id, and adapter_name attributes uniquely identify this template
  * within the scope of an IMR.  Note that adapter_id is similarly unique

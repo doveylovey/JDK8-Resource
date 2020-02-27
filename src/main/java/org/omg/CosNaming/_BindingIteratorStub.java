@@ -12,9 +12,10 @@ package org.omg.CosNaming;
 /**
  * The BindingIterator interface allows a client to iterate through
  * the bindings using the next_one or next_n operations.
- *
+ * <p>
  * The bindings iterator is obtained by using the <tt>list</tt>
  * method on the <tt>NamingContext</tt>.
+ *
  * @see org.omg.CosNaming.NamingContext#list
  */
 public class _BindingIteratorStub extends org.omg.CORBA.portable.ObjectImpl implements org.omg.CosNaming.BindingIterator {
@@ -50,8 +51,7 @@ public class _BindingIteratorStub extends org.omg.CORBA.portable.ObjectImpl impl
      * This operation returns at most the requested number of bindings.
      *
      * @param how_many the maximum number of bindings tro return <p>
-     *
-     * @param bl the returned bindings
+     * @param bl       the returned bindings
      */
     public boolean next_n(int how_many, org.omg.CosNaming.BindingListHolder bl) {
         org.omg.CORBA.portable.InputStream $in = null;

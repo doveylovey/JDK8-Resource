@@ -54,10 +54,10 @@ public interface RequestInfoOperations {
      * <p>
      * <i>Note: Arguments are available for DSI/DII calls.</i>
      *
-     * @exception NO_RESOURCES thrown if arguments are not available.
+     * @throws NO_RESOURCES thrown if arguments are not available.
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     org.omg.Dynamic.Parameter[] arguments();
 
@@ -75,10 +75,10 @@ public interface RequestInfoOperations {
      * <p>
      * <i>Note: Exceptions are available for DSI/DII calls.</i>
      *
-     * @exception NO_RESOURCES thrown if exceptions are not available.
+     * @throws NO_RESOURCES thrown if exceptions are not available.
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     org.omg.CORBA.TypeCode[] exceptions();
 
@@ -95,10 +95,10 @@ public interface RequestInfoOperations {
      * <p>
      * <i>Note: Contexts are available for DSI/DII calls.</i>
      *
-     * @exception NO_RESOURCES thrown if contexts are not available.
+     * @throws NO_RESOURCES thrown if contexts are not available.
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     String[] contexts();
 
@@ -114,10 +114,10 @@ public interface RequestInfoOperations {
      * <i>Note: <code>operation_context</code> is available for
      * DSI/DII calls.</i>
      *
-     * @exception NO_RESOURCES thrown if operation context is not available.
+     * @throws NO_RESOURCES thrown if operation context is not available.
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     String[] operation_context();
 
@@ -135,10 +135,10 @@ public interface RequestInfoOperations {
      * <p>
      * <i>Note: Result is available for DSI/DII calls.</i>
      *
-     * @exception NO_RESOURCES thrown if result is not available.
+     * @throws NO_RESOURCES thrown if result is not available.
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     org.omg.CORBA.Any result();
 
@@ -182,8 +182,8 @@ public interface RequestInfoOperations {
      * Interceptors.
      *
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     short sync_scope();
 
@@ -254,11 +254,11 @@ public interface RequestInfoOperations {
      * returned.
      *
      * @param id The <code>SlotId</code> of the slot which is to be
-     *     returned.
+     *           returned.
      * @return The slot data, in the form of an any, obtained with the
-     *     given identifier.
-     * @exception InvalidSlot thrown if the ID does not define an
-     *    allocated slot.
+     * given identifier.
+     * @throws InvalidSlot thrown if the ID does not define an
+     *                     allocated slot.
      * @see Current
      */
     org.omg.CORBA.Any get_slot(int id) throws org.omg.PortableInterceptor.InvalidSlot;
@@ -267,12 +267,13 @@ public interface RequestInfoOperations {
      * Returns a copy of the service context with the given ID that
      * is associated with the request.
      * <p>
+     *
      * @param id The <code>IOP.ServiceId</code> of the service context
-     *     which is to be returned.
+     *           which is to be returned.
      * @return The <code>IOP.ServiceContext</code> obtained with the
-     *     given identifier.
-     * @exception BAD_PARAM thrown with a standard minor code of 26, if the
-     *     request's service context does not contain an entry for that ID.
+     * given identifier.
+     * @throws BAD_PARAM thrown with a standard minor code of 26, if the
+     *                   request's service context does not contain an entry for that ID.
      */
     org.omg.IOP.ServiceContext get_request_service_context(int id);
 
@@ -281,11 +282,11 @@ public interface RequestInfoOperations {
      * is associated with the reply.
      *
      * @param id The <code>IOP.ServiceId</code> of the service context
-     *     which is to be returned.
+     *           which is to be returned.
      * @return The <code>IOP.ServiceContext</code> obtained with the given
-     *     identifier.
-     * @exception BAD_PARAM thrown with a standard minor code of 26 if the
-     *     request's service context does not contain an entry for that ID.
+     * identifier.
+     * @throws BAD_PARAM thrown with a standard minor code of 26 if the
+     *                   request's service context does not contain an entry for that ID.
      */
     org.omg.IOP.ServiceContext get_reply_service_context(int id);
 } // interface RequestInfoOperations

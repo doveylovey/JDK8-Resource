@@ -49,13 +49,19 @@ import javax.swing.text.AttributeSet;
  * @see javax.accessibility.AccessibleContext#ACCESSIBLE_TEXT_ATTRIBUTES_CHANGED
  */
 public class AccessibleAttributeSequence {
-    /** The start index of the text sequence */
+    /**
+     * The start index of the text sequence
+     */
     public int startIndex;
 
-    /** The end index of the text sequence */
+    /**
+     * The end index of the text sequence
+     */
     public int endIndex;
 
-    /** The text attributes */
+    /**
+     * The text attributes
+     */
     public AttributeSet attributes;
 
     /**
@@ -63,9 +69,8 @@ public class AccessibleAttributeSequence {
      * parameters.
      *
      * @param start the beginning index of the span of text
-     * @param end the ending index of the span of text
-     * @param attr the <code>AttributeSet</code> shared by this text span
-     *
+     * @param end   the ending index of the span of text
+     * @param attr  the <code>AttributeSet</code> shared by this text span
      * @since 1.6
      */
     public AccessibleAttributeSequence(int start, int end, AttributeSet attr) {

@@ -704,15 +704,15 @@ public interface ThreadMXBean extends PlatformManagedObject {
      *                                                 exists and the caller does not have
      *                                                 ManagementPermission("monitor").
      * @throws java.lang.UnsupportedOperationException <ul>
-     *                                                 <li>if <tt>lockedMonitors</tt> is <tt>true</tt> but
-     *                                                 the Java virtual machine does not support monitoring
-     *                                                 of {@linkplain #isObjectMonitorUsageSupported
-     *                                                 object monitor usage}; or</li>
-     *                                                 <li>if <tt>lockedSynchronizers</tt> is <tt>true</tt> but
-     *                                                 the Java virtual machine does not support monitoring
-     *                                                 of {@linkplain #isSynchronizerUsageSupported
-     *                                                 ownable synchronizer usage}.</li>
-     *                                                 </ul>
+     *                                                                                                 <li>if <tt>lockedMonitors</tt> is <tt>true</tt> but
+     *                                                                                                 the Java virtual machine does not support monitoring
+     *                                                                                                 of {@linkplain #isObjectMonitorUsageSupported
+     *                                                                                                 object monitor usage}; or</li>
+     *                                                                                                 <li>if <tt>lockedSynchronizers</tt> is <tt>true</tt> but
+     *                                                                                                 the Java virtual machine does not support monitoring
+     *                                                                                                 of {@linkplain #isSynchronizerUsageSupported
+     *                                                                                                 ownable synchronizer usage}.</li>
+     *                                                                                                 </ul>
      * @see #isObjectMonitorUsageSupported
      * @see #isSynchronizerUsageSupported
      * @since 1.6

@@ -9,7 +9,9 @@ package org.omg.IOP;
  */
 
 
-/** An array of service contexts, forming a service context list. */
+/**
+ * An array of service contexts, forming a service context list.
+ */
 public final class ServiceContextListHolder implements org.omg.CORBA.portable.Streamable {
     public org.omg.IOP.ServiceContext value[] = null;
 

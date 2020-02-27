@@ -9,7 +9,8 @@ package org.omg.PortableInterceptor;
  */
 
 
-/** The name of an object adapter. This is unique only within
+/**
+ * The name of an object adapter. This is unique only within
  * the scope of the ORB that created the object adapter.
  */
 abstract public class AdapterNameHelper {

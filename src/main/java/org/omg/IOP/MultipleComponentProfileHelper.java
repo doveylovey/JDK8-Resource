@@ -9,7 +9,9 @@ package org.omg.IOP;
  */
 
 
-/** An array of tagged components, forming a multiple component profile. */
+/**
+ * An array of tagged components, forming a multiple component profile.
+ */
 abstract public class MultipleComponentProfileHelper {
     private static String _id = "IDL:omg.org/IOP/MultipleComponentProfile:1.0";
 

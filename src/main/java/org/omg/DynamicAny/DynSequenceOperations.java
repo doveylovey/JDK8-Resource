@@ -33,12 +33,12 @@ public interface DynSequenceOperations extends org.omg.DynamicAny.DynAnyOperatio
      * <LI>If the length of the sequence is set to zero, the current position is set to -1.
      * <LI>If the current position is -1 before decreasing the length, it remains at -1.
      * <LI>If the current position indicates a valid element and that element is not removed when the length
-     *     is decreased, the current position remains unaffected.
+     * is decreased, the current position remains unaffected.
      * <LI>If the current position indicates a valid element and that element is removed,
-     *     the current position is set to -1.
+     * the current position is set to -1.
      * </UL>
      *
-     * @exception InvalidValue if this is a bounded sequence and len is larger than the bound
+     * @throws InvalidValue if this is a bounded sequence and len is larger than the bound
      */
     void set_length(int len) throws org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 
@@ -52,9 +52,9 @@ public interface DynSequenceOperations extends org.omg.DynamicAny.DynAnyOperatio
      * The length of the DynSequence is set to the length of value. The current position is set to zero
      * if value has non-zero length and to -1 if value is a zero-length sequence.
      *
-     * @exception TypeMismatch if value contains one or more elements whose TypeCode is not equivalent
-     *            to the element TypeCode of the DynSequence
-     * @exception InvalidValue if the length of value exceeds the bound of a bounded sequence
+     * @throws TypeMismatch if value contains one or more elements whose TypeCode is not equivalent
+     *                      to the element TypeCode of the DynSequence
+     * @throws InvalidValue if the length of value exceeds the bound of a bounded sequence
      */
     void set_elements(org.omg.CORBA.Any[] value) throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch, org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 
@@ -68,9 +68,9 @@ public interface DynSequenceOperations extends org.omg.DynamicAny.DynAnyOperatio
      * The length of the DynSequence is set to the length of value. The current position is set to zero
      * if value has non-zero length and to -1 if value is a zero-length sequence.
      *
-     * @exception TypeMismatch if value contains one or more elements whose TypeCode is not equivalent
-     *            to the element TypeCode of the DynSequence
-     * @exception InvalidValue if the length of value exceeds the bound of a bounded sequence
+     * @throws TypeMismatch if value contains one or more elements whose TypeCode is not equivalent
+     *                      to the element TypeCode of the DynSequence
+     * @throws InvalidValue if the length of value exceeds the bound of a bounded sequence
      */
     void set_elements_as_dyn_any(org.omg.DynamicAny.DynAny[] value) throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch, org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 } // interface DynSequenceOperations

@@ -39,8 +39,8 @@ public interface DynAnyFactoryOperations {
      * The current position of the created DynAny is set to zero if the passed value has components,
      * to -1 otherwise
      *
-     * @exception InconsistentTypeCode if value has a TypeCode with a TCKind of tk_Principal,
-     * tk_native, or tk_abstract_interface
+     * @throws InconsistentTypeCode if value has a TypeCode with a TCKind of tk_Principal,
+     *                              tk_native, or tk_abstract_interface
      */
     org.omg.DynamicAny.DynAny create_dyn_any(org.omg.CORBA.Any value) throws org.omg.DynamicAny.DynAnyFactoryPackage.InconsistentTypeCode;
 
@@ -62,16 +62,16 @@ public interface DynAnyFactoryOperations {
      * <UL>
      * <LI>For DynSequence it sets the current position to -1 and creates an empty sequence.
      * <LI>For DynEnum it sets the current position to -1 and sets the value of the enumerator
-     *     to the first enumerator value indicated by the TypeCode.
+     * to the first enumerator value indicated by the TypeCode.
      * <LI>For DynFixed it sets the current position to -1 and sets the value zero.
      * <LI>For DynStruct it sets the current position to -1 for empty exceptions
-     *     and to zero for all other TypeCodes. The members (if any) are (recursively) initialized
-     *     to their default values.
+     * and to zero for all other TypeCodes. The members (if any) are (recursively) initialized
+     * to their default values.
      * <LI>For DynArray sets the current position to zero and (recursively) initializes elements
-     *     to their default value.
+     * to their default value.
      * <LI>For DynUnion sets the current position to zero. The discriminator value is set
-     *     to a value consistent with the first named member of the union. That member is activated and (recursively)
-     *     initialized to its default value.
+     * to a value consistent with the first named member of the union. That member is activated and (recursively)
+     * initialized to its default value.
      * <LI>For DynValue and DynValueBox it initializes to a null value.
      * </UL>
      */

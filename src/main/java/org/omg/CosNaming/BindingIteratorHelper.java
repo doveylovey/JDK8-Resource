@@ -12,9 +12,10 @@ package org.omg.CosNaming;
 /**
  * The BindingIterator interface allows a client to iterate through
  * the bindings using the next_one or next_n operations.
- *
+ * <p>
  * The bindings iterator is obtained by using the <tt>list</tt>
  * method on the <tt>NamingContext</tt>.
+ *
  * @see org.omg.CosNaming.NamingContext#list
  */
 abstract public class BindingIteratorHelper {

@@ -9,7 +9,9 @@ package org.omg.IOP;
  */
 
 
-/** A service id, represented as an int */
+/**
+ * A service id, represented as an int
+ */
 abstract public class ServiceIdHelper {
     private static String _id = "IDL:omg.org/IOP/ServiceId:1.0";
 

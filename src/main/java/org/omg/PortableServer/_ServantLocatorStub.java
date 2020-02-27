@@ -35,20 +35,21 @@ public class _ServantLocatorStub extends org.omg.CORBA.portable.ObjectImpl imple
      * This operations is used to get a servant that will be
      * used to process the request that caused preinvoke to
      * be called.
-     * @param oid the object id associated with object on
-     *            which the request was made.
-     * @param adapter the reference for POA in which the
-     *                object is being activated.
-     * @param operation the operation name.
-     * @param the_cookie  an opaque value that can be set
-     *                    by the servant manager to be used
-     *                    during postinvoke.
+     *
+     * @param oid        the object id associated with object on
+     *                   which the request was made.
+     * @param adapter    the reference for POA in which the
+     *                   object is being activated.
+     * @param operation  the operation name.
+     * @param the_cookie an opaque value that can be set
+     *                   by the servant manager to be used
+     *                   during postinvoke.
      * @return Servant used to process incoming request.
-     * @exception ForwardRequest to indicate to the ORB
-     *            that it is responsible for delivering
-     *            the current request and subsequent
-     *            requests to the object denoted in the
-     *            forward_reference member of the exception.
+     * @throws ForwardRequest to indicate to the ORB
+     *                        that it is responsible for delivering
+     *                        the current request and subsequent
+     *                        requests to the object denoted in the
+     *                        forward_reference member of the exception.
      */
     public org.omg.PortableServer.Servant preinvoke(byte[] oid, org.omg.PortableServer.POA adapter, String operation, org.omg.PortableServer.ServantLocatorPackage.CookieHolder the_cookie) throws org.omg.PortableServer.ForwardRequest {
         org.omg.CORBA.portable.ServantObject $so = _servant_preinvoke("preinvoke", _opsClass);
@@ -65,10 +66,11 @@ public class _ServantLocatorStub extends org.omg.CORBA.portable.ObjectImpl imple
     /**
      * This operation is invoked whenener a servant completes
      * a request.
-     * @param oid the object id ssociated with object on which
-     *            the request was made.
-     * @param adapter the reference for POA in which the
-     *                object was active.
+     *
+     * @param oid         the object id ssociated with object on which
+     *                    the request was made.
+     * @param adapter     the reference for POA in which the
+     *                    object was active.
      * @param the_cookie  an opaque value that contains
      *                    the data set by preinvoke.
      * @param the_servant reference to the servant that is

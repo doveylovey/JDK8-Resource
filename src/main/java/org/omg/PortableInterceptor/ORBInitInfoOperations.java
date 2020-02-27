@@ -79,9 +79,9 @@ public interface ORBInitInfoOperations {
      * client-side request Interceptors.
      *
      * @param interceptor The <code>ClientRequestInterceptor</code> to be
-     *     added.
-     * @exception DuplicateName thrown if a client-side request Interceptor
-     *     has already been registered with this Interceptor's name.
+     *                    added.
+     * @throws DuplicateName thrown if a client-side request Interceptor
+     *                       has already been registered with this Interceptor's name.
      */
     void add_client_request_interceptor(org.omg.PortableInterceptor.ClientRequestInterceptor interceptor) throws org.omg.PortableInterceptor.ORBInitInfoPackage.DuplicateName;
 
@@ -90,8 +90,8 @@ public interface ORBInitInfoOperations {
      * server-side request Interceptors.
      *
      * @param interceptor The ServerRequestInterceptor to be added.
-     * @exception DuplicateName thrown if a server-side request Interceptor
-     *     has already been registered with this Interceptor's name
+     * @throws DuplicateName thrown if a server-side request Interceptor
+     *                       has already been registered with this Interceptor's name
      */
     void add_server_request_interceptor(org.omg.PortableInterceptor.ServerRequestInterceptor interceptor) throws org.omg.PortableInterceptor.ORBInitInfoPackage.DuplicateName;
 
@@ -99,8 +99,8 @@ public interface ORBInitInfoOperations {
      * Used to add an IOR Interceptor to the list of IOR Interceptors.
      *
      * @param interceptor The IORInterceptor to be added.
-     * @exception DuplicateName thrown if an IOR Interceptor has already
-     *     been registered with this Interceptor's name.
+     * @throws DuplicateName thrown if an IOR Interceptor has already
+     *                       been registered with this Interceptor's name.
      */
     void add_ior_interceptor(org.omg.PortableInterceptor.IORInterceptor interceptor) throws org.omg.PortableInterceptor.ORBInitInfoPackage.DuplicateName;
 
@@ -111,9 +111,9 @@ public interface ORBInitInfoOperations {
      * the slots themselves cannot be initialized.
      *
      * @return The index to the slot which has been allocated.
-     * @exception BAD_INV_ORDER thrown, with a standard minor code of 14, if
-     *     <code>set_slot</code> or <code>get_slot</code> is called on the
-     *     <code>PICurrent</code> within an ORB initializer.
+     * @throws BAD_INV_ORDER thrown, with a standard minor code of 14, if
+     *                       <code>set_slot</code> or <code>get_slot</code> is called on the
+     *                       <code>PICurrent</code> within an ORB initializer.
      * @see Current
      */
     int allocate_slot_id();
@@ -122,12 +122,12 @@ public interface ORBInitInfoOperations {
      * Registers a <code>PolicyFactory</code> for the given
      * <code>PolicyType</code>.
      *
-     * @param type The policy type that the given <code>PolicyFactory</code>
-     *     serves.
+     * @param type           The policy type that the given <code>PolicyFactory</code>
+     *                       serves.
      * @param policy_factory The factory for the given policy type.
-     * @exception BAD_INV_ORDER thrown, with a standard minor code of 16, if
-     *     a <code>PolicyFactory</code> already exists for the given
-     *     <code>PolicyType</code>.
+     * @throws BAD_INV_ORDER thrown, with a standard minor code of 16, if
+     *                       a <code>PolicyFactory</code> already exists for the given
+     *                       <code>PolicyType</code>.
      */
     void register_policy_factory(int type, org.omg.PortableInterceptor.PolicyFactory policy_factory);
 } // interface ORBInitInfoOperations

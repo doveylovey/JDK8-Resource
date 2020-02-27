@@ -9,7 +9,8 @@ package org.omg.PortableInterceptor;
  */
 
 
-/** Sequence of object reference templates is used for reporting state
+/**
+ * Sequence of object reference templates is used for reporting state
  * changes that do not occur on the adapter manager.
  */
 abstract public class ObjectReferenceTemplateSeqHelper {

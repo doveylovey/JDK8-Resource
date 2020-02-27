@@ -9,7 +9,9 @@ package org.omg.PortableInterceptor.ORBInitInfoPackage;
  */
 
 
-/** Object id, represented as a String */
+/**
+ * Object id, represented as a String
+ */
 abstract public class ObjectIdHelper {
     private static String _id = "IDL:omg.org/PortableInterceptor/ORBInitInfo/ObjectId:1.0";
 

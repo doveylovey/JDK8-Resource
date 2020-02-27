@@ -24,20 +24,21 @@ public interface POAOperations {
     /**
      * This operation creates a new POA as a child of the
      * target POA.
+     *
      * @param adapter_name identifies the new POA with
-     *        respect to other POAs with the same parent POA.
+     *                     respect to other POAs with the same parent POA.
      * @param a_POAManager specifies the POA Manager to be
-     *        associated with the new POA.
-     * @param policies specifies policy objects to be
-     *        associated with the POA to control its behavior.
-     * @exception AdapterAlreadyExists specifies that the
-     *            target POA already has a child POA with
-     *            the specified name.
-     * @exception InvalidPolicy is raised if any of the
-     *            policy objects are not valid for the ORB,
-     *            or are in conflict, or require an
-     *            administrative action that has not been
-     *            performed.
+     *                     associated with the new POA.
+     * @param policies     specifies policy objects to be
+     *                     associated with the POA to control its behavior.
+     * @throws AdapterAlreadyExists specifies that the
+     *                              target POA already has a child POA with
+     *                              the specified name.
+     * @throws InvalidPolicy        is raised if any of the
+     *                              policy objects are not valid for the ORB,
+     *                              or are in conflict, or require an
+     *                              administrative action that has not been
+     *                              performed.
      */
     org.omg.PortableServer.POA create_POA(String adapter_name, org.omg.PortableServer.POAManager a_POAManager, org.omg.CORBA.Policy[] policies) throws org.omg.PortableServer.POAPackage.AdapterAlreadyExists, org.omg.PortableServer.POAPackage.InvalidPolicy;
 
@@ -45,17 +46,16 @@ public interface POAOperations {
      * If the target POA is the parent of a child POA with
      * the specified name (relative to the target POA), that
      * child POA is returned.
+     *
      * @param adapter_name POA name to be found.
      * @param activate_it  if a POA with the specified
-     *        name does not exist and the value of
-     *        the activate_it parameter is TRUE, the target
-     *        POA's AdapterActivator, if one exists,
-     *        is invoked.
-     * @return POA if one exists or is activated by the
-     *         AdapterActivator.
+     *                     name does not exist and the value of
+     *                     the activate_it parameter is TRUE, the target
+     *                     POA's AdapterActivator, if one exists,
+     *                     is invoked.
      * @return AdapterNonExistent is raised if POA with
-     *         a specified name cannot be found or
-     *         activated using AdapaterActivator.
+     * a specified name cannot be found or
+     * activated using AdapaterActivator.
      */
     org.omg.PortableServer.POA find_POA(String adapter_name, boolean activate_it) throws org.omg.PortableServer.POAPackage.AdapterNonExistent;
 
@@ -65,19 +65,20 @@ public interface POAOperations {
      * before the destruction of the containing POA. The POA
      * so destroyed (that is, the POA with its name) may be
      * re-created later in the same process.
-     * @param etherealize_objects flag to indicate whether
-     *        etherealize operation on servant manager needs
-     *        to be called.
-     * @param wait_for_completion flag to indicate whether
-     *        POA and its children need to wait for active
-     *        requests and the etherealization to complete.
      *
+     * @param etherealize_objects flag to indicate whether
+     *                            etherealize operation on servant manager needs
+     *                            to be called.
+     * @param wait_for_completion flag to indicate whether
+     *                            POA and its children need to wait for active
+     *                            requests and the etherealization to complete.
      */
     void destroy(boolean etherealize_objects, boolean wait_for_completion);
 
     /**
      * These operations each return a reference to a policy
      * object with the specified value.
+     *
      * @param value policy type
      * @return ThreadPolcy Object
      */
@@ -86,6 +87,7 @@ public interface POAOperations {
     /**
      * These operations each return a reference to a policy
      * object with the specified value.
+     *
      * @param value policy type
      * @return LifespanPolicy Object.
      */
@@ -94,6 +96,7 @@ public interface POAOperations {
     /**
      * These operations each return a reference to a policy
      * object with the specified value.
+     *
      * @param value policy type
      * @return IdUniquenessPolicy Object.
      */
@@ -102,6 +105,7 @@ public interface POAOperations {
     /**
      * These operations each return a reference to a policy
      * object with the specified value.
+     *
      * @param value policy type
      * @return IdAssignmentPolicy Object.
      */
@@ -110,6 +114,7 @@ public interface POAOperations {
     /**
      * These operations each return a reference to a policy
      * object with the specified value.
+     *
      * @param value policy type
      * @return ImplicitActivationPolicy Object.
      */
@@ -118,6 +123,7 @@ public interface POAOperations {
     /**
      * These operations each return a reference to a policy
      * object with the specified value.
+     *
      * @param value policy type
      * @return ServantRetentionPolicy Object.
      */
@@ -126,6 +132,7 @@ public interface POAOperations {
     /**
      * These operations each return a reference to a policy
      * object with the specified value.
+     *
      * @param value policy type
      * @return RequestProcessingPolicy Object.
      */
@@ -170,7 +177,6 @@ public interface POAOperations {
     void the_activator(org.omg.PortableServer.AdapterActivator newThe_activator);
 
     /**
-     *
      * If the ServantRetentionPolicy of the POA is RETAIN,
      * then the ServantManager argument (imgr) shall support
      * the ServantActivator interface. For a NON_RETAIN policy,
@@ -178,63 +184,65 @@ public interface POAOperations {
      * interface. If the argument is nil, or does not support
      * the required interface, then the OBJ_ADAPTER
      * exception is raised.
+     *
      * @return ServantManager associated with a POA or null if
-     *         none exists.
-     * @exception WrongPolicy raised if the
-     *            USE_SERVANT_MANAGER policy is not specified.
+     * none exists.
+     * @throws WrongPolicy raised if the
+     *                     USE_SERVANT_MANAGER policy is not specified.
      */
     org.omg.PortableServer.ServantManager get_servant_manager() throws org.omg.PortableServer.POAPackage.WrongPolicy;
 
     /**
-     *
      * This operation sets the default servant manager
      * associated with the POA. This operation may only be
      * invoked once after a POA has been created. Attempting
      * to set the servant manager after one has already
      * been set will result in the BAD_INV_ORDER exception
      * being raised.
+     *
      * @param imgr servant manager to be used as a default.
-     * @exception WrongPolicy raised if the
-     *            USE_SERVANT_MANAGER policy is not specified.
+     * @throws WrongPolicy raised if the
+     *                     USE_SERVANT_MANAGER policy is not specified.
      */
     void set_servant_manager(org.omg.PortableServer.ServantManager imgr) throws org.omg.PortableServer.POAPackage.WrongPolicy;
 
     /**
      * This operation returns the default servant associated
      * with the POA.
+     *
      * @return p_servant default servant associated with a POA.
-     * @exception NoServant raised if no default servant is
-     *            associated with the POA.
-     * @exception WrongPolicy raised if the
-     *            USE_DEFAULT_SERVANT policy is not specified.
+     * @throws NoServant   raised if no default servant is
+     *                     associated with the POA.
+     * @throws WrongPolicy raised if the
+     *                     USE_DEFAULT_SERVANT policy is not specified.
      */
     org.omg.PortableServer.Servant get_servant() throws org.omg.PortableServer.POAPackage.NoServant, org.omg.PortableServer.POAPackage.WrongPolicy;
 
     /**
-     *
      * This operation registers the specified servant with
      * the POA as the default servant. This servant will
      * be used for all requests for which no servant is
      * found in the Active Object Map.
+     *
      * @param p_servant servant to be used as a default.
-     * @exception WrongPolicy raised if the
-     *            USE_DEFAULT_SERVANT policy is not specified.
+     * @throws WrongPolicy raised if the
+     *                     USE_DEFAULT_SERVANT policy is not specified.
      */
     void set_servant(org.omg.PortableServer.Servant p_servant) throws org.omg.PortableServer.POAPackage.WrongPolicy;
 
     /**
-     *
      * This operation generates an Object Id and enters
      * the Object Id and the specified servant in the
      * Active Object Map.
+     *
      * @param p_servant servant to be associated with an
-     *            object to be activated.
+     *                  object to be activated.
      * @return POA generated object id.
-     * @exception ServantAlreadyActive is raised if the
-     *            POA has UNIQUE_ID policy and servant is
-     *            is already in the Active Object Map.
-     * @exception WrongPolicy raised if the SYSTEM_ID and
-     *            RETAIN policies are not specified.
+     * @throws ServantAlreadyActive is raised if the
+     *                              POA has UNIQUE_ID policy and servant is
+     *                              is already in the Active Object Map.
+     * @throws WrongPolicy          raised if the SYSTEM_ID and
+     *                              RETAIN policies are not specified.
      */
     byte[] activate_object(org.omg.PortableServer.Servant p_servant) throws org.omg.PortableServer.POAPackage.ServantAlreadyActive, org.omg.PortableServer.POAPackage.WrongPolicy;
 
@@ -242,21 +250,21 @@ public interface POAOperations {
      * This operation enters an association between the
      * specified Object Id and the specified servant in the
      * Active Object Map.
-     * @param id object id for the object to be activated.
+     *
+     * @param id        object id for the object to be activated.
      * @param p_servant servant to be associated with the
      *                  object.
-     * @exception ServantAlreadyActive raised if the POA
-     *            has the UNIQUE_ID policy and the servant
-     *            is already in the Active Object Map.
-     * @exception ObjectAlreadyActive raised if the object is
-     *            already active in the POA.
-     * @exception WrongPolicy raised if the RETAIN policy is
-     *            is not specified.
+     * @throws ServantAlreadyActive raised if the POA
+     *                              has the UNIQUE_ID policy and the servant
+     *                              is already in the Active Object Map.
+     * @throws ObjectAlreadyActive  raised if the object is
+     *                              already active in the POA.
+     * @throws WrongPolicy          raised if the RETAIN policy is
+     *                              is not specified.
      */
     void activate_object_with_id(byte[] id, org.omg.PortableServer.Servant p_servant) throws org.omg.PortableServer.POAPackage.ServantAlreadyActive, org.omg.PortableServer.POAPackage.ObjectAlreadyActive, org.omg.PortableServer.POAPackage.WrongPolicy;
 
     /**
-     *
      * This operation causes the ObjectId specified in the
      * oid parameter to be deactivated. An ObjectId which
      * has been deactivated continues to process requests
@@ -264,12 +272,13 @@ public interface POAOperations {
      * A deactivated ObjectId is removed from the Active
      * Object Map when all requests executing for that
      * ObjectId have completed.
+     *
      * @param oid Object Id for the object to be deactivated.
-     * @exception ObjectNotActive if the object with the
-     *            specified oid is not in the Active Object
-     *            Map.
-     * @exception WrongPolicy raised if the RETAIN policy is
-     *            is not specified.
+     * @throws ObjectNotActive if the object with the
+     *                         specified oid is not in the Active Object
+     *                         Map.
+     * @throws WrongPolicy     raised if the RETAIN policy is
+     *                         is not specified.
      */
     void deactivate_object(byte[] oid) throws org.omg.PortableServer.POAPackage.ObjectNotActive, org.omg.PortableServer.POAPackage.WrongPolicy;
 
@@ -280,8 +289,8 @@ public interface POAOperations {
      *
      * @param intf rep id for creating an object reference.
      * @return object reference created using intf.
-     * @exception WrongPolicy if SYSTEM_ID policy is not
-     *            specified.
+     * @throws WrongPolicy if SYSTEM_ID policy is not
+     *                     specified.
      */
     org.omg.CORBA.Object create_reference(String intf) throws org.omg.PortableServer.POAPackage.WrongPolicy;
 
@@ -294,13 +303,14 @@ public interface POAOperations {
      * references will cause the object to be activated
      * if necessary, or the default servant used, depending
      * on the applicable policies.
-     * @param oid object id for creating an objref
+     *
+     * @param oid  object id for creating an objref
      * @param intf rep id for creating an objref
      * @return object reference created using oid and intf
-     * @exception BAD_PARAM is raised if the POA has the
-     *             SYSTEM_ID policy and it detects that the
-     *             Object Id value was not generated by the
-     *             system or for this POA.
+     * @throws BAD_PARAM is raised if the POA has the
+     *                   SYSTEM_ID policy and it detects that the
+     *                   Object Id value was not generated by the
+     *                   system or for this POA.
      */
     org.omg.CORBA.Object create_reference_with_id(byte[] oid, String intf);
 
@@ -324,12 +334,12 @@ public interface POAOperations {
      *
      * @param p_servant servant for which the object disi returned.
      * @return object id associated with the servant.
-     * @exception ServantNotActive if the above rules and
-     *            policy combination is not met.
-     * @exception WrongPolicy if the USE_DEFAULT_SERVANT policy
-     *            or a combination of the RETAIN policy and
-     *            either the UNIQUE_ID or IMPLICIT_ACTIVATION
-     *            policies are not present.
+     * @throws ServantNotActive if the above rules and
+     *                          policy combination is not met.
+     * @throws WrongPolicy      if the USE_DEFAULT_SERVANT policy
+     *                          or a combination of the RETAIN policy and
+     *                          either the UNIQUE_ID or IMPLICIT_ACTIVATION
+     *                          policies are not present.
      */
     byte[] servant_to_id(org.omg.PortableServer.Servant p_servant) throws org.omg.PortableServer.POAPackage.ServantNotActive, org.omg.PortableServer.POAPackage.WrongPolicy;
 
@@ -358,12 +368,12 @@ public interface POAOperations {
      * @param p_servant servant for which the object reference
      *                  needs to be obtained.
      * @return object reference associated with the servant.
-     * @exception WrongPolicy if the operation is not invoked
-     *            in the context of executing a request on
-     *            the specified servant and the required
-     *            policies are not present.
-     * @exception ServantNotActive if the above specified
-     *            policies and rules are not met.
+     * @throws WrongPolicy      if the operation is not invoked
+     *                          in the context of executing a request on
+     *                          the specified servant and the required
+     *                          policies are not present.
+     * @throws ServantNotActive if the above specified
+     *                          policies and rules are not met.
      */
     org.omg.CORBA.Object servant_to_reference(org.omg.PortableServer.Servant p_servant) throws org.omg.PortableServer.POAPackage.ServantNotActive, org.omg.PortableServer.POAPackage.WrongPolicy;
 
@@ -382,14 +392,14 @@ public interface POAOperations {
      * @param reference object reference for which the
      *                  servant is returned.
      * @return servant associated with the reference.
-     * @exception WrongPolicy if neither the RETAIN policy or
-     *            the USE_DEFAULT_SERVANT policy is present.
-     * @exception ObjectNotActive if the servant is not
-     *            present in the Active Object Map (for RETAIN)
-     *            or no default servant is registered (for
-     *            USE_DEFAULT_POLICY).
-     * @exception WrongAdapter if reference was not created by
-     *	      this POA instance.
+     * @throws WrongPolicy     if neither the RETAIN policy or
+     *                         the USE_DEFAULT_SERVANT policy is present.
+     * @throws ObjectNotActive if the servant is not
+     *                         present in the Active Object Map (for RETAIN)
+     *                         or no default servant is registered (for
+     *                         USE_DEFAULT_POLICY).
+     * @throws WrongAdapter    if reference was not created by
+     *                         this POA instance.
      */
     org.omg.PortableServer.Servant reference_to_servant(org.omg.CORBA.Object reference) throws org.omg.PortableServer.POAPackage.ObjectNotActive, org.omg.PortableServer.POAPackage.WrongPolicy, org.omg.PortableServer.POAPackage.WrongAdapter;
 
@@ -404,12 +414,11 @@ public interface POAOperations {
      * @param reference the object reference from which the
      *                  object id needs to be returned.
      * @return object id encapsulated in the reference.
-     * @exception WrongAdapter if the reference was not
-     *            created by the POA specified in the
-     *            reference.
-     * @exception WrongPolicy declared to allow future
-     *            extensions.
-     *
+     * @throws WrongAdapter if the reference was not
+     *                      created by the POA specified in the
+     *                      reference.
+     * @throws WrongPolicy  declared to allow future
+     *                      extensions.
      */
     byte[] reference_to_id(org.omg.CORBA.Object reference) throws org.omg.PortableServer.POAPackage.WrongAdapter, org.omg.PortableServer.POAPackage.WrongPolicy;
 
@@ -425,14 +434,13 @@ public interface POAOperations {
      * @param oid object id for the which the servant is
      *            returned.
      * @return servant associated with oid.
-     * @exception ObjectNotActive is raised if ObjectId is
-     *            is not in the Active Object Map (for RETAIN
-     *            policy), or no default servant is registered
-     *            (for USE_DEFAULT_SERVANT policy).
-     *
-     * @exception WrongPolicy is raised if the RETAIN policy
-     *                        or the USE_DEFAULT_SERVANT
-     *                        policy is not present.
+     * @throws ObjectNotActive is raised if ObjectId is
+     *                         is not in the Active Object Map (for RETAIN
+     *                         policy), or no default servant is registered
+     *                         (for USE_DEFAULT_SERVANT policy).
+     * @throws WrongPolicy     is raised if the RETAIN policy
+     *                         or the USE_DEFAULT_SERVANT
+     *                         policy is not present.
      */
     org.omg.PortableServer.Servant id_to_servant(byte[] oid) throws org.omg.PortableServer.POAPackage.ObjectNotActive, org.omg.PortableServer.POAPackage.WrongPolicy;
 
@@ -442,13 +450,12 @@ public interface POAOperations {
      * information used to activate the object is returned.
      *
      * @param oid id of the object for which the
-     *                 reference is returned.
+     *            reference is returned.
      * @return the object reference
-     *
-     * @exception ObjectNotActive if the Object Id value
-     *             is not active in the POA.
-     * @exception WrongPolicy if the RETAIN policy is not
-     *             present.
+     * @throws ObjectNotActive if the Object Id value
+     *                         is not active in the POA.
+     * @throws WrongPolicy     if the RETAIN policy is not
+     *                         present.
      */
     org.omg.CORBA.Object id_to_reference(byte[] oid) throws org.omg.PortableServer.POAPackage.ObjectNotActive, org.omg.PortableServer.POAPackage.WrongPolicy;
 

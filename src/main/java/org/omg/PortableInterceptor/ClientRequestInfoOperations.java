@@ -273,8 +273,8 @@ public interface ClientRequestInfoOperations extends org.omg.PortableInterceptor
      *
      * @see #received_exception
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     String received_exception_id();
 
@@ -288,11 +288,11 @@ public interface ClientRequestInfoOperations extends org.omg.PortableInterceptor
      * <code>get_effective_components</code> should be called instead.
      *
      * @param id The component id of the component which
-     *     is to be returned.
+     *           is to be returned.
      * @return The <code>IOP.TaggedComponent</code> obtained with the
-     *     given identifier.
-     * @exception BAD_PARAM thrown, with a standard minor code of 28, if
-     *     no component exists for the given component ID.
+     * given identifier.
+     * @throws BAD_PARAM thrown, with a standard minor code of 28, if
+     *                   no component exists for the given component ID.
      * @see #get_effective_components
      */
     org.omg.IOP.TaggedComponent get_effective_component(int id);
@@ -303,9 +303,9 @@ public interface ClientRequestInfoOperations extends org.omg.PortableInterceptor
      *
      * @param id The component id of the components which are to be returned.
      * @return An array of <code>TaggedComponent</code> objects, each of
-     *     which contains the given identifier.
-     * @exception BAD_PARAM thrown, with a standard minor code of 28, if
-     *     no component exists for the given component ID.
+     * which contains the given identifier.
+     * @throws BAD_PARAM thrown, with a standard minor code of 28, if
+     *                   no component exists for the given component ID.
      * @see #get_effective_component
      */
     org.omg.IOP.TaggedComponent[] get_effective_components(int id);
@@ -313,16 +313,16 @@ public interface ClientRequestInfoOperations extends org.omg.PortableInterceptor
     /**
      * Returns the given policy in effect for this operation.
      *
-     * @exception INV_POLICY thrown, with a standard minor code of 1, if the
-     *     policy type is not valid either because the specified type is
-     *     not supported by this ORB or because a policy object of that type
-     *     is not associated with this Object
      * @param type The policy type which specifies the policy to be
-     *     returned.
+     *             returned.
      * @return The <code>CORBA.Policy</code> obtained with the given type.
+     * @throws INV_POLICY thrown, with a standard minor code of 1, if the
+     *                    policy type is not valid either because the specified type is
+     *                    not supported by this ORB or because a policy object of that type
+     *                    is not associated with this Object
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     org.omg.CORBA.Policy get_request_policy(int type);
 
@@ -333,12 +333,12 @@ public interface ClientRequestInfoOperations extends org.omg.PortableInterceptor
      * They may or may not appear in the order that they are added.
      *
      * @param service_context The <code>IOP.ServiceContext</code> to be
-     *     added to the request.
-     * @param replace Indicates the behavior of this operation when a
-     *     service context already exists with the given ID. If false,
-     *     then <code>BAD_INV_ORDER</code> with a standard minor code of 15
-     *     is thrown. If true, then the existing service context is
-     *     replaced by the new one.
+     *                        added to the request.
+     * @param replace         Indicates the behavior of this operation when a
+     *                        service context already exists with the given ID. If false,
+     *                        then <code>BAD_INV_ORDER</code> with a standard minor code of 15
+     *                        is thrown. If true, then the existing service context is
+     *                        replaced by the new one.
      */
     void add_request_service_context(org.omg.IOP.ServiceContext service_context, boolean replace);
 } // interface ClientRequestInfoOperations

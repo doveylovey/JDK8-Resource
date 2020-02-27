@@ -9,7 +9,8 @@ package org.omg.PortableInterceptor;
  */
 
 
-/** Adapter manager identifier.  Every object adapter has an adapter manager,
+/**
+ * Adapter manager identifier.  Every object adapter has an adapter manager,
  * indicated in this API only through the ID.  A group of object adapter
  * instances may share the same adapter manager, in which case state transitions
  * reported for the adapter manager are observed by all object adapters with the

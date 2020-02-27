@@ -48,13 +48,19 @@ package javax.accessibility;
  */
 public class AccessibleTextSequence {
 
-    /** The start index of the text sequence */
+    /**
+     * The start index of the text sequence
+     */
     public int startIndex;
 
-    /** The end index of the text sequence */
+    /**
+     * The end index of the text sequence
+     */
     public int endIndex;
 
-    /** The text */
+    /**
+     * The text
+     */
     public String text;
 
     /**
@@ -62,9 +68,8 @@ public class AccessibleTextSequence {
      * parameters.
      *
      * @param start the beginning index of the span of text
-     * @param end the ending index of the span of text
-     * @param txt the <code>String</code> shared by this text span
-     *
+     * @param end   the ending index of the span of text
+     * @param txt   the <code>String</code> shared by this text span
      * @since 1.6
      */
     public AccessibleTextSequence(int start, int end, String txt) {

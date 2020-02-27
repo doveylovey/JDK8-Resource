@@ -9,12 +9,14 @@ package org.omg.PortableInterceptor;
  */
 
 
-/** The object reference factory.  This provides the capability of
+/**
+ * The object reference factory.  This provides the capability of
  * creating an object reference.
  */
 public interface ObjectReferenceFactory extends org.omg.CORBA.portable.ValueBase {
 
-    /** make_object creates a CORBA object reference according
+    /**
+     * make_object creates a CORBA object reference according
      * to the data in this template, with the given repository ID and
      * object ID.
      */

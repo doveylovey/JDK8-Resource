@@ -9,7 +9,8 @@ package org.omg.PortableInterceptor;
  */
 
 
-/** The object reference factory.  This provides the capability of
+/**
+ * The object reference factory.  This provides the capability of
  * creating an object reference.
  */
 abstract public class ObjectReferenceFactoryHelper {

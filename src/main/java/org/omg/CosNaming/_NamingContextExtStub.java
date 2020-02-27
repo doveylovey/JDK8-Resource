@@ -17,7 +17,7 @@ package org.omg.CosNaming;
  * Different names can be bound to an object in the same or different
  * contexts at the same time. Using <tt>NamingContextExt</tt>, you can use
  * URL-based names to bind and resolve. <p>
- *
+ * <p>
  * See <a href="http://www.omg.org/technology/documents/formal/naming_service.htm">
  * CORBA COS
  * Naming Specification.</a>
@@ -30,10 +30,7 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * components.
      *
      * @param n Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextExtPackage.InvalidName
-     * Indicates the name does not identify a binding.<p>
-     *
+     * @throws org.omg.CosNaming.NamingContextExtPackage.InvalidName Indicates the name does not identify a binding.<p>
      */
     public String to_string(org.omg.CosNaming.NameComponent[] n) throws org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -63,10 +60,7 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * of Name Components.
      *
      * @param sn Stringified Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextExtPackage.InvalidName
-     * Indicates the name does not identify a binding.<p>
-     *
+     * @throws org.omg.CosNaming.NamingContextExtPackage.InvalidName Indicates the name does not identify a binding.<p>
      */
     public org.omg.CosNaming.NameComponent[] to_name(String sn) throws org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -96,14 +90,10 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * from the Stringified Name of the object.
      *
      * @param addr internet based address of the host machine where  Name Service is running <p>
-     * @param sn Stringified Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextExtPackage.InvalidName
-     * Indicates the name does not identify a binding.<p>
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidAddress
-     * Indicates the internet based address of the host machine is
-     * incorrect <p>
-     *
+     * @param sn   Stringified Name of the object <p>
+     * @throws org.omg.CosNaming.NamingContextExtPackage.InvalidName Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidAddress Indicates the internet based address of the host machine is
+     *                                                               incorrect <p>
      */
     public String to_url(String addr, String sn) throws org.omg.CosNaming.NamingContextExtPackage.InvalidAddress, org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -136,14 +126,9 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * reference.
      *
      * @param sn Stringified Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound
-     * Indicates there is no object reference for the given name. <p>
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed
-     * Indicates that the given compound name is incorrect <p>
-     * @exception org.omg.CosNaming.NamingContextExtPackage.InvalidName
-     * Indicates the name does not identify a binding.<p>
-     *
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound       Indicates there is no object reference for the given name. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed  Indicates that the given compound name is incorrect <p>
+     * @throws org.omg.CosNaming.NamingContextExtPackage.InvalidName Indicates the name does not identify a binding.<p>
      */
     public org.omg.CORBA.Object resolve_str(String sn) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -177,23 +162,15 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * Naming contexts that are bound using bind do not participate in name
      * resolution when compound names are passed to be resolved.
      *
-     * @param n Name of the object <p>
-     *
+     * @param n   Name of the object <p>
      * @param obj The Object to bind with the given name<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates
-     * the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed
-     * Indicates that the implementation has given up for some reason.
-     * The client, however, may be able to continue the operation
-     * at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName
-     * Indicates that the name is invalid. <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.AlreadyBound
-     * Indicates an object is already bound to the specified name.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates
+     *                                                              the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has given up for some reason.
+     *                                                              The client, however, may be able to continue the operation
+     *                                                              at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.AlreadyBound  Indicates an object is already bound to the specified name.<p>
      */
     public void bind(org.omg.CosNaming.NameComponent[] n, org.omg.CORBA.Object obj) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, org.omg.CosNaming.NamingContextPackage.AlreadyBound {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -229,20 +206,15 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * are bound using bind_context() participate in name resolution
      * when compound names are passed to be resolved.
      *
-     * @param n Name of the object <p>
-     *
+     * @param n  Name of the object <p>
      * @param nc NamingContect object to bind with the given name <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.AlreadyBound Indicates an object is already
-     * bound to the specified name.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.AlreadyBound  Indicates an object is already
+     *                                                              bound to the specified name.<p>
      */
     public void bind_context(org.omg.CosNaming.NameComponent[] n, org.omg.CosNaming.NamingContext nc) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, org.omg.CosNaming.NamingContextPackage.AlreadyBound {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -279,17 +251,13 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * that are bound using rebind do not participate in name resolution
      * when compound names are passed to be resolved.
      *
-     * @param  n Name of the object <p>
-     *
+     * @param n   Name of the object <p>
      * @param obj The Object to rebind with the given name <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     public void rebind(org.omg.CosNaming.NameComponent[] n, org.omg.CORBA.Object obj) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -324,17 +292,13 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * contexts that are bound using rebind_context() participate in name
      * resolution when compound names are passed to be resolved.
      *
-     * @param n Name of the object <p>
-     *
+     * @param n  Name of the object <p>
      * @param nc NamingContect object to rebind with the given name <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     public void rebind_context(org.omg.CosNaming.NameComponent[] n, org.omg.CosNaming.NamingContext nc) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -372,14 +336,11 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * object from Object to a more specialized interface.
      *
      * @param n Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     public org.omg.CORBA.Object resolve(org.omg.CosNaming.NameComponent[] n) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -412,14 +373,11 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * The unbind operation removes a name binding from a context.
      *
      * @param n Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     public void unbind(org.omg.CosNaming.NameComponent[] n) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -450,7 +408,7 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
     /**
      * The list operation allows a client to iterate through a set of
      * bindings in a naming context. <p>
-     *
+     * <p>
      * The list operation returns at most the requested number of
      * bindings in BindingList bl.
      * <ul>
@@ -462,10 +420,8 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * </ul>
      *
      * @param how_many the maximum number of bindings to return <p>
-     *
-     * @param bl the returned list of bindings <p>
-     *
-     * @param bi the returned binding iterator <p>
+     * @param bl       the returned list of bindings <p>
+     * @param bi       the returned binding iterator <p>
      */
     public void list(int how_many, org.omg.CosNaming.BindingListHolder bl, org.omg.CosNaming.BindingIteratorHolder bi) {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -520,17 +476,13 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * name argument excluding the last component).
      *
      * @param n Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.AlreadyBound Indicates an object is already
-     * bound to the specified name.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.AlreadyBound  Indicates an object is already
+     *                                                              bound to the specified name.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     public org.omg.CosNaming.NamingContext bind_new_context(org.omg.CosNaming.NameComponent[] n) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.AlreadyBound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName {
         org.omg.CORBA.portable.InputStream $in = null;
@@ -565,7 +517,7 @@ public class _NamingContextExtStub extends org.omg.CORBA.portable.ObjectImpl imp
      * The destroy operation deletes a naming context. If the naming
      * context contains bindings, the NotEmpty exception is raised.
      *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotEmpty Indicates that the Naming Context contains bindings.
+     * @throws org.omg.CosNaming.NamingContextPackage.NotEmpty Indicates that the Naming Context contains bindings.
      */
     public void destroy() throws org.omg.CosNaming.NamingContextPackage.NotEmpty {
         org.omg.CORBA.portable.InputStream $in = null;

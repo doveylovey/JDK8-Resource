@@ -57,9 +57,9 @@ public interface ServerRequestInterceptorOperations extends org.omg.PortableInte
      * <code>completion_status</code> shall be COMPLETED_NO.
      *
      * @param ri Information about the current request being intercepted.
-     * @exception ForwardRequest If thrown, indicates to the ORB that a
-     *     retry of the request should occur with the new object given in
-     *     the exception.
+     * @throws ForwardRequest If thrown, indicates to the ORB that a
+     *                        retry of the request should occur with the new object given in
+     *                        the exception.
      */
     void receive_request_service_contexts(org.omg.PortableInterceptor.ServerRequestInfo ri) throws org.omg.PortableInterceptor.ForwardRequest;
 
@@ -98,9 +98,9 @@ public interface ServerRequestInterceptorOperations extends org.omg.PortableInte
      * <code>completion_status</code> shall be <code>COMPLETED_NO</code>.
      *
      * @param ri Information about the current request being intercepted.
-     * @exception ForwardRequest If thrown, indicates to the ORB that a
-     *     retry of the request should occur with the new object given in
-     *     the exception.
+     * @throws ForwardRequest If thrown, indicates to the ORB that a
+     *                        retry of the request should occur with the new object given in
+     *                        the exception.
      */
     void receive_request(org.omg.PortableInterceptor.ServerRequestInfo ri) throws org.omg.PortableInterceptor.ForwardRequest;
 
@@ -158,9 +158,9 @@ public interface ServerRequestInterceptorOperations extends org.omg.PortableInte
      * of the new exception shall be <code>COMPLETED_YES</code>.
      *
      * @param ri Information about the current request being intercepted.
-     * @exception ForwardRequest If thrown, indicates to the ORB that a
-     *     retry of the request should occur with the new object given in
-     *     the exception.
+     * @throws ForwardRequest If thrown, indicates to the ORB that a
+     *                        retry of the request should occur with the new object given in
+     *                        the exception.
      */
     void send_exception(org.omg.PortableInterceptor.ServerRequestInfo ri) throws org.omg.PortableInterceptor.ForwardRequest;
 
@@ -189,9 +189,9 @@ public interface ServerRequestInterceptorOperations extends org.omg.PortableInte
      * <code>completion_status</code> shall be <code>COMPLETED_NO</code>.
      *
      * @param ri Information about the current request being intercepted.
-     * @exception ForwardRequest If thrown, indicates to the ORB that a
-     *     retry of the request should occur with the new object given in
-     *     the exception.
+     * @throws ForwardRequest If thrown, indicates to the ORB that a
+     *                        retry of the request should occur with the new object given in
+     *                        the exception.
      */
     void send_other(org.omg.PortableInterceptor.ServerRequestInfo ri) throws org.omg.PortableInterceptor.ForwardRequest;
 } // interface ServerRequestInterceptorOperations

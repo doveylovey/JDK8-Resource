@@ -234,8 +234,8 @@ public interface ServerRequestInfoOperations extends org.omg.PortableInterceptor
      * standard minor code of 1.
      *
      * @see <a href="package-summary.html#unimpl">
-     *     <code>PortableInterceptor</code> package comments for
-     *     limitations / unimplemented features</a>
+     * <code>PortableInterceptor</code> package comments for
+     * limitations / unimplemented features</a>
      */
     org.omg.CORBA.Any sending_exception();
 
@@ -280,12 +280,12 @@ public interface ServerRequestInfoOperations extends org.omg.PortableInterceptor
      * <code>register_policy_factory</code>.
      *
      * @param type The <code>CORBA.PolicyType</code> which specifies the
-     *     policy to be returned.
+     *             policy to be returned.
      * @return The <code>CORBA.Policy</code> obtained with the given
-     *     policy type.
-     * @exception INV_POLICY thrown, with a standard minor code of 2, if
-     *     a policy for the given type was not registered via
-     *     <code>register_policy_factory</code>.
+     * policy type.
+     * @throws INV_POLICY thrown, with a standard minor code of 2, if
+     *                    a policy for the given type was not registered via
+     *                    <code>register_policy_factory</code>.
      * @see ORBInitInfo#register_policy_factory
      */
     org.omg.CORBA.Policy get_server_policy(int type);
@@ -296,10 +296,10 @@ public interface ServerRequestInfoOperations extends org.omg.PortableInterceptor
      * the request. If data already exists in that slot, it will be
      * overwritten.
      *
-     * @param id The id of the slot.
+     * @param id   The id of the slot.
      * @param data The data, in the form of an any, to store in that slot.
-     * @exception InvalidSlot thrown if the ID does not define an allocated
-     *     slot.
+     * @throws InvalidSlot thrown if the ID does not define an allocated
+     *                     slot.
      * @see Current
      */
     void set_slot(int id, org.omg.CORBA.Any data) throws org.omg.PortableInterceptor.InvalidSlot;
@@ -309,7 +309,7 @@ public interface ServerRequestInfoOperations extends org.omg.PortableInterceptor
      * false if it is not.
      *
      * @param id The caller wants to know if the servant is this
-     *     repository id.
+     *           repository id.
      * @return Is the servant the given RepositoryId?
      */
     boolean target_is_a(String id);
@@ -321,15 +321,15 @@ public interface ServerRequestInfoOperations extends org.omg.PortableInterceptor
      * They may or may not appear in the order that they are added.
      *
      * @param service_context The <code>IOP.ServiceContext</code> to add to
-     *     the reply.
-     * @param replace Indicates the behavior of this operation when a
-     *     service context already exists with the given ID. If false,
-     *     then <code>BAD_INV_ORDER</code> with a standard minor code of 15
-     *     is thrown. If true, then the existing service context is
-     *     replaced by the new one.
-     * @exception BAD_INV_ORDER thrown, with a standard minor code of 15, if
-     *     replace is false and a service context already exists with the
-     *     given ID.
+     *                        the reply.
+     * @param replace         Indicates the behavior of this operation when a
+     *                        service context already exists with the given ID. If false,
+     *                        then <code>BAD_INV_ORDER</code> with a standard minor code of 15
+     *                        is thrown. If true, then the existing service context is
+     *                        replaced by the new one.
+     * @throws BAD_INV_ORDER thrown, with a standard minor code of 15, if
+     *                       replace is false and a service context already exists with the
+     *                       given ID.
      */
     void add_reply_service_context(org.omg.IOP.ServiceContext service_context, boolean replace);
 } // interface ServerRequestInfoOperations

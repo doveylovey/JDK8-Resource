@@ -9,7 +9,9 @@ package org.omg.CORBA;
  */
 
 
-/** An array of WStrings */
+/**
+ * An array of WStrings
+ */
 abstract public class WStringSeqHelper {
     private static String _id = "IDL:omg.org/CORBA/WStringSeq:1.0";
 

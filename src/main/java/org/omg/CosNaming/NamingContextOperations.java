@@ -13,7 +13,7 @@ package org.omg.CosNaming;
  * A naming context is an object that contains a set of name bindings in
  * which each name is unique. Different names can be bound to an object
  * in the same or different contexts at the same time. <p>
- *
+ * <p>
  * See <a href="http://www.omg.org/technology/documents/formal/naming_service.htm">
  * CORBA COS
  * Naming Specification.</a>
@@ -25,23 +25,15 @@ public interface NamingContextOperations {
      * Naming contexts that are bound using bind do not participate in name
      * resolution when compound names are passed to be resolved.
      *
-     * @param n Name of the object <p>
-     *
+     * @param n   Name of the object <p>
      * @param obj The Object to bind with the given name<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates
-     * the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed
-     * Indicates that the implementation has given up for some reason.
-     * The client, however, may be able to continue the operation
-     * at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName
-     * Indicates that the name is invalid. <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.AlreadyBound
-     * Indicates an object is already bound to the specified name.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates
+     *                                                              the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has given up for some reason.
+     *                                                              The client, however, may be able to continue the operation
+     *                                                              at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.AlreadyBound  Indicates an object is already bound to the specified name.<p>
      */
     void bind(org.omg.CosNaming.NameComponent[] n, org.omg.CORBA.Object obj) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, org.omg.CosNaming.NamingContextPackage.AlreadyBound;
 
@@ -50,20 +42,15 @@ public interface NamingContextOperations {
      * are bound using bind_context() participate in name resolution
      * when compound names are passed to be resolved.
      *
-     * @param n Name of the object <p>
-     *
+     * @param n  Name of the object <p>
      * @param nc NamingContect object to bind with the given name <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.AlreadyBound Indicates an object is already
-     * bound to the specified name.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.AlreadyBound  Indicates an object is already
+     *                                                              bound to the specified name.<p>
      */
     void bind_context(org.omg.CosNaming.NameComponent[] n, org.omg.CosNaming.NamingContext nc) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName, org.omg.CosNaming.NamingContextPackage.AlreadyBound;
 
@@ -73,17 +60,13 @@ public interface NamingContextOperations {
      * that are bound using rebind do not participate in name resolution
      * when compound names are passed to be resolved.
      *
-     * @param  n Name of the object <p>
-     *
+     * @param n   Name of the object <p>
      * @param obj The Object to rebind with the given name <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     void rebind(org.omg.CosNaming.NameComponent[] n, org.omg.CORBA.Object obj) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName;
 
@@ -93,17 +76,13 @@ public interface NamingContextOperations {
      * contexts that are bound using rebind_context() participate in name
      * resolution when compound names are passed to be resolved.
      *
-     * @param n Name of the object <p>
-     *
+     * @param n  Name of the object <p>
      * @param nc NamingContect object to rebind with the given name <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     void rebind_context(org.omg.CosNaming.NameComponent[] n, org.omg.CosNaming.NamingContext nc) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName;
 
@@ -116,14 +95,11 @@ public interface NamingContextOperations {
      * object from Object to a more specialized interface.
      *
      * @param n Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     org.omg.CORBA.Object resolve(org.omg.CosNaming.NameComponent[] n) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName;
 
@@ -131,21 +107,18 @@ public interface NamingContextOperations {
      * The unbind operation removes a name binding from a context.
      *
      * @param n Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     void unbind(org.omg.CosNaming.NameComponent[] n) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName;
 
     /**
      * The list operation allows a client to iterate through a set of
      * bindings in a naming context. <p>
-     *
+     * <p>
      * The list operation returns at most the requested number of
      * bindings in BindingList bl.
      * <ul>
@@ -157,10 +130,8 @@ public interface NamingContextOperations {
      * </ul>
      *
      * @param how_many the maximum number of bindings to return <p>
-     *
-     * @param bl the returned list of bindings <p>
-     *
-     * @param bi the returned binding iterator <p>
+     * @param bl       the returned list of bindings <p>
+     * @param bi       the returned binding iterator <p>
      */
     void list(int how_many, org.omg.CosNaming.BindingListHolder bl, org.omg.CosNaming.BindingIteratorHolder bi);
 
@@ -179,17 +150,13 @@ public interface NamingContextOperations {
      * name argument excluding the last component).
      *
      * @param n Name of the object <p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotFound Indicates the name does not identify a binding.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.AlreadyBound Indicates an object is already
-     * bound to the specified name.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
-     * given up for some reason. The client, however, may be able to
-     * continue the operation at the returned naming context.<p>
-     *
-     * @exception org.omg.CosNaming.NamingContextPackage.InvalidName Indicates that the name is invalid. <p>
+     * @throws org.omg.CosNaming.NamingContextPackage.NotFound      Indicates the name does not identify a binding.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.AlreadyBound  Indicates an object is already
+     *                                                              bound to the specified name.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.CannotProceed Indicates that the implementation has
+     *                                                              given up for some reason. The client, however, may be able to
+     *                                                              continue the operation at the returned naming context.<p>
+     * @throws org.omg.CosNaming.NamingContextPackage.InvalidName   Indicates that the name is invalid. <p>
      */
     org.omg.CosNaming.NamingContext bind_new_context(org.omg.CosNaming.NameComponent[] n) throws org.omg.CosNaming.NamingContextPackage.NotFound, org.omg.CosNaming.NamingContextPackage.AlreadyBound, org.omg.CosNaming.NamingContextPackage.CannotProceed, org.omg.CosNaming.NamingContextPackage.InvalidName;
 
@@ -197,7 +164,7 @@ public interface NamingContextOperations {
      * The destroy operation deletes a naming context. If the naming
      * context contains bindings, the NotEmpty exception is raised.
      *
-     * @exception org.omg.CosNaming.NamingContextPackage.NotEmpty Indicates that the Naming Context contains bindings.
+     * @throws org.omg.CosNaming.NamingContextPackage.NotEmpty Indicates that the Naming Context contains bindings.
      */
     void destroy() throws org.omg.CosNaming.NamingContextPackage.NotEmpty;
 } // interface NamingContextOperations

@@ -39,11 +39,11 @@ public interface PolicyFactoryOperations {
      * any. If it cannot, it shall throw an exception as described for
      * <code>CORBA.ORB.create_policy</code>.
      *
-     * @param type An int specifying the type of policy being created.
+     * @param type  An int specifying the type of policy being created.
      * @param value An any containing data with which to construct the
-     *     <code>CORBA.Policy</code>.
+     *              <code>CORBA.Policy</code>.
      * @return A <code>CORBA.Policy<code> object of the specified type and
-     *     value.
+     * value.
      */
     org.omg.CORBA.Policy create_policy(int type, org.omg.CORBA.Any value) throws org.omg.CORBA.PolicyError;
 } // interface PolicyFactoryOperations

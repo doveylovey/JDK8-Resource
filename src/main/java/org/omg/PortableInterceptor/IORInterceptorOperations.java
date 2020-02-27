@@ -42,8 +42,8 @@ public interface IORInterceptorOperations extends org.omg.PortableInterceptor.In
      * <code>establish_components</code> operation.
      *
      * @param info The <code>IORInfo</code> instance used by the ORB
-     *     service to query applicable policies and add components to be
-     *     included in the generated IORs.
+     *             service to query applicable policies and add components to be
+     *             included in the generated IORs.
      */
     void establish_components(org.omg.PortableInterceptor.IORInfo info);
 } // interface IORInterceptorOperations

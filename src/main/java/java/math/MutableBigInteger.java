@@ -145,6 +145,7 @@ class MutableBigInteger {
     /**
      * Makes this number an {@code n}-int number all of whose bits are ones.
      * Used by Burnikel-Ziegler division.
+     *
      * @param n number of ints in the {@code value} array
      * @return a number equal to {@code ((1<<(32*n)))-1}
      */
@@ -1085,7 +1086,6 @@ class MutableBigInteger {
      * specified by divisor.
      *
      * @return the remainder of the division is returned.
-     *
      */
     int divideOneWord(int divisor, MutableBigInteger quotient) {
         long divisorLong = divisor & LONG_MASK;
@@ -1146,7 +1146,6 @@ class MutableBigInteger {
     /**
      * Calculates the quotient of this div b and places the quotient in the
      * provided MutableBigInteger objects and the remainder object is returned.
-     *
      */
     MutableBigInteger divide(MutableBigInteger b, MutableBigInteger quotient) {
         return divide(b, quotient, true);
@@ -1171,13 +1170,12 @@ class MutableBigInteger {
     /**
      * Calculates the quotient of this div b and places the quotient in the
      * provided MutableBigInteger objects and the remainder object is returned.
-     *
+     * <p>
      * Uses Algorithm D in Knuth section 4.3.1.
      * Many optimizations to that algorithm have been adapted from the Colin
      * Plumb C library.
      * It special cases one word divisors for speed. The content of b is not
      * changed.
-     *
      */
     MutableBigInteger divideKnuth(MutableBigInteger b, MutableBigInteger quotient, boolean needRemainder) {
         if (b.intLen == 0)
@@ -1239,7 +1237,8 @@ class MutableBigInteger {
      * The parameter beta was chosen to b 2<sup>32</sup> so almost all shifts are
      * multiples of 32 bits.<br/>
      * {@code this} and {@code b} must be nonnegative.
-     * @param b the divisor
+     *
+     * @param b        the divisor
      * @param quotient output parameter for {@code this/b}
      * @return the remainder
      */
@@ -1309,7 +1308,8 @@ class MutableBigInteger {
      * The parameter beta is 2<sup>32</sup> so all shifts are multiples of 32 bits.
      * <br/>
      * {@code this} must be a nonnegative number such that {@code this.bitLength() <= 2*b.bitLength()}
-     * @param b a positive number such that {@code b.bitLength()} is even
+     *
+     * @param b        a positive number such that {@code b.bitLength()} is even
      * @param quotient output parameter for {@code this/b}
      * @return {@code this%b}
      */
@@ -1345,6 +1345,7 @@ class MutableBigInteger {
      * The parameter beta is 2<sup>32</sup> so all shifts are multiples of 32 bits.<br/>
      * <br/>
      * {@code this} must be a nonnegative number such that {@code 2*this.bitLength() <= 3*b.bitLength()}
+     *
      * @param quotient output parameter for {@code this/b}
      * @return {@code this%b}
      */
@@ -1401,8 +1402,9 @@ class MutableBigInteger {
      * Returns a {@code MutableBigInteger} containing {@code blockLength} ints from
      * {@code this} number, starting at {@code index*blockLength}.<br/>
      * Used by Burnikel-Ziegler division.
-     * @param index the block index
-     * @param numBlocks the total number of blocks in {@code this} number
+     *
+     * @param index       the block index
+     * @param numBlocks   the total number of blocks in {@code this} number
      * @param blockLength length of one block in units of 32 bits
      * @return
      */
@@ -1426,7 +1428,9 @@ class MutableBigInteger {
         return new MutableBigInteger(newVal);
     }
 
-    /** @see BigInteger#bitLength() */
+    /**
+     * @see BigInteger#bitLength()
+     */
     long bitLength() {
         if (intLen == 0)
             return 0;
@@ -2095,7 +2099,7 @@ class MutableBigInteger {
     /**
      * Calculate the multiplicative inverse of this mod mod, where mod is odd.
      * This and mod are not changed by the calculation.
-     *
+     * <p>
      * This method implements an algorithm due to Richard Schroeppel, that uses
      * the same intermediate representation as Montgomery Reduction
      * ("Montgomery Form").  The algorithm is described in an unpublished

@@ -28,10 +28,10 @@ public interface DynFixedOperations extends org.omg.DynamicAny.DynAnyOperations 
      * without loss of precision. If val has more fractional digits than can be represented in the DynFixed,
      * fractional digits are truncated and the return value is false.
      *
-     * @exception TypeMismatch If val does not contain a valid fixed-point literal or contains extraneous
-     *            characters other than leading or trailing white space
-     * @exception InvalidValue If val contains a value whose scale exceeds that of the DynFixed
-     *            or is not initialized
+     * @throws TypeMismatch If val does not contain a valid fixed-point literal or contains extraneous
+     *                      characters other than leading or trailing white space
+     * @throws InvalidValue If val contains a value whose scale exceeds that of the DynFixed
+     *                      or is not initialized
      */
     boolean set_value(String val) throws org.omg.DynamicAny.DynAnyPackage.TypeMismatch, org.omg.DynamicAny.DynAnyPackage.InvalidValue;
 } // interface DynFixedOperations

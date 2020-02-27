@@ -37,12 +37,12 @@ public interface CurrentOperations extends org.omg.CORBA.CurrentOperations {
      * is returned.
      *
      * @param id The <code>SlotId</code> of the slot from which the data will
-     *     be returned.
+     *           be returned.
      * @return The data, in the form of an Any, of the given slot identifier.
-     * @exception InvalidSlot thrown if get_slot is called on a slot that
-     *     has not been allocated.
-     * @exception BAD_INV_ORDER thrown if <code>get_slot</code> is called
-     *     from within an ORB initializer
+     * @throws InvalidSlot   thrown if get_slot is called on a slot that
+     *                       has not been allocated.
+     * @throws BAD_INV_ORDER thrown if <code>get_slot</code> is called
+     *                       from within an ORB initializer
      */
     org.omg.CORBA.Any get_slot(int id) throws org.omg.PortableInterceptor.InvalidSlot;
 
@@ -50,14 +50,14 @@ public interface CurrentOperations extends org.omg.CORBA.CurrentOperations {
      * Sets data in a slot. The data is in the form of an Any. If data
      * already exists in that slot, it is overridden.
      *
-     * @param id The <code>SlotId</code> of the slot to which the data will
-     *     be set.
+     * @param id   The <code>SlotId</code> of the slot to which the data will
+     *             be set.
      * @param data The data, in the form of an Any, which will be set
-     *     to the identified slot.
-     * @exception InvalidSlot thrown if <code>set_slot</code> is called on
-     *     a slot that has not been allocated.
-     * @exception BAD_INV_ORDER thrown if <code>set_slot</code> is called
-     *     from within an ORB initializer.
+     *             to the identified slot.
+     * @throws InvalidSlot   thrown if <code>set_slot</code> is called on
+     *                       a slot that has not been allocated.
+     * @throws BAD_INV_ORDER thrown if <code>set_slot</code> is called
+     *                       from within an ORB initializer.
      */
     void set_slot(int id, org.omg.CORBA.Any data) throws org.omg.PortableInterceptor.InvalidSlot;
 } // interface CurrentOperations

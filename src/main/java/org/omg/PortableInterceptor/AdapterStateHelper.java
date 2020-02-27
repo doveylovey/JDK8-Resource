@@ -9,7 +9,8 @@ package org.omg.PortableInterceptor;
  */
 
 
-/** Type of object adapter state.  State changes are reported either to
+/**
+ * Type of object adapter state.  State changes are reported either to
  * the object adapter or to the adapter manager.
  */
 abstract public class AdapterStateHelper {

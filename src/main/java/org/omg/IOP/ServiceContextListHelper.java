@@ -9,7 +9,9 @@ package org.omg.IOP;
  */
 
 
-/** An array of service contexts, forming a service context list. */
+/**
+ * An array of service contexts, forming a service context list.
+ */
 abstract public class ServiceContextListHelper {
     private static String _id = "IDL:omg.org/IOP/ServiceContextList:1.0";
 

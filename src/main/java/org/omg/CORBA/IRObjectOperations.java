@@ -50,6 +50,7 @@ package org.omg.CORBA;
  * generic interface from which all other Interface Repository interfaces
  * are derived, even the Repository itself.) All java implementations of
  * IR objects must implement the IRObjectOperations interface.
+ *
  * @see IDLTypeOperations
  * @see IDLType
  * @see IRObject
@@ -60,6 +61,7 @@ public interface IRObjectOperations {
 
     /**
      * Returns the <code>DefinitionKind</code> corresponding to this Interface Repository object.
+     *
      * @return the <code>DefinitionKind</code> corresponding to this Interface Repository object.
      */
     org.omg.CORBA.DefinitionKind def_kind();
@@ -76,9 +78,10 @@ public interface IRObjectOperations {
      * An attempt to destroy an object that would leave the repository in an
      * incoherent state causes <code>BAD_INV_ORDER</code> exception to be raised
      * with the minor code 1.
-     * @exception BAD_INV_ORDER if this method is invoked on a repository or
-     *            <code>PrimitiveDef</code>, or if an attempt to destroy an
-     *            object would leave the repository in an incoherent state
+     *
+     * @throws BAD_INV_ORDER if this method is invoked on a repository or
+     *                       <code>PrimitiveDef</code>, or if an attempt to destroy an
+     *                       object would leave the repository in an incoherent state
      */
     void destroy();
 } // interface IRObjectOperations

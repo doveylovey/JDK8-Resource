@@ -9,7 +9,9 @@ package org.omg.Messaging;
  */
 
 
-/** Synchronization scope */
+/**
+ * Synchronization scope
+ */
 abstract public class SyncScopeHelper {
     private static String _id = "IDL:omg.org/Messaging/SyncScope:1.0";
 
