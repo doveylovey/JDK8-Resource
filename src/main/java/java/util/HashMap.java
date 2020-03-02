@@ -246,7 +246,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
     /**
      * The load factor used when none specified in constructor.
      * <p>
-     * 默认的负载因子：用来衡量 HashMap 的装填程度。loadFactor 的默认值为 0.75f。计算 HashMap 的实时装载因子的方法为：size/capacity。
+     * 默认的负载因子(在构造函数中未指定时使用)：用来衡量 HashMap 的装填程度。loadFactor 的默认值为 0.75f。计算 HashMap 的实时装载因子的方法为：size/capacity。
      * 特殊情况：若内存空间很多、时间效率要求很高，则可以降低 loadFactor(尽量让 table 扩宽)；若内存紧张、时间效率要求不高，则可以增加 loadFactor。
      * threshold：表示当 HashMap 的 size 大于 threshold 时会执行 resize 操作，计算方法为 threshold = capacity * loadFactor。
      */
@@ -260,7 +260,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * tree removal about conversion back to plain bins upon
      * shrinkage.
      * <p>
-     * 树化阈值：默认为8。当单个 segment 的容量超过该阈值时，将链表转化为红黑树
+     * 树化阈值(链表结构转化为红黑树的阈值)：默认为8。当单个 segment 的容量超过该阈值时，将链表转化为红黑树
      */
     static final int TREEIFY_THRESHOLD = 8;
 
@@ -269,7 +269,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * resize operation. Should be less than TREEIFY_THRESHOLD, and at
      * most 6 to mesh with shrinkage detection under removal.
      * <p>
-     * 链表化阈值：默认为6。当 resize 后或者删除操作后单个 segment 的容量低于该阈值时，将红黑树转化为链表
+     * 链表化阈值(红黑树转化为链表结构的阈值)：默认为6。当 resize 后或者删除操作后单个 segment 的容量低于该阈值时，将红黑树转化为链表
      */
     static final int UNTREEIFY_THRESHOLD = 6;
 
@@ -279,21 +279,22 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * Should be at least 4 * TREEIFY_THRESHOLD to avoid conflicts
      * between resizing and treeification thresholds.
      * <p>
-     * 最小树化容量值：默认为64。当桶中的 bin 被树化时最小的 hash 表容量，低于该容量时不会树化。
+     * 最小树化容量值：默认为64。如果桶内元素已经达到树化阈值，但是表内总元素未达到该阈值，则只进行扩容，而不进行树形化。
+     * 即：当桶内元素个数大于 TREEIFY_THRESHOLD 阈值时：若 hash 表中元素个数小于 MIN_TREEIFY_CAPACITY，则只进行扩容；若 hash 表中元素个数大于 MIN_TREEIFY_CAPACITY，则进行树形化。
      * 注：每个 bin 在 HashMap 中代表存储的一个 K/V 键值对，结构定义为 {@link Node}
+     * <p>
      * 如果树化时 bin 的数量太多则会进行 resize 扩容，注释中说 MIN_TREEIFY_CAPACITY 至少是 4 * TREEIFY_THRESHOLD
      */
     static final int MIN_TREEIFY_CAPACITY = 64;
 
     /**
-     * Basic hash bin node, used for most entries.  (See below for
-     * TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
+     * Basic hash bin node, used for most entries.  (See below for TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
      */
     static class Node<K, V> implements Map.Entry<K, V> {
         final int hash;
         final K key;
         V value;
-        Node<K, V> next;
+        Node<K, V> next;// 下一个节点：表明此时 K/V 映射的存储方式是链表
 
         Node(int hash, K key, V value, Node<K, V> next) {
             this.hash = hash;
@@ -315,6 +316,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         }
 
         public final int hashCode() {
+            // key 的 hashCode 值和 value 的 hashCode 值进行异或运算
             return Objects.hashCode(key) ^ Objects.hashCode(value);
         }
 
@@ -327,6 +329,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         public final boolean equals(Object o) {
             if (o == this)
                 return true;
+            // 判断相等的依据：是 Map.Entry 的实例，且键、值分别相等
             if (o instanceof Map.Entry) {
                 Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
                 if (Objects.equals(key, e.getKey()) && Objects.equals(value, e.getValue()))
@@ -354,9 +357,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * to incorporate impact of the highest bits that would otherwise
      * never be used in index calculations because of table bounds.
      * <p>
-     * HashMap 中计算 key 的 hash 值的方法
+     * 计算 key 的 hash 值：没有直接使用 key.hashcode()，而是使 key.hashcode() 的高16位不变，低16位与高16位异或作为最终 hash 值。
+     * 注：如果 key 为 null，则其 hash 值就为0。否则使 key.hashcode() 的高16位不变，低16位与高16位异或作为最终 hash 值。
      */
     static final int hash(Object key) {
+        // 如果直接使用 key.hashCode() 作为 hash 值则很容易发生碰撞。
+        // 因此，Jdk8 中的 hash 值是通过 key.hashCode() 的高16位与低16位异或得到的，既保证高低位都能参与到 hash 的计算中，又不会有太大的开销
         int h;
         return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
     }
@@ -397,7 +403,17 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
 
     /**
      * Returns a power of two size for the given target capacity.
-     * 该函数的功能：调整 HashMap 的容量，结果为2的整数幂且大于 cap 的最小整数。
+     * 该函数的功能：调整 HashMap 的容量，结果为2的整数幂且大于 cap 的最小整数。原理分析如下：
+     * 方法中的5个移位操作：使 cap 的二进制从最高位的1到末尾全部为1。假设 cap 的二进制为：01xx…xx。
+     * 对 cap 右移1位得：001xx…xx，再位或得：011xx…xx，使得与最高位的1紧邻的右边一位为1，
+     * 对 cap 右移2位得：00011x…xx，再位或得：01111x…xx，使得从最高位的1开始的四位也为1，
+     * ……以此类推，int 为32位，所以在右移16位后异或最多得到32个连续的1，保证从最高位的1到末尾全部为1。
+     * 最后结果再加1，就得到了最近的大于 cap 的2的整数次幂。
+     * <p>
+     * 再看第一条语句：int n = cap - 1;
+     * 让 cap-1 再赋值给 n 的目的是令找到的目标值大于或等于原值。如果 cap 本身是2的幂，如8（1000(2)），不对它减1而直接操作，将得到16。
+     * 通过 tableSizeFor()，保证了 HashMap 容量始终是2的次方，在通过 hash 寻找 index 时就可以用逻辑运算来替代取余，即 hash％n 用 hash&(n -1) 替代
+     * <p>
      * 测试该方法：该算法的作用让最高位的1后面的位全变为1，然后再加1，最后得到的就是2的n次幂。如：5(即0101) ===> 0111 ===> 1000(即8)
      */
     static final int tableSizeFor(int cap) {

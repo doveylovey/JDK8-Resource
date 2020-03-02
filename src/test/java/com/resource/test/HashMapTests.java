@@ -20,11 +20,16 @@ public class HashMapTests {
 
     public static void main(String[] args) {
         /**
-         * 5 的二进制形式：0101
-         * 最高位1后面的位全变为1得：0111
-         * 再加1得：1000，即：8
+         * 例如：
+         * 5(即：0101) ===> 0111 ===> 1000(即：8)
+         * 27(即：11011) ===> 11111 ===> 100000(即：32)
+         * 53(即：110101) ===> 111111 ===> 1000000(即：64)
          */
-        int size = tableSizeFor(5);
-        System.out.println(size);
+        int size5 = tableSizeFor(5);
+        System.out.println("5 =====> " + size5);
+        int size27 = tableSizeFor(27);
+        System.out.println("27 =====> " + size27);
+        int size53 = tableSizeFor(53);
+        System.out.println("53 =====> " + size53);
     }
 }
