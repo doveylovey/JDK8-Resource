@@ -365,11 +365,11 @@ public interface SQLXML {
      *                    If the class is null, a vendor specific Source implementation will be returned.
      *                    The following classes are supported at a minimum:
      *                    <pre>
-     *                                         javax.xml.transform.dom.DOMSource - returns a DOMSource
-     *                                         javax.xml.transform.sax.SAXSource - returns a SAXSource
-     *                                         javax.xml.transform.stax.StAXSource - returns a StAXSource
-     *                                         javax.xml.transform.stream.StreamSource - returns a StreamSource
-     *                                       </pre>
+     *                                                            javax.xml.transform.dom.DOMSource - returns a DOMSource
+     *                                                            javax.xml.transform.sax.SAXSource - returns a SAXSource
+     *                                                            javax.xml.transform.stax.StAXSource - returns a StAXSource
+     *                                                            javax.xml.transform.stream.StreamSource - returns a StreamSource
+     *                                                          </pre>
      * @return a Source for reading the XML value.
      * @throws SQLException                    if there is an error processing the XML value
      *                                         or if this feature is not supported.
@@ -407,11 +407,11 @@ public interface SQLXML {
      *                    If resultClass is null, a vendor specific Result implementation will be returned.
      *                    The following classes are supported at a minimum:
      *                    <pre>
-     *                                         javax.xml.transform.dom.DOMResult - returns a DOMResult
-     *                                         javax.xml.transform.sax.SAXResult - returns a SAXResult
-     *                                         javax.xml.transform.stax.StAXResult - returns a StAXResult
-     *                                         javax.xml.transform.stream.StreamResult - returns a StreamResult
-     *                                       </pre>
+     *                                                            javax.xml.transform.dom.DOMResult - returns a DOMResult
+     *                                                            javax.xml.transform.sax.SAXResult - returns a SAXResult
+     *                                                            javax.xml.transform.stax.StAXResult - returns a StAXResult
+     *                                                            javax.xml.transform.stream.StreamResult - returns a StreamResult
+     *                                                          </pre>
      * @return Returns a Result for setting the XML value.
      * @throws SQLException                    if there is an error processing the XML value
      *                                         or if this feature is not supported.

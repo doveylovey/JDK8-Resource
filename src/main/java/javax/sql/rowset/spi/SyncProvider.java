@@ -268,11 +268,11 @@ public abstract class SyncProvider {
      * @param datasource_lock one of the following constants indicating the severity
      *                        level of data source lock required:
      *                        <pre>
-     *                                                         SyncProvider.DATASOURCE_NO_LOCK,
-     *                                                         SyncProvider.DATASOURCE_ROW_LOCK,
-     *                                                         SyncProvider.DATASOURCE_TABLE_LOCK,
-     *                                                         SyncProvider.DATASOURCE_DB_LOCK,
-     *                                               </pre>
+     *                                                                                SyncProvider.DATASOURCE_NO_LOCK,
+     *                                                                                SyncProvider.DATASOURCE_ROW_LOCK,
+     *                                                                                SyncProvider.DATASOURCE_TABLE_LOCK,
+     *                                                                                SyncProvider.DATASOURCE_DB_LOCK,
+     *                                                                      </pre>
      * @throws SyncProviderException if an unsupported data source locking level
      *                               is set.
      * @see #getDataSourceLock

@@ -322,9 +322,9 @@ public final class JobAttributes implements Cloneable {
      *                                 less than <i>minPage</i> nor greater than <i>maxPage</i>;
      *                                 for example:
      *                                 <pre>
-     *                                                                          (new int[][] { new int[] { 1, 3 }, new int[] { 5, 5 },
-     *                                                                                         new int[] { 15, 19 } }),
-     *                                                                          </pre>
+     *                                                                                                          (new int[][] { new int[] { 1, 3 }, new int[] { 5, 5 },
+     *                                                                                                                         new int[] { 15, 19 } }),
+     *                                                                                                          </pre>
      *                                 specifies pages 1, 2, 3, 5, 15, 16, 17, 18, and 19. Note that
      *                                 (<code>new int[][] { new int[] { 1, 1 }, new int[] { 1, 2 } }</code>),
      *                                 is an invalid set of page ranges because the two ranges

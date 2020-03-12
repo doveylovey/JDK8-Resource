@@ -103,9 +103,14 @@ import java.util.Collection;
  *
  * @author Doug Lea
  * @since 1.5
+ * <p>
+ * 可重入锁：如果锁具备可重入性，则称作为可重入锁。
+ * synchronized 和 ReentrantLock 都是可重入锁，我认为可重入性主要是表明了锁的分配机制：基于线程的分配，而不是基于方法调用的分配。
+ * 例如：一个线程执行某个 synchronized 方法 method1() 时，在 method1() 中会调用另一个 synchronized 方法 method2()，此时线程就不必重新去申请锁，而可以直接执行方法 method2()。
  */
 public class ReentrantLock implements Lock, java.io.Serializable {
     private static final long serialVersionUID = 7373984872572414699L;
+
     /**
      * Synchronizer providing all implementation mechanics
      */

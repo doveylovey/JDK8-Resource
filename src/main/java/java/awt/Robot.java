@@ -217,8 +217,8 @@ public class Robot {
      *                and values returned by the
      *                {@link InputEvent#getMaskForButton(int) InputEvent.getMaskForButton(button)} method.
      *                <p>
-     *                nation also depends on a
-     *                areExtraMouseButtonsEnabled() Toolkit.areExtraMouseButtonsEnabled()} value as follows:
+     *                ends on a
+     *                ttonsEnabled() Toolkit.areExtraMouseButtonsEnabled()} value as follows:
      *                <ul>
      *                <li> If support for extended mouse buttons is
      *                {@link Toolkit#areExtraMouseButtonsEnabled() disabled} by Java
@@ -274,8 +274,8 @@ public class Robot {
      *                and values returned by the
      *                {@link InputEvent#getMaskForButton(int) InputEvent.getMaskForButton(button)} method.
      *                <p>
-     *                nation also depends on a
-     *                areExtraMouseButtonsEnabled() Toolkit.areExtraMouseButtonsEnabled()} value as follows:
+     *                ends on a
+     *                ttonsEnabled() Toolkit.areExtraMouseButtonsEnabled()} value as follows:
      *                <ul>
      *                <li> If the support for extended mouse buttons is
      *                {@link Toolkit#areExtraMouseButtonsEnabled() disabled} by Java

@@ -163,6 +163,9 @@ import java.util.concurrent.TimeUnit;
  * @see Condition
  * @see ReadWriteLock
  * @since 1.5
+ * <p>
+ * 如果采用 Lock，必须主动去释放锁，即使发生异常时也不会自动释放锁。
+ * 因此一般来说，使用 Lock 必须在 try{……}catch{……}finally{……}块中进行，并且将释放锁的操作放在 finally 块中进行，以保证锁一定被被释放，防止死锁的发生。
  */
 public interface Lock {
 
@@ -180,6 +183,8 @@ public interface Lock {
      * may throw an (unchecked) exception in such circumstances.  The
      * circumstances and the exception type must be documented by that
      * {@code Lock} implementation.
+     * <p>
+     * 用来获取锁：如果锁已被其他线程获取，则进行等待。
      */
     void lock();
 
@@ -218,6 +223,14 @@ public interface Lock {
      *
      * <p>An implementation can favor responding to an interrupt over
      * normal method return.
+     * <p>
+     * 当通过 lockInterruptibly() 方法去获取锁时，如果线程正在等待获取锁，则这个线程能够响应中断，即中断线程的等待状态。
+     * 也就是说，当两个线程同时通过 lock.lockInterruptibly() 获取某个锁时，如果此时线程A获取到了锁，则线程B只有等待，那么对线程B调用 threadB.interrupt() 方法能够中断线程B的等待过程。
+     * 由于 lockInterruptibly() 方法的声明中抛出了异常，所以 lock.lockInterruptibly() 必须放在 try 块中或者在调用 lockInterruptibly() 的方法外声明抛出 InterruptedException。
+     * <p>
+     * 注意：当一个线程获取到锁后，是不会被 interrupt() 方法中断的。因为单独调用 interrupt() 方法不能中断正在运行过程中的线程，只能中断阻塞过程中的线程。
+     * 因此当通过 lockInterruptibly() 方法获取某个锁时，如果不能获取到，只有进行等待的情况下，是可以响应中断的。
+     * 而用 synchronized 修饰的话，当一个线程处于等待某个锁的状态，是无法被中断的，只有一直等待下去。
      *
      * <p>A {@code Lock} implementation may be able to detect
      * erroneous use of the lock, such as an invocation that would
@@ -225,9 +238,7 @@ public interface Lock {
      * circumstances.  The circumstances and the exception type must
      * be documented by that {@code Lock} implementation.
      *
-     * @throws InterruptedException if the current thread is
-     *                              interrupted while acquiring the lock (and interruption
-     *                              of lock acquisition is supported)
+     * @throws InterruptedException if the current thread is interrupted while acquiring the lock (and interruption of lock acquisition is supported)
      */
     void lockInterruptibly() throws InterruptedException;
 
@@ -257,6 +268,9 @@ public interface Lock {
      *
      * @return {@code true} if the lock was acquired and
      * {@code false} otherwise
+     * <p>
+     * 用来尝试获取锁：如果获取成功，则返回 true；如果获取失败(即锁已被其他线程获取)，则返回 false。
+     * 也就是说，这个方法无论如何都会立即返回，在拿不到锁时不会一直等待。
      */
     boolean tryLock();
 
@@ -308,14 +322,15 @@ public interface Lock {
      * deadlock, and may throw an (unchecked) exception in such circumstances.
      * The circumstances and the exception type must be documented by that
      * {@code Lock} implementation.
+     * <p>
+     * 该方法和 tryLock() 方法类似，区别在于：
+     * 这个方法在拿不到锁时会等待一定的时间，在等待时间期限内如果还拿不到锁就返回 false；如果一开始就拿到了锁或者在等待期间内拿到了锁则返回 true。
      *
      * @param time the maximum time to wait for the lock
      * @param unit the time unit of the {@code time} argument
      * @return {@code true} if the lock was acquired and {@code false}
      * if the waiting time elapsed before the lock was acquired
-     * @throws InterruptedException if the current thread is interrupted
-     *                              while acquiring the lock (and interruption of lock
-     *                              acquisition is supported)
+     * @throws InterruptedException if the current thread is interrupted while acquiring the lock (and interruption of lock acquisition is supported)
      */
     boolean tryLock(long time, TimeUnit unit) throws InterruptedException;
 

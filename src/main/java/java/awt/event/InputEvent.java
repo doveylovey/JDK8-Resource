@@ -215,12 +215,12 @@ public abstract class InputEvent extends ComponentEvent {
      * @param button is a number to represent a button starting from 1.
      *               For example,
      *               <pre>
-     *                             int button = InputEvent.getMaskForButton(1);
-     *                             </pre>
+     *                                           int button = InputEvent.getMaskForButton(1);
+     *                                           </pre>
      *               will have the same meaning as
      *               <pre>
-     *                             int button = InputEvent.getMaskForButton(MouseEvent.BUTTON1);
-     *                             </pre>
+     *                                           int button = InputEvent.getMaskForButton(MouseEvent.BUTTON1);
+     *                                           </pre>
      *               because {@link MouseEvent#BUTTON1 MouseEvent.BUTTON1} equals to 1.
      *               If a mouse has three enabled buttons(see {@link java.awt.MouseInfo#getNumberOfButtons() MouseInfo.getNumberOfButtons()})
      *               then the values from the left column passed into the method will return
