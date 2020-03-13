@@ -165,7 +165,7 @@ import java.util.concurrent.TimeUnit;
  * @since 1.5
  * <p>
  * 如果采用 Lock，必须主动去释放锁，即使发生异常时也不会自动释放锁。
- * 因此一般来说，使用 Lock 必须在 try{……}catch{……}finally{……}块中进行，并且将释放锁的操作放在 finally 块中进行，以保证锁一定被被释放，防止死锁的发生。
+ * 因此一般来说，使用 Lock 必须在 try{……}catch{……}finally{……} 块中进行，并且将释放锁的操作放在 finally 块中进行，以保证锁一定被被释放，防止死锁的发生。
  */
 public interface Lock {
 

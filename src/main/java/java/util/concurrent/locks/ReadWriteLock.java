@@ -114,6 +114,8 @@ package java.util.concurrent.locks;
  * @see Lock
  * @see ReentrantLock
  * @since 1.5
+ * <p>
+ * 该类维护了一对相关的锁：一个用于只读操作、一个用于写入操作。只要没有 writer，读取锁可以由多个 reader 线程同时保持，而写入锁是独占的
  */
 public interface ReadWriteLock {
     /**

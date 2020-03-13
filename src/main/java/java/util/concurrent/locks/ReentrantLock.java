@@ -144,18 +144,21 @@ public class ReentrantLock implements Lock, java.io.Serializable {
                 }
             } else if (current == getExclusiveOwnerThread()) {
                 int nextc = c + acquires;
-                if (nextc < 0) // overflow
+                if (nextc < 0) {// overflow
                     throw new Error("Maximum lock count exceeded");
+                }
                 setState(nextc);
                 return true;
             }
             return false;
         }
 
+        @Override
         protected final boolean tryRelease(int releases) {
             int c = getState() - releases;
-            if (Thread.currentThread() != getExclusiveOwnerThread())
+            if (Thread.currentThread() != getExclusiveOwnerThread()) {
                 throw new IllegalMonitorStateException();
+            }
             boolean free = false;
             if (c == 0) {
                 free = true;
@@ -165,6 +168,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
             return free;
         }
 
+        @Override
         protected final boolean isHeldExclusively() {
             // While we must in general read state before owner,
             // we don't need to do so to check if current thread is owner
@@ -192,8 +196,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
         /**
          * Reconstitutes the instance from a stream (that is, deserializes it).
          */
-        private void readObject(java.io.ObjectInputStream s)
-                throws java.io.IOException, ClassNotFoundException {
+        private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
             s.defaultReadObject();
             setState(0); // reset to unlocked state
         }
@@ -209,13 +212,16 @@ public class ReentrantLock implements Lock, java.io.Serializable {
          * Performs lock.  Try immediate barge, backing up to normal
          * acquire on failure.
          */
+        @Override
         final void lock() {
-            if (compareAndSetState(0, 1))
+            if (compareAndSetState(0, 1)) {
                 setExclusiveOwnerThread(Thread.currentThread());
-            else
+            } else {
                 acquire(1);
+            }
         }
 
+        @Override
         protected final boolean tryAcquire(int acquires) {
             return nonfairTryAcquire(acquires);
         }
@@ -227,6 +233,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
     static final class FairSync extends Sync {
         private static final long serialVersionUID = -3000897897090466540L;
 
+        @Override
         final void lock() {
             acquire(1);
         }
@@ -235,19 +242,20 @@ public class ReentrantLock implements Lock, java.io.Serializable {
          * Fair version of tryAcquire.  Don't grant access unless
          * recursive call or no waiters or is first.
          */
+        @Override
         protected final boolean tryAcquire(int acquires) {
             final Thread current = Thread.currentThread();
             int c = getState();
             if (c == 0) {
-                if (!hasQueuedPredecessors() &&
-                        compareAndSetState(0, acquires)) {
+                if (!hasQueuedPredecessors() && compareAndSetState(0, acquires)) {
                     setExclusiveOwnerThread(current);
                     return true;
                 }
             } else if (current == getExclusiveOwnerThread()) {
                 int nextc = c + acquires;
-                if (nextc < 0)
+                if (nextc < 0) {
                     throw new Error("Maximum lock count exceeded");
+                }
                 setState(nextc);
                 return true;
             }
@@ -287,6 +295,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * purposes and lies dormant until the lock has been acquired,
      * at which time the lock hold count is set to one.
      */
+    @Override
     public void lock() {
         sync.lock();
     }
@@ -337,6 +346,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      *
      * @throws InterruptedException if the current thread is interrupted
      */
+    @Override
     public void lockInterruptibly() throws InterruptedException {
         sync.acquireInterruptibly(1);
     }
@@ -367,6 +377,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * current thread, or the lock was already held by the current
      * thread; and {@code false} otherwise
      */
+    @Override
     public boolean tryLock() {
         return sync.nonfairTryAcquire(1);
     }
@@ -443,8 +454,8 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws InterruptedException if the current thread is interrupted
      * @throws NullPointerException if the time unit is null
      */
-    public boolean tryLock(long timeout, TimeUnit unit)
-            throws InterruptedException {
+    @Override
+    public boolean tryLock(long timeout, TimeUnit unit) throws InterruptedException {
         return sync.tryAcquireNanos(1, unit.toNanos(timeout));
     }
 
@@ -459,6 +470,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws IllegalMonitorStateException if the current thread does not
      *                                      hold this lock
      */
+    @Override
     public void unlock() {
         sync.release(1);
     }
@@ -502,6 +514,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      *
      * @return the Condition object
      */
+    @Override
     public Condition newCondition() {
         return sync.newCondition();
     }
@@ -696,10 +709,12 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws NullPointerException         if the condition is null
      */
     public boolean hasWaiters(Condition condition) {
-        if (condition == null)
+        if (condition == null) {
             throw new NullPointerException();
-        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject))
+        }
+        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject)) {
             throw new IllegalArgumentException("not owner");
+        }
         return sync.hasWaiters((AbstractQueuedSynchronizer.ConditionObject) condition);
     }
 
@@ -719,10 +734,12 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws NullPointerException         if the condition is null
      */
     public int getWaitQueueLength(Condition condition) {
-        if (condition == null)
+        if (condition == null) {
             throw new NullPointerException();
-        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject))
+        }
+        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject)) {
             throw new IllegalArgumentException("not owner");
+        }
         return sync.getWaitQueueLength((AbstractQueuedSynchronizer.ConditionObject) condition);
     }
 
@@ -744,10 +761,12 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @throws NullPointerException         if the condition is null
      */
     protected Collection<Thread> getWaitingThreads(Condition condition) {
-        if (condition == null)
+        if (condition == null) {
             throw new NullPointerException();
-        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject))
+        }
+        if (!(condition instanceof AbstractQueuedSynchronizer.ConditionObject)) {
             throw new IllegalArgumentException("not owner");
+        }
         return sync.getWaitingThreads((AbstractQueuedSynchronizer.ConditionObject) condition);
     }
 
@@ -759,10 +778,9 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      *
      * @return a string identifying this lock, as well as its lock state
      */
+    @Override
     public String toString() {
         Thread o = sync.getOwner();
-        return super.toString() + ((o == null) ?
-                "[Unlocked]" :
-                "[Locked by thread " + o.getName() + "]");
+        return super.toString() + ((o == null) ? "[Unlocked]" : "[Locked by thread " + o.getName() + "]");
     }
 }

@@ -2,14 +2,16 @@ package com.resource.test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class LockTests {
+public class JavaLockTests {
 }
 
-class LockTests01 {
+class ReentrantLockTests01 {
     private List<Integer> list01 = new ArrayList<>();
 
     public void insert01(Thread thread) {
@@ -24,18 +26,18 @@ class LockTests01 {
             // TODO: handle exception
             System.err.println(thread.getName() + "获取锁异常！");
         } finally {
-            System.out.println(thread.getName() + "释放了锁");
             lock.unlock();
+            System.out.println(thread.getName() + "执行了 finally 代码块，释放了锁");
         }
     }
 
     /**
      * 多执行几次：可能会出现 后面的线程 在 前面的线程 释放锁之前获得锁。
      * 原因：在 insert01() 方法中的 lock 变量是局部变量，每个线程执行该方法时都会保存一个副本，那么理所当然每个线程执行到 lock.lock() 处获取的是不同的锁，所以就不会发生冲突。
-     * 改进：只需要将 lock 声明为类的属性即可。參考 {@link LockTests02#main(String[])}
+     * 改进：只需要将 lock 声明为类的属性即可。參考 {@link ReentrantLockTests02#main(String[])}
      */
     public static void main(String[] args) {
-        final LockTests01 lockTest01 = new LockTests01();
+        final ReentrantLockTests01 lockTest01 = new ReentrantLockTests01();
 
         new Thread(() -> {
             lockTest01.insert01(Thread.currentThread());
@@ -59,7 +61,7 @@ class LockTests01 {
     }
 }
 
-class LockTests02 {
+class ReentrantLockTests02 {
     private List<Integer> list02 = new ArrayList<>();
     Lock lock = new ReentrantLock();// 注意这个地方
 
@@ -74,16 +76,16 @@ class LockTests02 {
             // TODO: handle exception
             System.err.println(thread.getName() + "获取锁异常！");
         } finally {
-            System.out.println(thread.getName() + "释放了锁");
             lock.unlock();
+            System.out.println(thread.getName() + "执行了 finally 代码块，释放了锁");
         }
     }
 
     /**
-     * {@link LockTests01#main(String[])} 改进版
+     * {@link ReentrantLockTests01#main(String[])} 改进版
      */
     public static void main(String[] args) {
-        final LockTests02 lockTest02 = new LockTests02();
+        final ReentrantLockTests02 lockTest02 = new ReentrantLockTests02();
 
         new Thread(() -> {
             lockTest02.insert02(Thread.currentThread());
@@ -125,8 +127,8 @@ class TryLockTests {
                 // TODO: handle exception
                 System.err.println(thread.getName() + "获取锁异常！");
             } finally {
-                System.out.println(thread.getName() + "释放了锁");
                 lock.unlock();
+                System.out.println(thread.getName() + "执行了 finally 代码块，释放了锁");
             }
         } else {
             System.out.println(thread.getName() + "没有获取到锁……");
@@ -176,6 +178,9 @@ class LockInterruptiblyTests {
                     break;
                 }
             }
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.err.println(thread.getName() + "获取锁异常！");
         } finally {
             lock.unlock();
             System.out.println(thread.getName() + "执行了 finally 代码块，释放了锁");
@@ -282,8 +287,12 @@ class ReentrantReadWriteLockTests01 {
                 System.out.println("【ReentrantReadWriteLock】" + thread.getName() + "正在进行读操作……");
             }
             System.out.println("【ReentrantReadWriteLock】" + thread.getName() + "读操作结束");
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.err.println("【ReentrantReadWriteLock】" + thread.getName() + "获取锁异常！");
         } finally {
             readLock.unlock();
+            System.out.println("【ReentrantReadWriteLock】" + thread.getName() + "执行了 finally 代码块，释放了锁");
         }
     }
 }
@@ -311,8 +320,12 @@ class ReentrantReadWriteLockTests02 {
                 System.out.println("【读】" + thread.getName() + "正在进行操作……");
             }
             System.out.println("【读】" + thread.getName() + "操作结束");
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.err.println("【读】" + thread.getName() + "获取锁异常！");
         } finally {
             readLock.unlock();
+            System.out.println("【读】" + thread.getName() + "执行了 finally 代码块，释放了锁");
         }
 
         ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
@@ -324,8 +337,74 @@ class ReentrantReadWriteLockTests02 {
                 System.out.println("【写】" + thread.getName() + "正在进行操作……");
             }
             System.out.println("【写】" + thread.getName() + "操作结束");
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.err.println("【写】" + thread.getName() + "获取锁异常！");
         } finally {
             writeLock.unlock();
+            System.out.println("【写】" + thread.getName() + "执行了 finally 代码块，释放了锁");
+        }
+    }
+}
+
+class ReentrantReadWriteLockTests03 {
+    // 共享数据，只能有一个线程能写该数据，但可以有多个线程同时读该数据
+    private Object data = null;
+    ReadWriteLock lock = new ReentrantReadWriteLock();
+
+    // 读数据
+    public void read(Thread thread) {
+        // 加读锁
+        lock.readLock().lock();
+        try {
+            System.out.println("【读】" + thread.getName() + "准备读取数据……");
+            Thread.sleep((long) (Math.random() * 1000));
+            System.out.println("【读】" + thread.getName() + "读取到了数据：" + data);
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.err.println("【读】" + thread.getName() + "获取锁异常！");
+        } finally {
+            // 释放读锁
+            lock.readLock().unlock();
+            System.out.println("【读】" + thread.getName() + "执行了 finally 代码块，释放了锁");
+        }
+    }
+
+    // 写数据
+    public void write(Thread thread, Object data) {
+        // 加写锁
+        lock.writeLock().lock();
+        try {
+            System.out.println("【写】" + thread.getName() + "准备写入数据……");
+            Thread.sleep((long) (Math.random() * 1000));
+            this.data = data;
+            System.out.println("【写】" + thread.getName() + "写入的数据：" + data);
+        } catch (Exception e) {
+            // TODO: handle exception
+            System.err.println("【写】" + thread.getName() + "获取锁异常！");
+        } finally {
+            // 释放写锁
+            lock.writeLock().unlock();
+            System.out.println("【写】" + thread.getName() + "执行了 finally 代码块，释放了锁");
+        }
+    }
+
+    public static void main(String[] args) {
+        final ReentrantReadWriteLockTests03 tests03 = new ReentrantReadWriteLockTests03();
+        // 启动3组线程：每组1个读线程、1个写线程
+        for (int i = 0; i < 3; i++) {
+            // 启动1个读线程
+            new Thread(() -> {
+                while (true) {
+                    tests03.read(Thread.currentThread());
+                }
+            }).start();
+            // 启动1个写线程
+            new Thread(() -> {
+                while (true) {
+                    tests03.write(Thread.currentThread(), new Random().nextInt(10000));
+                }
+            }).start();
         }
     }
 }
