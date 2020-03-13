@@ -117,39 +117,47 @@ public class ReentrantLock implements Lock, java.io.Serializable {
     private final Sync sync;
 
     /**
-     * Base of synchronization control for this lock. Subclassed
-     * into fair and nonfair versions below. Uses AQS state to
-     * represent the number of holds on the lock.
+     * Base of synchronization control for this lock. Subclassed into fair and nonfair versions below.
+     * Uses AQS state to represent the number of holds on the lock.
      */
     abstract static class Sync extends AbstractQueuedSynchronizer {
         private static final long serialVersionUID = -5179523762034025860L;
 
         /**
-         * Performs {@link Lock#lock}. The main reason for subclassing
-         * is to allow fast path for nonfair version.
+         * Performs {@link Lock#lock}.
+         * The main reason for subclassing is to allow fast path for nonfair version.
          */
         abstract void lock();
 
         /**
-         * Performs non-fair tryLock.  tryAcquire is implemented in
-         * subclasses, but both need nonfair try for trylock method.
+         * Performs non-fair tryLock. tryAcquire is implemented in subclasses, but both need nonfair try for trylock method.
          */
         final boolean nonfairTryAcquire(int acquires) {
+            // 获取当前线程
             final Thread current = Thread.currentThread();
+            // 获取当前同步状态state
             int c = getState();
             if (c == 0) {
+                // 如果 state=0 则表示没有线程获得，此时再尝试以 CAS 方式更新 state 的值
                 if (compareAndSetState(0, acquires)) {
+                    // 如果更新 state 的值成功，就设置当前独占模式下同步状态的持有者为当前线程
                     setExclusiveOwnerThread(current);
+                    // 获得锁后返回true
                     return true;
                 }
             } else if (current == getExclusiveOwnerThread()) {
+                // 【说明】该 if 分支为重入锁的的逻辑
+                // 如果当前占有 state 的线程就是当前再次来获取 state 的线程，则计算重入后的 state
                 int nextc = c + acquires;
                 if (nextc < 0) {// overflow
+                    // 这里是风险处理
                     throw new Error("Maximum lock count exceeded");
                 }
+                // 通过 setState() 无条件的设置 state 的值。因为这里也只有一个线程操作 state 的值，即已经获得锁的线程，所以不需要再进行 CAS 操作
                 setState(nextc);
                 return true;
             }
+            // 没有获得 state，也不是重入，就返回 false
             return false;
         }
 
@@ -170,8 +178,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 
         @Override
         protected final boolean isHeldExclusively() {
-            // While we must in general read state before owner,
-            // we don't need to do so to check if current thread is owner
+            // While we must in general read state before owner, we don't need to do so to check if current thread is owner
             return getExclusiveOwnerThread() == Thread.currentThread();
         }
 
@@ -203,20 +210,31 @@ public class ReentrantLock implements Lock, java.io.Serializable {
     }
 
     /**
+     * 同步对象的非公平锁
+     * <p>
      * Sync object for non-fair locks
      */
     static final class NonfairSync extends Sync {
         private static final long serialVersionUID = 7316153563782823691L;
 
         /**
-         * Performs lock.  Try immediate barge, backing up to normal
-         * acquire on failure.
+         * Performs lock.  Try immediate barge, backing up to normal acquire on failure.
          */
         @Override
         final void lock() {
+            // 假设初始情况下，还没有多任务请求来竞争这个 state，这时如果线程 thread-1 调用 lock() 方法并获得了锁，
+            // 则首先会通过 CAS 方式将 state 更新为1，表示自己(即 thread-1)获得了锁，并将独占锁的线程持有者设置为当前获得了锁的线程(同样是 thread-1)
             if (compareAndSetState(0, 1)) {
+                // setExclusiveOwnerThread() 是 AbstractOwnableSynchronizer 的方法，AQS 继承了 AbstractOwnableSynchronizer
                 setExclusiveOwnerThread(Thread.currentThread());
             } else {
+                /**
+                 * 假如这个时候另一个线程 thread-2 来尝试获得锁，同样调用 lock() 方法，尝试通过 CAS 方式将 state 更新为1，
+                 * 但是由于之前已经有线程(即 thread-1)持有了 state，所以 thread-2 这一步 CAS 失败(因为 thread-1 已经获得了锁且没有释放)，
+                 * 于是就会调用 acquire(1) 方法(该方法是 AQS 提供的模板方法，它会调用子类的 tryAcquire() 方法)。
+                 * 非公平锁的实现中，AQS 的模板方法 acquire(1) 就会调用 NofairSync 的 tryAcquire() 方法，
+                 * 而 tryAcquire() 方法又调用的 Sync 的 nonfairTryAcquire() 方法，参考 {@link Sync#nonfairTryAcquire(int)} 的流程。
+                 */
                 acquire(1);
             }
         }
@@ -228,6 +246,8 @@ public class ReentrantLock implements Lock, java.io.Serializable {
     }
 
     /**
+     * 同步对象的公平锁
+     * <p>
      * Sync object for fair locks
      */
     static final class FairSync extends Sync {
