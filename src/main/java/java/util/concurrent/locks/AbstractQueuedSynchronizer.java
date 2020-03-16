@@ -707,24 +707,28 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      */
     private void unparkSuccessor(Node node) {
         /*
-         * If status is negative (i.e., possibly needing signal) try
-         * to clear in anticipation of signalling.  It is OK if this
-         * fails or if status is changed by waiting thread.
+         * If status is negative (i.e., possibly needing signal) try to clear in anticipation of signalling.
+         * It is OK if this fails or if status is changed by waiting thread.
          */
+        // 获得 node 的 waitStatus
         int ws = node.waitStatus;
+        // 判断 waitStatus 是否小于0
         if (ws < 0) {
+            // 如果 waitStatus 小于0则将其以 CAS 方式设置为0
             compareAndSetWaitStatus(node, ws, 0);
         }
 
         /*
-         * Thread to unpark is held in successor, which is normally
-         * just the next node.  But if cancelled or apparently null,
-         * traverse backwards from tail to find the actual
-         * non-cancelled successor.
+         * Thread to unpark is held in successor, which is normally just the next node.
+         * But if cancelled or apparently null, traverse backwards from tail to find the actual non-cancelled successor.
          */
+        // 获得 node 的后继结点
         Node s = node.next;
+        // 判断后继结点是否已被移除，或其 waitStatus 的值是否为 CANCELLED
         if (s == null || s.waitStatus > 0) {
+            // 如果 s!=null，但其 waitStatus 的值为 CANCELLED，则需将 s 设置为 null
             s = null;
+            // 从队尾结点开始遍历，找到离 head 结点最近、不为 null、且 waitStatus<=0 的结点，并将该结点保存在变量 s 中
             for (Node t = tail; t != null && t != node; t = t.prev) {
                 if (t.waitStatus <= 0) {
                     s = t;
@@ -732,6 +736,7 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
             }
         }
         if (s != null) {
+            // 若 s 结点不为 null，则唤醒该结点中的线程
             LockSupport.unpark(s.thread);
         }
     }
@@ -866,22 +871,30 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
      * @param pred node's predecessor holding status
      * @param node the node
      * @return {@code true} if thread should block
+     * <p>
+     * 该方法会将同步队列中 node 结点的前驱结点中 waitStatus 为 CANCELLED 的线程移除，并将当前调用该方法的线程所属结点本身及其前驱结点的 waitStatus 设置为-1(SIGNAL)，然后返回
      */
     private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
+        // 获取前驱结点的 waitStatus
         int ws = pred.waitStatus;
         if (ws == Node.SIGNAL) {
+            // 如果前驱结点的 waitStatus 为 SINGNAL，就直接返回 true。前驱结点的状态为 SIGNAL，那么该结点就能安全的调用 park 方法阻塞自己
             // This node has already set status asking a release to signal it, so it can safely park.
             return true;
         }
         if (ws > 0) {
             // Predecessor was cancelled. Skip over predecessors and indicate retry.
+
+            // 循环直到将所有的前驱结点中状态为 CANCELLED 的结点都移除
             do {
                 node.prev = pred = pred.prev;
             } while (pred.waitStatus > 0);
+
             pred.next = node;
         } else {
             // waitStatus must be 0 or PROPAGATE. Indicate that we need a signal, but don't park yet.
             // Caller will need to retry to make sure it cannot acquire before parking.
+            // 通过 CAS 方式将这个前驱节点设置成 SIGHNAL
             compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
         }
         return false;
@@ -1309,19 +1322,21 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
     }
 
     /**
-     * Releases in exclusive mode.  Implemented by unblocking one or
-     * more threads if {@link #tryRelease} returns true.
+     * Releases in exclusive mode. Implemented by unblocking one or more threads if {@link #tryRelease} returns true.
      * This method can be used to implement method {@link Lock#unlock}.
      *
-     * @param arg the release argument.  This value is conveyed to
-     *            {@link #tryRelease} but is otherwise uninterpreted and
-     *            can represent anything you like.
+     * @param arg the release argument.
+     *            This value is conveyed to {@link #tryRelease} but is otherwise uninterpreted and can represent anything you like.
      * @return the value returned from {@link #tryRelease}
      */
     public final boolean release(int arg) {
+        // 调用子类的 tryRelease() 方法，即 ReentrantLock 的内部类 Sync 的 tryRelease() 方法
         if (tryRelease(arg)) {
+            // 获取当前队列的头节点 head
             Node h = head;
+            // 判断头节点不为 null，并且头结点的 waitStatus 不为0(CACCELLED)
             if (h != null && h.waitStatus != 0) {
+                // 唤醒同步队列中 head 结点的后继结点中的线程
                 unparkSuccessor(h);
             }
             return true;

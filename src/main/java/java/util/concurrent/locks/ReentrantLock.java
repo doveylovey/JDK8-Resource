@@ -163,16 +163,22 @@ public class ReentrantLock implements Lock, java.io.Serializable {
 
         @Override
         protected final boolean tryRelease(int releases) {
+            // 获取当前 AQS 的 state 并减1，得到要更新的 state 值
             int c = getState() - releases;
+            // 判断当前线程是否等于 AQS 的 exclusiveOwnerThread，如果不是就抛 IllegalMonitorStateException 异常，目的是保证加锁和释放锁的是同一个线程
             if (Thread.currentThread() != getExclusiveOwnerThread()) {
                 throw new IllegalMonitorStateException();
             }
             boolean free = false;
+            // 判断更新后的 state 是否为0
             if (c == 0) {
+                // 如果 (state-1) 的结果为0，则将当前持锁者设置为 null
                 free = true;
                 setExclusiveOwnerThread(null);
             }
+            // 如果 (state-1) 的结果不为0，说明锁被重入了，因此需要多次 unlock()，这也是 lock() 和 unlock() 成对的原因
             setState(c);
+            // 只有 state为0才会返回 true：返回 true 表示释放了锁；返回 false 表示需要多次释放锁
             return free;
         }
 
@@ -480,18 +486,21 @@ public class ReentrantLock implements Lock, java.io.Serializable {
     }
 
     /**
+     * 实际上调用的是 {@link AbstractQueuedSynchronizer#release(int)} 方法，
+     * 传递的参数为 1 表示每次调用 unlock() 方法都会释放一次所获得的 state。
+     * 重入的情况下会多次调用 unlock() 方法，也保证了 lock() 和 unlock() 是成对的。
+     * <p>
      * Attempts to release this lock.
      *
-     * <p>If the current thread is the holder of this lock then the hold
-     * count is decremented.  If the hold count is now zero then the lock
-     * is released.  If the current thread is not the holder of this
-     * lock then {@link IllegalMonitorStateException} is thrown.
+     * <p>If the current thread is the holder of this lock then the hold count is decremented.
+     * If the hold count is now zero then the lock is released.
+     * If the current thread is not the holder of this lock then {@link IllegalMonitorStateException} is thrown.
      *
-     * @throws IllegalMonitorStateException if the current thread does not
-     *                                      hold this lock
+     * @throws IllegalMonitorStateException if the current thread does not hold this lock
      */
     @Override
     public void unlock() {
+        // ReentrantLock#unlock() 方法调用了 AQS 的 release() 方法
         sync.release(1);
     }
 
