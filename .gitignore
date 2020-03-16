@@ -1,0 +1,14 @@
+#################### 配置 git 不提交的文件夹、文件
+# 不提交指定文件夹下的文件
+target
+.gitignore
+.idea
+.classpath
+.project
+.settings
+
+# 不提交指定后缀名的文件
+*.exe
+*.dll
+*.class
+*.iml
