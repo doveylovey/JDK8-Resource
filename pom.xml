@@ -6,6 +6,7 @@
     <groupId>com.resource</groupId>
     <artifactId>JDK8-Resource</artifactId>
     <version>1.8</version>
+    <description>JDK8源码及分析(基于 jdk1.8.0_221 版本。注：其他版本会导致项目中的测试案例无法正确运行)</description>
 
     <properties>
         <java.version>1.8</java.version>
