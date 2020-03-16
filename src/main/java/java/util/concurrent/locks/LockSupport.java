@@ -35,8 +35,6 @@
 
 package java.util.concurrent.locks;
 
-import sun.misc.Unsafe;
-
 /**
  * Basic thread blocking primitives for creating locks and other
  * synchronization classes.
@@ -128,47 +126,38 @@ public class LockSupport {
     }
 
     /**
+     * 唤醒处于阻塞状态的线程
+     * <p>
      * Makes available the permit for the given thread, if it
-     * was not already available.  If the thread was blocked on
-     * {@code park} then it will unblock.  Otherwise, its next call
-     * to {@code park} is guaranteed not to block. This operation
-     * is not guaranteed to have any effect at all if the given
-     * thread has not been started.
+     * was not already available.
+     * If the thread was blocked on {@code park} then it will unblock.
+     * Otherwise, its next call to {@code park} is guaranteed not to block.
+     * This operation is not guaranteed to have any effect at all if the given thread has not been started.
      *
-     * @param thread the thread to unpark, or {@code null}, in which case
-     *               this operation has no effect
+     * @param thread the thread to unpark, or {@code null}, in which case this operation has no effect
      */
     public static void unpark(Thread thread) {
-        if (thread != null)
+        if (thread != null) {
             UNSAFE.unpark(thread);
+        }
     }
 
     /**
-     * Disables the current thread for thread scheduling purposes unless the
-     * permit is available.
+     * 阻塞当前线程，如果调用 unpark() 方法或者当前线程被中断，才能从 park() 方法返回
      *
-     * <p>If the permit is available then it is consumed and the call returns
-     * immediately; otherwise
-     * the current thread becomes disabled for thread scheduling
-     * purposes and lies dormant until one of three things happens:
+     * Disables the current thread for thread scheduling purposes unless the permit is available.
+     * If the permit is available then it is consumed and the call returns immediately;
+     * otherwise the current thread becomes disabled for thread scheduling purposes and lies dormant until one of three things happens:
+     * <p>
+     * Some other thread invokes {@link #unpark unpark} with the current thread as the target;
+     * or Some other thread {@linkplain Thread#interrupt interrupts} the current thread;
+     * or The call spuriously (that is, for no reason) returns.
+     * <p>
+     * This method does <em>not</em> report which of these caused the method to return.
+     * Callers should re-check the conditions which caused the thread to park in the first place.
+     * Callers may also determine, for example, the interrupt status of the thread upon return.
      *
-     * <ul>
-     * <li>Some other thread invokes {@link #unpark unpark} with the
-     * current thread as the target; or
-     *
-     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
-     * the current thread; or
-     *
-     * <li>The call spuriously (that is, for no reason) returns.
-     * </ul>
-     *
-     * <p>This method does <em>not</em> report which of these caused the
-     * method to return. Callers should re-check the conditions which caused
-     * the thread to park in the first place. Callers may also determine,
-     * for example, the interrupt status of the thread upon return.
-     *
-     * @param blocker the synchronization object responsible for this
-     *                thread parking
+     * @param blocker the synchronization object responsible for this thread parking
      * @since 1.6
      */
     public static void park(Object blocker) {
@@ -179,34 +168,20 @@ public class LockSupport {
     }
 
     /**
-     * Disables the current thread for thread scheduling purposes, for up to
-     * the specified waiting time, unless the permit is available.
+     * Disables the current thread for thread scheduling purposes, for up to the specified waiting time, unless the permit is available.
+     * If the permit is available then it is consumed and the call returns immediately;
+     * otherwise the current thread becomes disabled for thread scheduling purposes and lies dormant until one of four things happens:
+     * <p>
+     * Some other thread invokes {@link #unpark unpark} with the current thread as the target;
+     * or Some other thread {@linkplain Thread#interrupt interrupts} the current thread;
+     * or The specified waiting time elapses;
+     * or The call spuriously (that is, for no reason) returns.
+     * <p>
+     * This method does <em>not</em> report which of these caused the method to return.
+     * Callers should re-check the conditions which caused the thread to park in the first place. Callers may also determine,
+     * for example, the interrupt status of the thread, or the elapsed time upon return.
      *
-     * <p>If the permit is available then it is consumed and the call
-     * returns immediately; otherwise the current thread becomes disabled
-     * for thread scheduling purposes and lies dormant until one of four
-     * things happens:
-     *
-     * <ul>
-     * <li>Some other thread invokes {@link #unpark unpark} with the
-     * current thread as the target; or
-     *
-     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
-     * the current thread; or
-     *
-     * <li>The specified waiting time elapses; or
-     *
-     * <li>The call spuriously (that is, for no reason) returns.
-     * </ul>
-     *
-     * <p>This method does <em>not</em> report which of these caused the
-     * method to return. Callers should re-check the conditions which caused
-     * the thread to park in the first place. Callers may also determine,
-     * for example, the interrupt status of the thread, or the elapsed time
-     * upon return.
-     *
-     * @param blocker the synchronization object responsible for this
-     *                thread parking
+     * @param blocker the synchronization object responsible for this thread parking
      * @param nanos   the maximum number of nanoseconds to wait
      * @since 1.6
      */
@@ -220,36 +195,21 @@ public class LockSupport {
     }
 
     /**
-     * Disables the current thread for thread scheduling purposes, until
-     * the specified deadline, unless the permit is available.
+     * Disables the current thread for thread scheduling purposes, until the specified deadline, unless the permit is available.
+     * If the permit is available then it is consumed and the call returns immediately;
+     * otherwise the current thread becomes disabled for thread scheduling purposes and lies dormant until one of four things happens:
+     * <p>
+     * Some other thread invokes {@link #unpark unpark} with the current thread as the target;
+     * or Some other thread {@linkplain Thread#interrupt interrupts} the current thread;
+     * or The specified deadline passes;
+     * or The call spuriously (that is, for no reason) returns.
+     * <p>
+     * This method does <em>not</em> report which of these caused the method to return.
+     * Callers should re-check the conditions which caused the thread to park in the first place.
+     * Callers may also determine, for example, the interrupt status of the thread, or the current time upon return.
      *
-     * <p>If the permit is available then it is consumed and the call
-     * returns immediately; otherwise the current thread becomes disabled
-     * for thread scheduling purposes and lies dormant until one of four
-     * things happens:
-     *
-     * <ul>
-     * <li>Some other thread invokes {@link #unpark unpark} with the
-     * current thread as the target; or
-     *
-     * <li>Some other thread {@linkplain Thread#interrupt interrupts} the
-     * current thread; or
-     *
-     * <li>The specified deadline passes; or
-     *
-     * <li>The call spuriously (that is, for no reason) returns.
-     * </ul>
-     *
-     * <p>This method does <em>not</em> report which of these caused the
-     * method to return. Callers should re-check the conditions which caused
-     * the thread to park in the first place. Callers may also determine,
-     * for example, the interrupt status of the thread, or the current time
-     * upon return.
-     *
-     * @param blocker  the synchronization object responsible for this
-     *                 thread parking
-     * @param deadline the absolute time, in milliseconds from the Epoch,
-     *                 to wait until
+     * @param blocker  the synchronization object responsible for this thread parking
+     * @param deadline the absolute time, in milliseconds from the Epoch, to wait until
      * @since 1.6
      */
     public static void parkUntil(Object blocker, long deadline) {
@@ -260,11 +220,8 @@ public class LockSupport {
     }
 
     /**
-     * Returns the blocker object supplied to the most recent
-     * invocation of a park method that has not yet unblocked, or null
-     * if not blocked.  The value returned is just a momentary
-     * snapshot -- the thread may have since unblocked or blocked on a
-     * different blocker object.
+     * Returns the blocker object supplied to the most recent invocation of a park method that has not yet unblocked, or null if not blocked.
+     * The value returned is just a momentary snapshot -- the thread may have since unblocked or blocked on a different blocker object.
      *
      * @param t the thread
      * @return the blocker
@@ -278,97 +235,59 @@ public class LockSupport {
     }
 
     /**
-     * Disables the current thread for thread scheduling purposes unless the
-     * permit is available.
-     *
-     * <p>If the permit is available then it is consumed and the call
-     * returns immediately; otherwise the current thread becomes disabled
-     * for thread scheduling purposes and lies dormant until one of three
-     * things happens:
-     *
-     * <ul>
-     *
-     * <li>Some other thread invokes {@link #unpark unpark} with the
-     * current thread as the target; or
-     *
-     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
-     * the current thread; or
-     *
-     * <li>The call spuriously (that is, for no reason) returns.
-     * </ul>
-     *
-     * <p>This method does <em>not</em> report which of these caused the
-     * method to return. Callers should re-check the conditions which caused
-     * the thread to park in the first place. Callers may also determine,
-     * for example, the interrupt status of the thread upon return.
+     * Disables the current thread for thread scheduling purposes unless the permit is available.
+     * If the permit is available then it is consumed and the call returns immediately;
+     * otherwise the current thread becomes disabled for thread scheduling purposes and lies dormant until one of three things happens:
+     * <p>
+     * Some other thread invokes {@link #unpark unpark} with the current thread as the target;
+     * or Some other thread {@linkplain Thread#interrupt interrupts} the current thread;
+     * or The call spuriously (that is, for no reason) returns.
+     * <p>
+     * This method does <em>not</em> report which of these caused the method to return.
+     * Callers should re-check the conditions which caused the thread to park in the first place.
+     * Callers may also determine, for example, the interrupt status of the thread upon return.
      */
     public static void park() {
         UNSAFE.park(false, 0L);
     }
 
     /**
-     * Disables the current thread for thread scheduling purposes, for up to
-     * the specified waiting time, unless the permit is available.
-     *
-     * <p>If the permit is available then it is consumed and the call
-     * returns immediately; otherwise the current thread becomes disabled
-     * for thread scheduling purposes and lies dormant until one of four
-     * things happens:
-     *
-     * <ul>
-     * <li>Some other thread invokes {@link #unpark unpark} with the
-     * current thread as the target; or
-     *
-     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
-     * the current thread; or
-     *
-     * <li>The specified waiting time elapses; or
-     *
-     * <li>The call spuriously (that is, for no reason) returns.
-     * </ul>
-     *
-     * <p>This method does <em>not</em> report which of these caused the
-     * method to return. Callers should re-check the conditions which caused
-     * the thread to park in the first place. Callers may also determine,
-     * for example, the interrupt status of the thread, or the elapsed time
-     * upon return.
+     * Disables the current thread for thread scheduling purposes, for up to the specified waiting time, unless the permit is available.
+     * If the permit is available then it is consumed and the call returns immediately;
+     * otherwise the current thread becomes disabled for thread scheduling purposes and lies dormant until one of four things happens:
+     * <p>
+     * Some other thread invokes {@link #unpark unpark} with the current thread as the target;
+     * or Some other thread {@linkplain Thread#interrupt interrupts} the current thread;
+     * or The specified waiting time elapses;
+     * or The call spuriously (that is, for no reason) returns.
+     * <p>
+     * This method does <em>not</em> report which of these caused the method to return.
+     * Callers should re-check the conditions which caused the thread to park in the first place.
+     * Callers may also determine, for example, the interrupt status of the thread, or the elapsed time upon return.
      *
      * @param nanos the maximum number of nanoseconds to wait
      */
     public static void parkNanos(long nanos) {
-        if (nanos > 0)
+        if (nanos > 0) {
             UNSAFE.park(false, nanos);
+        }
     }
 
     /**
-     * Disables the current thread for thread scheduling purposes, until
-     * the specified deadline, unless the permit is available.
+     * Disables the current thread for thread scheduling purposes, until the specified deadline, unless the permit is available.
+     * If the permit is available then it is consumed and the call returns immediately;
+     * otherwise the current thread becomes disabled for thread scheduling purposes and lies dormant until one of four things happens:
+     * <p>
+     * Some other thread invokes {@link #unpark unpark} with the current thread as the target;
+     * or Some other thread {@linkplain Thread#interrupt interrupts} the current thread;
+     * or The specified deadline passes;
+     * or The call spuriously (that is, for no reason) returns.
+     * <p>
+     * This method does <em>not</em> report which of these caused the method to return.
+     * Callers should re-check the conditions which caused the thread to park in the first place.
+     * Callers may also determine, for example, the interrupt status of the thread, or the current time upon return.
      *
-     * <p>If the permit is available then it is consumed and the call
-     * returns immediately; otherwise the current thread becomes disabled
-     * for thread scheduling purposes and lies dormant until one of four
-     * things happens:
-     *
-     * <ul>
-     * <li>Some other thread invokes {@link #unpark unpark} with the
-     * current thread as the target; or
-     *
-     * <li>Some other thread {@linkplain Thread#interrupt interrupts}
-     * the current thread; or
-     *
-     * <li>The specified deadline passes; or
-     *
-     * <li>The call spuriously (that is, for no reason) returns.
-     * </ul>
-     *
-     * <p>This method does <em>not</em> report which of these caused the
-     * method to return. Callers should re-check the conditions which caused
-     * the thread to park in the first place. Callers may also determine,
-     * for example, the interrupt status of the thread, or the current time
-     * upon return.
-     *
-     * @param deadline the absolute time, in milliseconds from the Epoch,
-     *                 to wait until
+     * @param deadline the absolute time, in milliseconds from the Epoch, to wait until
      */
     public static void parkUntil(long deadline) {
         UNSAFE.park(true, deadline);
@@ -382,11 +301,12 @@ public class LockSupport {
         int r;
         Thread t = Thread.currentThread();
         if ((r = UNSAFE.getInt(t, SECONDARY)) != 0) {
-            r ^= r << 13;   // xorshift
+            r ^= r << 13; // xorshift
             r ^= r >>> 17;
             r ^= r << 5;
-        } else if ((r = java.util.concurrent.ThreadLocalRandom.current().nextInt()) == 0)
+        } else if ((r = java.util.concurrent.ThreadLocalRandom.current().nextInt()) == 0) {
             r = 1; // avoid zero
+        }
         UNSAFE.putInt(t, SECONDARY, r);
         return r;
     }
@@ -402,17 +322,12 @@ public class LockSupport {
         try {
             UNSAFE = sun.misc.Unsafe.getUnsafe();
             Class<?> tk = Thread.class;
-            parkBlockerOffset = UNSAFE.objectFieldOffset
-                    (tk.getDeclaredField("parkBlocker"));
-            SEED = UNSAFE.objectFieldOffset
-                    (tk.getDeclaredField("threadLocalRandomSeed"));
-            PROBE = UNSAFE.objectFieldOffset
-                    (tk.getDeclaredField("threadLocalRandomProbe"));
-            SECONDARY = UNSAFE.objectFieldOffset
-                    (tk.getDeclaredField("threadLocalRandomSecondarySeed"));
+            parkBlockerOffset = UNSAFE.objectFieldOffset(tk.getDeclaredField("parkBlocker"));
+            SEED = UNSAFE.objectFieldOffset(tk.getDeclaredField("threadLocalRandomSeed"));
+            PROBE = UNSAFE.objectFieldOffset(tk.getDeclaredField("threadLocalRandomProbe"));
+            SECONDARY = UNSAFE.objectFieldOffset(tk.getDeclaredField("threadLocalRandomSecondarySeed"));
         } catch (Exception ex) {
             throw new Error(ex);
         }
     }
-
 }
