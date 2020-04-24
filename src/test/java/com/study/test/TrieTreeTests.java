@@ -1,4 +1,4 @@
-package com.resource.test;
+package com.study.test;
 
 import lombok.Data;
 import lombok.ToString;

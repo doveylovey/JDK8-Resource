@@ -1,4 +1,4 @@
-package com.resource.test;
+package com.study.test;
 
 public class HashMapTests {
     static final int MAXIMUM_CAPACITY = 1 << 30;

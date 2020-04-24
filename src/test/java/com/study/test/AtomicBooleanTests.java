@@ -1,4 +1,4 @@
-package com.resource.test;
+package com.study.test;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
