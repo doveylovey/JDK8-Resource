@@ -69,7 +69,6 @@ import java.util.stream.StreamSupport;
  * @since 1.2
  */
 public class Arrays {
-
     /**
      * The minimum array length below which a parallel sorting
      * algorithm will not further partition the sorting task. Using
@@ -99,6 +98,7 @@ public class Arrays {
      */
     static final class NaturalOrder implements Comparator<Object> {
         @SuppressWarnings("unchecked")
+        @Override
         public int compare(Object first, Object second) {
             return ((Comparable<Object>) first).compareTo(second);
         }
@@ -109,11 +109,11 @@ public class Arrays {
     /**
      * Checks that {@code fromIndex} and {@code toIndex} are in
      * the range and throws an exception if they aren't.
+     * 检查数据边界，如果超过边界则抛出异常
      */
     private static void rangeCheck(int arrayLength, int fromIndex, int toIndex) {
         if (fromIndex > toIndex) {
-            throw new IllegalArgumentException(
-                    "fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
+            throw new IllegalArgumentException("fromIndex(" + fromIndex + ") > toIndex(" + toIndex + ")");
         }
         if (fromIndex < 0) {
             throw new ArrayIndexOutOfBoundsException(fromIndex);
@@ -123,7 +123,10 @@ public class Arrays {
         }
     }
 
-    /*
+    /**
+     * 排序主要分为两种：对基本数据类型数组进行排序、对对象类型数组进行排序。
+     * 对基本数据类型数组的排序主要采用了插入排序、快速排序和归并排序相结合的排序方法；对对象类型数组的排序主要采用了归并排序和插入排序相结合的方法。
+     *
      * Sorting methods. Note that all public "sort" methods take the
      * same form: Performing argument checks if necessary, and then
      * expanding arguments into those required for the internal
@@ -143,6 +146,7 @@ public class Arrays {
      * @param a the array to be sorted
      */
     public static void sort(int[] a) {
+        // 可见：Arrays 并没有自己来实现排序，而是委托给了 DualPivotQuicksort 类
         DualPivotQuicksort.sort(a, 0, a.length - 1, null, 0, 0);
     }
 
@@ -447,14 +451,11 @@ public class Arrays {
      */
     public static void parallelSort(byte[] a) {
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, 0, n - 1);
-        else
-            new ArraysParallelSortHelpers.FJByte.Sorter
-                    (null, a, new byte[n], 0, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJByte.Sorter(null, a, new byte[n], 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -483,14 +484,11 @@ public class Arrays {
     public static void parallelSort(byte[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, fromIndex, toIndex - 1);
-        else
-            new ArraysParallelSortHelpers.FJByte.Sorter
-                    (null, a, new byte[n], fromIndex, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJByte.Sorter(null, a, new byte[n], fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -511,14 +509,11 @@ public class Arrays {
      */
     public static void parallelSort(char[] a) {
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, 0, n - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJChar.Sorter
-                    (null, a, new char[n], 0, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJChar.Sorter(null, a, new char[n], 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -547,14 +542,11 @@ public class Arrays {
     public static void parallelSort(char[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, fromIndex, toIndex - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJChar.Sorter
-                    (null, a, new char[n], fromIndex, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJChar.Sorter(null, a, new char[n], fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -575,14 +567,11 @@ public class Arrays {
      */
     public static void parallelSort(short[] a) {
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, 0, n - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJShort.Sorter
-                    (null, a, new short[n], 0, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJShort.Sorter(null, a, new short[n], 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -611,14 +600,11 @@ public class Arrays {
     public static void parallelSort(short[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, fromIndex, toIndex - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJShort.Sorter
-                    (null, a, new short[n], fromIndex, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJShort.Sorter(null, a, new short[n], fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -639,14 +625,11 @@ public class Arrays {
      */
     public static void parallelSort(int[] a) {
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, 0, n - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJInt.Sorter
-                    (null, a, new int[n], 0, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJInt.Sorter(null, a, new int[n], 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -675,14 +658,11 @@ public class Arrays {
     public static void parallelSort(int[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, fromIndex, toIndex - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJInt.Sorter
-                    (null, a, new int[n], fromIndex, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJInt.Sorter(null, a, new int[n], fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -703,14 +683,11 @@ public class Arrays {
      */
     public static void parallelSort(long[] a) {
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, 0, n - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJLong.Sorter
-                    (null, a, new long[n], 0, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJLong.Sorter(null, a, new long[n], 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -739,14 +716,11 @@ public class Arrays {
     public static void parallelSort(long[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, fromIndex, toIndex - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJLong.Sorter
-                    (null, a, new long[n], fromIndex, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJLong.Sorter(null, a, new long[n], fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -775,14 +749,11 @@ public class Arrays {
      */
     public static void parallelSort(float[] a) {
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, 0, n - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJFloat.Sorter
-                    (null, a, new float[n], 0, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJFloat.Sorter(null, a, new float[n], 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -819,14 +790,11 @@ public class Arrays {
     public static void parallelSort(float[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, fromIndex, toIndex - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJFloat.Sorter
-                    (null, a, new float[n], fromIndex, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJFloat.Sorter(null, a, new float[n], fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -855,14 +823,11 @@ public class Arrays {
      */
     public static void parallelSort(double[] a) {
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, 0, n - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJDouble.Sorter
-                    (null, a, new double[n], 0, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJDouble.Sorter(null, a, new double[n], 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -899,14 +864,11 @@ public class Arrays {
     public static void parallelSort(double[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             DualPivotQuicksort.sort(a, fromIndex, toIndex - 1, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJDouble.Sorter
-                    (null, a, new double[n], fromIndex, n, 0,
-                            ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                                    MIN_ARRAY_SORT_GRAN : g).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJDouble.Sorter(null, a, new double[n], fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g).invoke();
+        }
     }
 
     /**
@@ -943,15 +905,11 @@ public class Arrays {
     @SuppressWarnings("unchecked")
     public static <T extends Comparable<? super T>> void parallelSort(T[] a) {
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             TimSort.sort(a, 0, n, NaturalOrder.INSTANCE, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJObject.Sorter<T>
-                    (null, a,
-                            (T[]) Array.newInstance(a.getClass().getComponentType(), n),
-                            0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                            MIN_ARRAY_SORT_GRAN : g, NaturalOrder.INSTANCE).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJObject.Sorter<T>(null, a, (T[]) Array.newInstance(a.getClass().getComponentType(), n), 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g, NaturalOrder.INSTANCE).invoke();
+        }
     }
 
     /**
@@ -996,19 +954,14 @@ public class Arrays {
      * @since 1.8
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Comparable<? super T>>
-    void parallelSort(T[] a, int fromIndex, int toIndex) {
+    public static <T extends Comparable<? super T>> void parallelSort(T[] a, int fromIndex, int toIndex) {
         rangeCheck(a.length, fromIndex, toIndex);
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             TimSort.sort(a, fromIndex, toIndex, NaturalOrder.INSTANCE, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJObject.Sorter<T>
-                    (null, a,
-                            (T[]) Array.newInstance(a.getClass().getComponentType(), n),
-                            fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                            MIN_ARRAY_SORT_GRAN : g, NaturalOrder.INSTANCE).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJObject.Sorter<T>(null, a, (T[]) Array.newInstance(a.getClass().getComponentType(), n), fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g, NaturalOrder.INSTANCE).invoke();
+        }
     }
 
     /**
@@ -1044,18 +997,15 @@ public class Arrays {
      */
     @SuppressWarnings("unchecked")
     public static <T> void parallelSort(T[] a, Comparator<? super T> cmp) {
-        if (cmp == null)
+        if (cmp == null) {
             cmp = NaturalOrder.INSTANCE;
+        }
         int n = a.length, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             TimSort.sort(a, 0, n, cmp, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJObject.Sorter<T>
-                    (null, a,
-                            (T[]) Array.newInstance(a.getClass().getComponentType(), n),
-                            0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                            MIN_ARRAY_SORT_GRAN : g, cmp).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJObject.Sorter<T>(null, a, (T[]) Array.newInstance(a.getClass().getComponentType(), n), 0, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g, cmp).invoke();
+        }
     }
 
     /**
@@ -1100,21 +1050,17 @@ public class Arrays {
      * @since 1.8
      */
     @SuppressWarnings("unchecked")
-    public static <T> void parallelSort(T[] a, int fromIndex, int toIndex,
-                                        Comparator<? super T> cmp) {
+    public static <T> void parallelSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> cmp) {
         rangeCheck(a.length, fromIndex, toIndex);
-        if (cmp == null)
+        if (cmp == null) {
             cmp = NaturalOrder.INSTANCE;
+        }
         int n = toIndex - fromIndex, p, g;
-        if (n <= MIN_ARRAY_SORT_GRAN ||
-                (p = ForkJoinPool.getCommonPoolParallelism()) == 1)
+        if (n <= MIN_ARRAY_SORT_GRAN || (p = ForkJoinPool.getCommonPoolParallelism()) == 1) {
             TimSort.sort(a, fromIndex, toIndex, cmp, null, 0, 0);
-        else
-            new ArraysParallelSortHelpers.FJObject.Sorter<T>
-                    (null, a,
-                            (T[]) Array.newInstance(a.getClass().getComponentType(), n),
-                            fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ?
-                            MIN_ARRAY_SORT_GRAN : g, cmp).invoke();
+        } else {
+            new ArraysParallelSortHelpers.FJObject.Sorter<T>(null, a, (T[]) Array.newInstance(a.getClass().getComponentType(), n), fromIndex, n, 0, ((g = n / (p << 2)) <= MIN_ARRAY_SORT_GRAN) ? MIN_ARRAY_SORT_GRAN : g, cmp).invoke();
+        }
     }
 
     /*
@@ -1128,10 +1074,7 @@ public class Arrays {
      * circular dependencies. To be removed in a future release.
      */
     static final class LegacyMergeSort {
-        private static final boolean userRequested =
-                java.security.AccessController.doPrivileged(
-                        new sun.security.action.GetBooleanAction(
-                                "java.util.Arrays.useLegacyMergeSort")).booleanValue();
+        private static final boolean userRequested = java.security.AccessController.doPrivileged(new sun.security.action.GetBooleanAction("java.util.Arrays.useLegacyMergeSort")).booleanValue();
     }
 
     /**
@@ -1177,10 +1120,11 @@ public class Arrays {
      *                                  {@link Comparable} contract
      */
     public static void sort(Object[] a) {
-        if (LegacyMergeSort.userRequested)
+        if (LegacyMergeSort.userRequested) {
             legacyMergeSort(a);
-        else
+        } else {
             ComparableTimSort.sort(a, 0, a.length, null, 0, 0);
+        }
     }
 
     /**
@@ -1244,18 +1188,20 @@ public class Arrays {
      *                                        integers).
      */
     public static void sort(Object[] a, int fromIndex, int toIndex) {
+        // 判断是否超出数组边界
         rangeCheck(a.length, fromIndex, toIndex);
-        if (LegacyMergeSort.userRequested)
+        // LegacyMergeSort 在 1.8 中被标记为不建议使用，并在未来版本中会移除，因此该处可以忽略
+        if (LegacyMergeSort.userRequested) {
             legacyMergeSort(a, fromIndex, toIndex);
-        else
+        } else {
             ComparableTimSort.sort(a, fromIndex, toIndex, null, 0, 0);
+        }
     }
 
     /**
      * To be removed in a future release.
      */
-    private static void legacyMergeSort(Object[] a,
-                                        int fromIndex, int toIndex) {
+    private static void legacyMergeSort(Object[] a, int fromIndex, int toIndex) {
         Object[] aux = copyOfRange(a, fromIndex, toIndex);
         mergeSort(aux, a, fromIndex, toIndex, -fromIndex);
     }
@@ -1276,19 +1222,15 @@ public class Arrays {
      * To be removed in a future release.
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private static void mergeSort(Object[] src,
-                                  Object[] dest,
-                                  int low,
-                                  int high,
-                                  int off) {
+    private static void mergeSort(Object[] src, Object[] dest, int low, int high, int off) {
         int length = high - low;
-
         // Insertion sort on smallest arrays
         if (length < INSERTIONSORT_THRESHOLD) {
-            for (int i = low; i < high; i++)
-                for (int j = i; j > low &&
-                        ((Comparable) dest[j - 1]).compareTo(dest[j]) > 0; j--)
+            for (int i = low; i < high; i++) {
+                for (int j = i; j > low && ((Comparable) dest[j - 1]).compareTo(dest[j]) > 0; j--) {
                     swap(dest, j, j - 1);
+                }
+            }
             return;
         }
 
@@ -1310,10 +1252,11 @@ public class Arrays {
 
         // Merge sorted halves (now in src) into dest
         for (int i = destLow, p = low, q = mid; i < destHigh; i++) {
-            if (q >= high || p < mid && ((Comparable) src[p]).compareTo(src[q]) <= 0)
+            if (q >= high || p < mid && ((Comparable) src[p]).compareTo(src[q]) <= 0) {
                 dest[i] = src[p++];
-            else
+            } else {
                 dest[i] = src[q++];
+            }
         }
     }
 
@@ -1373,10 +1316,11 @@ public class Arrays {
         if (c == null) {
             sort(a);
         } else {
-            if (LegacyMergeSort.userRequested)
+            if (LegacyMergeSort.userRequested) {
                 legacyMergeSort(a, c);
-            else
+            } else {
                 TimSort.sort(a, 0, a.length, c, null, 0, 0);
+            }
         }
     }
 
@@ -1385,13 +1329,19 @@ public class Arrays {
      */
     private static <T> void legacyMergeSort(T[] a, Comparator<? super T> c) {
         T[] aux = a.clone();
-        if (c == null)
+        if (c == null) {
             mergeSort(aux, a, 0, a.length, 0);
-        else
+        } else {
             mergeSort(aux, a, 0, a.length, 0, c);
+        }
     }
 
     /**
+     * 1、排序的元素必须实现 Comparable 接口，在程序中执行 compare() 方法时一定不能出现 ClassCastException 异常
+     * 2、相等的元素不会进行重排序操作
+     * 3、方法中采用了归并排序方式排序，当数组中部分有序状态是，需要 nlog(n)次比较
+     * 4、当数组中数据基本处于有序状态时，大约需要 n 次比较
+     * <p>
      * Sorts the specified range of the specified array of objects according
      * to the order induced by the specified comparator.  The range to be
      * sorted extends from index {@code fromIndex}, inclusive, to index
@@ -1443,29 +1393,33 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0} or
      *                                        {@code toIndex > a.length}
      */
-    public static <T> void sort(T[] a, int fromIndex, int toIndex,
-                                Comparator<? super T> c) {
+    public static <T> void sort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
+        // 是否自定义比较器
         if (c == null) {
             sort(a, fromIndex, toIndex);
         } else {
+            // 判断是否超出数组边界
             rangeCheck(a.length, fromIndex, toIndex);
-            if (LegacyMergeSort.userRequested)
+            // LegacyMergeSort 在 1.8 中被标记为不建议使用，并在未来版本中会移除，因此该处可以忽略
+            if (LegacyMergeSort.userRequested) {
                 legacyMergeSort(a, fromIndex, toIndex, c);
-            else
+            } else {
+                // 自定义排序器的执行方法
                 TimSort.sort(a, fromIndex, toIndex, c, null, 0, 0);
+            }
         }
     }
 
     /**
      * To be removed in a future release.
      */
-    private static <T> void legacyMergeSort(T[] a, int fromIndex, int toIndex,
-                                            Comparator<? super T> c) {
+    private static <T> void legacyMergeSort(T[] a, int fromIndex, int toIndex, Comparator<? super T> c) {
         T[] aux = copyOfRange(a, fromIndex, toIndex);
-        if (c == null)
+        if (c == null) {
             mergeSort(aux, a, fromIndex, toIndex, -fromIndex);
-        else
+        } else {
             mergeSort(aux, a, fromIndex, toIndex, -fromIndex, c);
+        }
     }
 
     /**
@@ -1477,17 +1431,15 @@ public class Arrays {
      * To be removed in a future release.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void mergeSort(Object[] src,
-                                  Object[] dest,
-                                  int low, int high, int off,
-                                  Comparator c) {
+    private static void mergeSort(Object[] src, Object[] dest, int low, int high, int off, Comparator c) {
         int length = high - low;
-
         // Insertion sort on smallest arrays
         if (length < INSERTIONSORT_THRESHOLD) {
-            for (int i = low; i < high; i++)
-                for (int j = i; j > low && c.compare(dest[j - 1], dest[j]) > 0; j--)
+            for (int i = low; i < high; i++) {
+                for (int j = i; j > low && c.compare(dest[j - 1], dest[j]) > 0; j--) {
                     swap(dest, j, j - 1);
+                }
+            }
             return;
         }
 
@@ -1509,10 +1461,11 @@ public class Arrays {
 
         // Merge sorted halves (now in src) into dest
         for (int i = destLow, p = low, q = mid; i < destHigh; i++) {
-            if (q >= high || p < mid && c.compare(src[p], src[q]) <= 0)
+            if (q >= high || p < mid && c.compare(src[p], src[q]) <= 0) {
                 dest[i] = src[p++];
-            else
+            } else {
                 dest[i] = src[q++];
+            }
         }
     }
 
@@ -1535,9 +1488,9 @@ public class Arrays {
      */
     public static <T> void parallelPrefix(T[] array, BinaryOperator<T> op) {
         Objects.requireNonNull(op);
-        if (array.length > 0)
-            new ArrayPrefixHelpers.CumulateTask<>
-                    (null, op, array, 0, array.length).invoke();
+        if (array.length > 0) {
+            new ArrayPrefixHelpers.CumulateTask<>(null, op, array, 0, array.length).invoke();
+        }
     }
 
     /**
@@ -1580,9 +1533,9 @@ public class Arrays {
      */
     public static void parallelPrefix(long[] array, LongBinaryOperator op) {
         Objects.requireNonNull(op);
-        if (array.length > 0)
-            new ArrayPrefixHelpers.LongCumulateTask
-                    (null, op, array, 0, array.length).invoke();
+        if (array.length > 0) {
+            new ArrayPrefixHelpers.LongCumulateTask(null, op, array, 0, array.length).invoke();
+        }
     }
 
     /**
@@ -1599,13 +1552,12 @@ public class Arrays {
      * @throws NullPointerException           if the specified array or function is null
      * @since 1.8
      */
-    public static void parallelPrefix(long[] array, int fromIndex,
-                                      int toIndex, LongBinaryOperator op) {
+    public static void parallelPrefix(long[] array, int fromIndex, int toIndex, LongBinaryOperator op) {
         Objects.requireNonNull(op);
         rangeCheck(array.length, fromIndex, toIndex);
-        if (fromIndex < toIndex)
-            new ArrayPrefixHelpers.LongCumulateTask
-                    (null, op, array, fromIndex, toIndex).invoke();
+        if (fromIndex < toIndex) {
+            new ArrayPrefixHelpers.LongCumulateTask(null, op, array, fromIndex, toIndex).invoke();
+        }
     }
 
     /**
@@ -1627,9 +1579,9 @@ public class Arrays {
      */
     public static void parallelPrefix(double[] array, DoubleBinaryOperator op) {
         Objects.requireNonNull(op);
-        if (array.length > 0)
-            new ArrayPrefixHelpers.DoubleCumulateTask
-                    (null, op, array, 0, array.length).invoke();
+        if (array.length > 0) {
+            new ArrayPrefixHelpers.DoubleCumulateTask(null, op, array, 0, array.length).invoke();
+        }
     }
 
     /**
@@ -1646,13 +1598,12 @@ public class Arrays {
      * @throws NullPointerException           if the specified array or function is null
      * @since 1.8
      */
-    public static void parallelPrefix(double[] array, int fromIndex,
-                                      int toIndex, DoubleBinaryOperator op) {
+    public static void parallelPrefix(double[] array, int fromIndex, int toIndex, DoubleBinaryOperator op) {
         Objects.requireNonNull(op);
         rangeCheck(array.length, fromIndex, toIndex);
-        if (fromIndex < toIndex)
-            new ArrayPrefixHelpers.DoubleCumulateTask
-                    (null, op, array, fromIndex, toIndex).invoke();
+        if (fromIndex < toIndex) {
+            new ArrayPrefixHelpers.DoubleCumulateTask(null, op, array, fromIndex, toIndex).invoke();
+        }
     }
 
     /**
@@ -1671,9 +1622,9 @@ public class Arrays {
      */
     public static void parallelPrefix(int[] array, IntBinaryOperator op) {
         Objects.requireNonNull(op);
-        if (array.length > 0)
-            new ArrayPrefixHelpers.IntCumulateTask
-                    (null, op, array, 0, array.length).invoke();
+        if (array.length > 0) {
+            new ArrayPrefixHelpers.IntCumulateTask(null, op, array, 0, array.length).invoke();
+        }
     }
 
     /**
@@ -1690,13 +1641,12 @@ public class Arrays {
      * @throws NullPointerException           if the specified array or function is null
      * @since 1.8
      */
-    public static void parallelPrefix(int[] array, int fromIndex,
-                                      int toIndex, IntBinaryOperator op) {
+    public static void parallelPrefix(int[] array, int fromIndex, int toIndex, IntBinaryOperator op) {
         Objects.requireNonNull(op);
         rangeCheck(array.length, fromIndex, toIndex);
-        if (fromIndex < toIndex)
-            new ArrayPrefixHelpers.IntCumulateTask
-                    (null, op, array, fromIndex, toIndex).invoke();
+        if (fromIndex < toIndex) {
+            new ArrayPrefixHelpers.IntCumulateTask(null, op, array, fromIndex, toIndex).invoke();
+        }
     }
 
     // Searching
@@ -1754,15 +1704,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static int binarySearch(long[] a, int fromIndex, int toIndex,
-                                   long key) {
+    public static int binarySearch(long[] a, int fromIndex, int toIndex, long key) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key);
     }
 
     // Like public version, but without range checks.
-    private static int binarySearch0(long[] a, int fromIndex, int toIndex,
-                                     long key) {
+    private static int binarySearch0(long[] a, int fromIndex, int toIndex, long key) {
         int low = fromIndex;
         int high = toIndex - 1;
 
@@ -1770,12 +1718,13 @@ public class Arrays {
             int mid = (low + high) >>> 1;
             long midVal = a[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }
@@ -1833,15 +1782,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static int binarySearch(int[] a, int fromIndex, int toIndex,
-                                   int key) {
+    public static int binarySearch(int[] a, int fromIndex, int toIndex, int key) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key);
     }
 
     // Like public version, but without range checks.
-    private static int binarySearch0(int[] a, int fromIndex, int toIndex,
-                                     int key) {
+    private static int binarySearch0(int[] a, int fromIndex, int toIndex, int key) {
         int low = fromIndex;
         int high = toIndex - 1;
 
@@ -1849,12 +1796,13 @@ public class Arrays {
             int mid = (low + high) >>> 1;
             int midVal = a[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }
@@ -1912,15 +1860,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static int binarySearch(short[] a, int fromIndex, int toIndex,
-                                   short key) {
+    public static int binarySearch(short[] a, int fromIndex, int toIndex, short key) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key);
     }
 
     // Like public version, but without range checks.
-    private static int binarySearch0(short[] a, int fromIndex, int toIndex,
-                                     short key) {
+    private static int binarySearch0(short[] a, int fromIndex, int toIndex, short key) {
         int low = fromIndex;
         int high = toIndex - 1;
 
@@ -1928,12 +1874,13 @@ public class Arrays {
             int mid = (low + high) >>> 1;
             short midVal = a[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }
@@ -1991,15 +1938,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static int binarySearch(char[] a, int fromIndex, int toIndex,
-                                   char key) {
+    public static int binarySearch(char[] a, int fromIndex, int toIndex, char key) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key);
     }
 
     // Like public version, but without range checks.
-    private static int binarySearch0(char[] a, int fromIndex, int toIndex,
-                                     char key) {
+    private static int binarySearch0(char[] a, int fromIndex, int toIndex, char key) {
         int low = fromIndex;
         int high = toIndex - 1;
 
@@ -2007,12 +1952,13 @@ public class Arrays {
             int mid = (low + high) >>> 1;
             char midVal = a[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }
@@ -2070,15 +2016,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static int binarySearch(byte[] a, int fromIndex, int toIndex,
-                                   byte key) {
+    public static int binarySearch(byte[] a, int fromIndex, int toIndex, byte key) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key);
     }
 
     // Like public version, but without range checks.
-    private static int binarySearch0(byte[] a, int fromIndex, int toIndex,
-                                     byte key) {
+    private static int binarySearch0(byte[] a, int fromIndex, int toIndex, byte key) {
         int low = fromIndex;
         int high = toIndex - 1;
 
@@ -2086,12 +2030,13 @@ public class Arrays {
             int mid = (low + high) >>> 1;
             byte midVal = a[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }
@@ -2151,15 +2096,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static int binarySearch(double[] a, int fromIndex, int toIndex,
-                                   double key) {
+    public static int binarySearch(double[] a, int fromIndex, int toIndex, double key) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key);
     }
 
     // Like public version, but without range checks.
-    private static int binarySearch0(double[] a, int fromIndex, int toIndex,
-                                     double key) {
+    private static int binarySearch0(double[] a, int fromIndex, int toIndex, double key) {
         int low = fromIndex;
         int high = toIndex - 1;
 
@@ -2167,19 +2110,20 @@ public class Arrays {
             int mid = (low + high) >>> 1;
             double midVal = a[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;  // Neither val is NaN, thisVal is smaller
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1; // Neither val is NaN, thisVal is larger
-            else {
+            } else {
                 long midBits = Double.doubleToLongBits(midVal);
                 long keyBits = Double.doubleToLongBits(key);
-                if (midBits == keyBits)     // Values are equal
+                if (midBits == keyBits) {     // Values are equal
                     return mid;             // Key found
-                else if (midBits < keyBits) // (-0.0, 0.0) or (!NaN, NaN)
+                } else if (midBits < keyBits) { // (-0.0, 0.0) or (!NaN, NaN)
                     low = mid + 1;
-                else                        // (0.0, -0.0) or (NaN, !NaN)
+                } else {                        // (0.0, -0.0) or (NaN, !NaN)
                     high = mid - 1;
+                }
             }
         }
         return -(low + 1);  // key not found.
@@ -2240,15 +2184,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static int binarySearch(float[] a, int fromIndex, int toIndex,
-                                   float key) {
+    public static int binarySearch(float[] a, int fromIndex, int toIndex, float key) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key);
     }
 
     // Like public version, but without range checks.
-    private static int binarySearch0(float[] a, int fromIndex, int toIndex,
-                                     float key) {
+    private static int binarySearch0(float[] a, int fromIndex, int toIndex, float key) {
         int low = fromIndex;
         int high = toIndex - 1;
 
@@ -2256,19 +2198,20 @@ public class Arrays {
             int mid = (low + high) >>> 1;
             float midVal = a[mid];
 
-            if (midVal < key)
+            if (midVal < key) {
                 low = mid + 1;  // Neither val is NaN, thisVal is smaller
-            else if (midVal > key)
+            } else if (midVal > key) {
                 high = mid - 1; // Neither val is NaN, thisVal is larger
-            else {
+            } else {
                 int midBits = Float.floatToIntBits(midVal);
                 int keyBits = Float.floatToIntBits(key);
-                if (midBits == keyBits)     // Values are equal
+                if (midBits == keyBits) {     // Values are equal
                     return mid;             // Key found
-                else if (midBits < keyBits) // (-0.0, 0.0) or (!NaN, NaN)
+                } else if (midBits < keyBits) { // (-0.0, 0.0) or (!NaN, NaN)
                     low = mid + 1;
-                else                        // (0.0, -0.0) or (NaN, !NaN)
+                } else {                // (0.0, -0.0) or (NaN, !NaN)
                     high = mid - 1;
+                }
             }
         }
         return -(low + 1);  // key not found.
@@ -2344,15 +2287,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static int binarySearch(Object[] a, int fromIndex, int toIndex,
-                                   Object key) {
+    public static int binarySearch(Object[] a, int fromIndex, int toIndex, Object key) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key);
     }
 
     // Like public version, but without range checks.
-    private static int binarySearch0(Object[] a, int fromIndex, int toIndex,
-                                     Object key) {
+    private static int binarySearch0(Object[] a, int fromIndex, int toIndex, Object key) {
         int low = fromIndex;
         int high = toIndex - 1;
 
@@ -2363,12 +2304,13 @@ public class Arrays {
             @SuppressWarnings("unchecked")
             int cmp = midVal.compareTo(key);
 
-            if (cmp < 0)
+            if (cmp < 0) {
                 low = mid + 1;
-            else if (cmp > 0)
+            } else if (cmp > 0) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }
@@ -2447,15 +2389,13 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if {@code fromIndex < 0 or toIndex > a.length}
      * @since 1.6
      */
-    public static <T> int binarySearch(T[] a, int fromIndex, int toIndex,
-                                       T key, Comparator<? super T> c) {
+    public static <T> int binarySearch(T[] a, int fromIndex, int toIndex, T key, Comparator<? super T> c) {
         rangeCheck(a.length, fromIndex, toIndex);
         return binarySearch0(a, fromIndex, toIndex, key, c);
     }
 
     // Like public version, but without range checks.
-    private static <T> int binarySearch0(T[] a, int fromIndex, int toIndex,
-                                         T key, Comparator<? super T> c) {
+    private static <T> int binarySearch0(T[] a, int fromIndex, int toIndex, T key, Comparator<? super T> c) {
         if (c == null) {
             return binarySearch0(a, fromIndex, toIndex, key);
         }
@@ -2466,12 +2406,13 @@ public class Arrays {
             int mid = (low + high) >>> 1;
             T midVal = a[mid];
             int cmp = c.compare(midVal, key);
-            if (cmp < 0)
+            if (cmp < 0) {
                 low = mid + 1;
-            else if (cmp > 0)
+            } else if (cmp > 0) {
                 high = mid - 1;
-            else
+            } else {
                 return mid; // key found
+            }
         }
         return -(low + 1);  // key not found.
     }
@@ -2491,19 +2432,21 @@ public class Arrays {
      * @return <tt>true</tt> if the two arrays are equal
      */
     public static boolean equals(long[] a, long[] a2) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
-        for (int i = 0; i < length; i++)
-            if (a[i] != a2[i])
+        }
+        for (int i = 0; i < length; i++) {
+            if (a[i] != a2[i]) {
                 return false;
-
+            }
+        }
         return true;
     }
 
@@ -2520,19 +2463,21 @@ public class Arrays {
      * @return <tt>true</tt> if the two arrays are equal
      */
     public static boolean equals(int[] a, int[] a2) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
-        for (int i = 0; i < length; i++)
-            if (a[i] != a2[i])
+        }
+        for (int i = 0; i < length; i++) {
+            if (a[i] != a2[i]) {
                 return false;
-
+            }
+        }
         return true;
     }
 
@@ -2549,19 +2494,21 @@ public class Arrays {
      * @return <tt>true</tt> if the two arrays are equal
      */
     public static boolean equals(short[] a, short a2[]) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
-        for (int i = 0; i < length; i++)
-            if (a[i] != a2[i])
+        }
+        for (int i = 0; i < length; i++) {
+            if (a[i] != a2[i]) {
                 return false;
-
+            }
+        }
         return true;
     }
 
@@ -2578,19 +2525,21 @@ public class Arrays {
      * @return <tt>true</tt> if the two arrays are equal
      */
     public static boolean equals(char[] a, char[] a2) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
-        for (int i = 0; i < length; i++)
-            if (a[i] != a2[i])
+        }
+        for (int i = 0; i < length; i++) {
+            if (a[i] != a2[i]) {
                 return false;
-
+            }
+        }
         return true;
     }
 
@@ -2607,19 +2556,21 @@ public class Arrays {
      * @return <tt>true</tt> if the two arrays are equal
      */
     public static boolean equals(byte[] a, byte[] a2) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
-        for (int i = 0; i < length; i++)
-            if (a[i] != a2[i])
+        }
+        for (int i = 0; i < length; i++) {
+            if (a[i] != a2[i]) {
                 return false;
-
+            }
+        }
         return true;
     }
 
@@ -2636,19 +2587,21 @@ public class Arrays {
      * @return <tt>true</tt> if the two arrays are equal
      */
     public static boolean equals(boolean[] a, boolean[] a2) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
-        for (int i = 0; i < length; i++)
-            if (a[i] != a2[i])
+        }
+        for (int i = 0; i < length; i++) {
+            if (a[i] != a2[i]) {
                 return false;
-
+            }
+        }
         return true;
     }
 
@@ -2671,19 +2624,21 @@ public class Arrays {
      * @see Double#equals(Object)
      */
     public static boolean equals(double[] a, double[] a2) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
-        for (int i = 0; i < length; i++)
-            if (Double.doubleToLongBits(a[i]) != Double.doubleToLongBits(a2[i]))
+        }
+        for (int i = 0; i < length; i++) {
+            if (Double.doubleToLongBits(a[i]) != Double.doubleToLongBits(a2[i])) {
                 return false;
-
+            }
+        }
         return true;
     }
 
@@ -2706,19 +2661,21 @@ public class Arrays {
      * @see Float#equals(Object)
      */
     public static boolean equals(float[] a, float[] a2) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
-        for (int i = 0; i < length; i++)
-            if (Float.floatToIntBits(a[i]) != Float.floatToIntBits(a2[i]))
+        }
+        for (int i = 0; i < length; i++) {
+            if (Float.floatToIntBits(a[i]) != Float.floatToIntBits(a2[i])) {
                 return false;
-
+            }
+        }
         return true;
     }
 
@@ -2737,22 +2694,23 @@ public class Arrays {
      * @return <tt>true</tt> if the two arrays are equal
      */
     public static boolean equals(Object[] a, Object[] a2) {
-        if (a == a2)
+        if (a == a2) {
             return true;
-        if (a == null || a2 == null)
+        }
+        if (a == null || a2 == null) {
             return false;
-
+        }
         int length = a.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
+        }
         for (int i = 0; i < length; i++) {
             Object o1 = a[i];
             Object o2 = a2[i];
-            if (!(o1 == null ? o2 == null : o1.equals(o2)))
+            if (!(o1 == null ? o2 == null : o1.equals(o2))) {
                 return false;
+            }
         }
-
         return true;
     }
 
@@ -2766,8 +2724,9 @@ public class Arrays {
      * @param val the value to be stored in all elements of the array
      */
     public static void fill(long[] a, long val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2789,8 +2748,9 @@ public class Arrays {
      */
     public static void fill(long[] a, int fromIndex, int toIndex, long val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2801,8 +2761,9 @@ public class Arrays {
      * @param val the value to be stored in all elements of the array
      */
     public static void fill(int[] a, int val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2824,8 +2785,9 @@ public class Arrays {
      */
     public static void fill(int[] a, int fromIndex, int toIndex, int val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2836,8 +2798,9 @@ public class Arrays {
      * @param val the value to be stored in all elements of the array
      */
     public static void fill(short[] a, short val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2859,8 +2822,9 @@ public class Arrays {
      */
     public static void fill(short[] a, int fromIndex, int toIndex, short val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2871,8 +2835,9 @@ public class Arrays {
      * @param val the value to be stored in all elements of the array
      */
     public static void fill(char[] a, char val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2894,8 +2859,9 @@ public class Arrays {
      */
     public static void fill(char[] a, int fromIndex, int toIndex, char val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2906,8 +2872,9 @@ public class Arrays {
      * @param val the value to be stored in all elements of the array
      */
     public static void fill(byte[] a, byte val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2929,8 +2896,9 @@ public class Arrays {
      */
     public static void fill(byte[] a, int fromIndex, int toIndex, byte val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2941,8 +2909,9 @@ public class Arrays {
      * @param val the value to be stored in all elements of the array
      */
     public static void fill(boolean[] a, boolean val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2962,11 +2931,11 @@ public class Arrays {
      * @throws ArrayIndexOutOfBoundsException if <tt>fromIndex &lt; 0</tt> or
      *                                        <tt>toIndex &gt; a.length</tt>
      */
-    public static void fill(boolean[] a, int fromIndex, int toIndex,
-                            boolean val) {
+    public static void fill(boolean[] a, int fromIndex, int toIndex, boolean val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -2977,8 +2946,9 @@ public class Arrays {
      * @param val the value to be stored in all elements of the array
      */
     public static void fill(double[] a, double val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -3000,8 +2970,9 @@ public class Arrays {
      */
     public static void fill(double[] a, int fromIndex, int toIndex, double val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -3012,8 +2983,9 @@ public class Arrays {
      * @param val the value to be stored in all elements of the array
      */
     public static void fill(float[] a, float val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -3035,8 +3007,9 @@ public class Arrays {
      */
     public static void fill(float[] a, int fromIndex, int toIndex, float val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -3049,8 +3022,9 @@ public class Arrays {
      *                             runtime type that can be stored in the specified array
      */
     public static void fill(Object[] a, Object val) {
-        for (int i = 0, len = a.length; i < len; i++)
+        for (int i = 0, len = a.length; i < len; i++) {
             a[i] = val;
+        }
     }
 
     /**
@@ -3074,8 +3048,9 @@ public class Arrays {
      */
     public static void fill(Object[] a, int fromIndex, int toIndex, Object val) {
         rangeCheck(a.length, fromIndex, toIndex);
-        for (int i = fromIndex; i < toIndex; i++)
+        for (int i = fromIndex; i < toIndex; i++) {
             a[i] = val;
+        }
     }
 
     // Cloning
@@ -3133,8 +3108,7 @@ public class Arrays {
         T[] copy = ((Object) newType == (Object) Object[].class)
                 ? (T[]) new Object[newLength]
                 : (T[]) Array.newInstance(newType.getComponentType(), newLength);
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3157,8 +3131,7 @@ public class Arrays {
      */
     public static byte[] copyOf(byte[] original, int newLength) {
         byte[] copy = new byte[newLength];
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3181,8 +3154,7 @@ public class Arrays {
      */
     public static short[] copyOf(short[] original, int newLength) {
         short[] copy = new short[newLength];
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3205,8 +3177,7 @@ public class Arrays {
      */
     public static int[] copyOf(int[] original, int newLength) {
         int[] copy = new int[newLength];
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3229,8 +3200,7 @@ public class Arrays {
      */
     public static long[] copyOf(long[] original, int newLength) {
         long[] copy = new long[newLength];
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3253,8 +3223,7 @@ public class Arrays {
      */
     public static char[] copyOf(char[] original, int newLength) {
         char[] copy = new char[newLength];
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3277,8 +3246,7 @@ public class Arrays {
      */
     public static float[] copyOf(float[] original, int newLength) {
         float[] copy = new float[newLength];
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3301,8 +3269,7 @@ public class Arrays {
      */
     public static double[] copyOf(double[] original, int newLength) {
         double[] copy = new double[newLength];
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3325,8 +3292,7 @@ public class Arrays {
      */
     public static boolean[] copyOf(boolean[] original, int newLength) {
         boolean[] copy = new boolean[newLength];
-        System.arraycopy(original, 0, copy, 0,
-                Math.min(original.length, newLength));
+        System.arraycopy(original, 0, copy, 0, Math.min(original.length, newLength));
         return copy;
     }
 
@@ -3399,14 +3365,14 @@ public class Arrays {
      */
     public static <T, U> T[] copyOfRange(U[] original, int from, int to, Class<? extends T[]> newType) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         @SuppressWarnings("unchecked")
         T[] copy = ((Object) newType == (Object) Object[].class)
                 ? (T[]) new Object[newLength]
                 : (T[]) Array.newInstance(newType.getComponentType(), newLength);
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3438,11 +3404,11 @@ public class Arrays {
      */
     public static byte[] copyOfRange(byte[] original, int from, int to) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         byte[] copy = new byte[newLength];
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3474,11 +3440,11 @@ public class Arrays {
      */
     public static short[] copyOfRange(short[] original, int from, int to) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         short[] copy = new short[newLength];
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3510,11 +3476,11 @@ public class Arrays {
      */
     public static int[] copyOfRange(int[] original, int from, int to) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         int[] copy = new int[newLength];
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3546,11 +3512,11 @@ public class Arrays {
      */
     public static long[] copyOfRange(long[] original, int from, int to) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         long[] copy = new long[newLength];
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3582,11 +3548,11 @@ public class Arrays {
      */
     public static char[] copyOfRange(char[] original, int from, int to) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         char[] copy = new char[newLength];
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3618,11 +3584,11 @@ public class Arrays {
      */
     public static float[] copyOfRange(float[] original, int from, int to) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         float[] copy = new float[newLength];
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3654,11 +3620,11 @@ public class Arrays {
      */
     public static double[] copyOfRange(double[] original, int from, int to) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         double[] copy = new double[newLength];
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3690,11 +3656,11 @@ public class Arrays {
      */
     public static boolean[] copyOfRange(boolean[] original, int from, int to) {
         int newLength = to - from;
-        if (newLength < 0)
+        if (newLength < 0) {
             throw new IllegalArgumentException(from + " > " + to);
+        }
         boolean[] copy = new boolean[newLength];
-        System.arraycopy(original, from, copy, 0,
-                Math.min(original.length - from, newLength));
+        System.arraycopy(original, from, copy, 0, Math.min(original.length - from, newLength));
         return copy;
     }
 
@@ -3726,8 +3692,7 @@ public class Arrays {
     /**
      * @serial include
      */
-    private static class ArrayList<E> extends AbstractList<E>
-            implements RandomAccess, java.io.Serializable {
+    private static class ArrayList<E> extends AbstractList<E> implements RandomAccess, java.io.Serializable {
         private static final long serialVersionUID = -2764017481108945198L;
         private final E[] a;
 
@@ -3749,12 +3714,13 @@ public class Arrays {
         @SuppressWarnings("unchecked")
         public <T> T[] toArray(T[] a) {
             int size = size();
-            if (a.length < size)
-                return Arrays.copyOf(this.a, size,
-                        (Class<? extends T[]>) a.getClass());
+            if (a.length < size) {
+                return Arrays.copyOf(this.a, size, (Class<? extends T[]>) a.getClass());
+            }
             System.arraycopy(this.a, 0, a, 0, size);
-            if (a.length > size)
+            if (a.length > size) {
                 a[size] = null;
+            }
             return a;
         }
 
@@ -3774,13 +3740,17 @@ public class Arrays {
         public int indexOf(Object o) {
             E[] a = this.a;
             if (o == null) {
-                for (int i = 0; i < a.length; i++)
-                    if (a[i] == null)
+                for (int i = 0; i < a.length; i++) {
+                    if (a[i] == null) {
                         return i;
+                    }
+                }
             } else {
-                for (int i = 0; i < a.length; i++)
-                    if (o.equals(a[i]))
+                for (int i = 0; i < a.length; i++) {
+                    if (o.equals(a[i])) {
                         return i;
+                    }
+                }
             }
             return -1;
         }
@@ -3835,15 +3805,14 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(long a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
         for (long element : a) {
             int elementHash = (int) (element ^ (element >>> 32));
             result = 31 * result + elementHash;
         }
-
         return result;
     }
 
@@ -3864,13 +3833,13 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(int a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
-        for (int element : a)
+        for (int element : a) {
             result = 31 * result + element;
-
+        }
         return result;
     }
 
@@ -3891,13 +3860,13 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(short a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
-        for (short element : a)
+        for (short element : a) {
             result = 31 * result + element;
-
+        }
         return result;
     }
 
@@ -3918,13 +3887,13 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(char a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
-        for (char element : a)
+        for (char element : a) {
             result = 31 * result + element;
-
+        }
         return result;
     }
 
@@ -3945,13 +3914,13 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(byte a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
-        for (byte element : a)
+        for (byte element : a) {
             result = 31 * result + element;
-
+        }
         return result;
     }
 
@@ -3972,13 +3941,13 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(boolean a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
-        for (boolean element : a)
+        for (boolean element : a) {
             result = 31 * result + (element ? 1231 : 1237);
-
+        }
         return result;
     }
 
@@ -3999,13 +3968,13 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(float a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
-        for (float element : a)
+        for (float element : a) {
             result = 31 * result + Float.floatToIntBits(element);
-
+        }
         return result;
     }
 
@@ -4026,9 +3995,9 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(double a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
         for (double element : a) {
             long bits = Double.doubleToLongBits(element);
@@ -4059,14 +4028,13 @@ public class Arrays {
      * @since 1.5
      */
     public static int hashCode(Object a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
-
-        for (Object element : a)
+        for (Object element : a) {
             result = 31 * result + (element == null ? 0 : element.hashCode());
-
+        }
         return result;
     }
 
@@ -4100,37 +4068,35 @@ public class Arrays {
      * @since 1.5
      */
     public static int deepHashCode(Object a[]) {
-        if (a == null)
+        if (a == null) {
             return 0;
-
+        }
         int result = 1;
-
         for (Object element : a) {
             int elementHash = 0;
-            if (element instanceof Object[])
+            if (element instanceof Object[]) {
                 elementHash = deepHashCode((Object[]) element);
-            else if (element instanceof byte[])
+            } else if (element instanceof byte[]) {
                 elementHash = hashCode((byte[]) element);
-            else if (element instanceof short[])
+            } else if (element instanceof short[]) {
                 elementHash = hashCode((short[]) element);
-            else if (element instanceof int[])
+            } else if (element instanceof int[]) {
                 elementHash = hashCode((int[]) element);
-            else if (element instanceof long[])
+            } else if (element instanceof long[]) {
                 elementHash = hashCode((long[]) element);
-            else if (element instanceof char[])
+            } else if (element instanceof char[]) {
                 elementHash = hashCode((char[]) element);
-            else if (element instanceof float[])
+            } else if (element instanceof float[]) {
                 elementHash = hashCode((float[]) element);
-            else if (element instanceof double[])
+            } else if (element instanceof double[]) {
                 elementHash = hashCode((double[]) element);
-            else if (element instanceof boolean[])
+            } else if (element instanceof boolean[]) {
                 elementHash = hashCode((boolean[]) element);
-            else if (element != null)
+            } else if (element != null) {
                 elementHash = element.hashCode();
-
+            }
             result = 31 * result + elementHash;
         }
-
         return result;
     }
 
@@ -4170,28 +4136,30 @@ public class Arrays {
      * @since 1.5
      */
     public static boolean deepEquals(Object[] a1, Object[] a2) {
-        if (a1 == a2)
+        if (a1 == a2) {
             return true;
-        if (a1 == null || a2 == null)
+        }
+        if (a1 == null || a2 == null) {
             return false;
+        }
         int length = a1.length;
-        if (a2.length != length)
+        if (a2.length != length) {
             return false;
-
+        }
         for (int i = 0; i < length; i++) {
             Object e1 = a1[i];
             Object e2 = a2[i];
-
-            if (e1 == e2)
+            if (e1 == e2) {
                 continue;
-            if (e1 == null)
+            }
+            if (e1 == null) {
                 return false;
-
+            }
             // Figure out whether the two elements are equal
             boolean eq = deepEquals0(e1, e2);
-
-            if (!eq)
+            if (!eq) {
                 return false;
+            }
         }
         return true;
     }
@@ -4199,26 +4167,27 @@ public class Arrays {
     static boolean deepEquals0(Object e1, Object e2) {
         assert e1 != null;
         boolean eq;
-        if (e1 instanceof Object[] && e2 instanceof Object[])
+        if (e1 instanceof Object[] && e2 instanceof Object[]) {
             eq = deepEquals((Object[]) e1, (Object[]) e2);
-        else if (e1 instanceof byte[] && e2 instanceof byte[])
+        } else if (e1 instanceof byte[] && e2 instanceof byte[]) {
             eq = equals((byte[]) e1, (byte[]) e2);
-        else if (e1 instanceof short[] && e2 instanceof short[])
+        } else if (e1 instanceof short[] && e2 instanceof short[]) {
             eq = equals((short[]) e1, (short[]) e2);
-        else if (e1 instanceof int[] && e2 instanceof int[])
+        } else if (e1 instanceof int[] && e2 instanceof int[]) {
             eq = equals((int[]) e1, (int[]) e2);
-        else if (e1 instanceof long[] && e2 instanceof long[])
+        } else if (e1 instanceof long[] && e2 instanceof long[]) {
             eq = equals((long[]) e1, (long[]) e2);
-        else if (e1 instanceof char[] && e2 instanceof char[])
+        } else if (e1 instanceof char[] && e2 instanceof char[]) {
             eq = equals((char[]) e1, (char[]) e2);
-        else if (e1 instanceof float[] && e2 instanceof float[])
+        } else if (e1 instanceof float[] && e2 instanceof float[]) {
             eq = equals((float[]) e1, (float[]) e2);
-        else if (e1 instanceof double[] && e2 instanceof double[])
+        } else if (e1 instanceof double[] && e2 instanceof double[]) {
             eq = equals((double[]) e1, (double[]) e2);
-        else if (e1 instanceof boolean[] && e2 instanceof boolean[])
+        } else if (e1 instanceof boolean[] && e2 instanceof boolean[]) {
             eq = equals((boolean[]) e1, (boolean[]) e2);
-        else
+        } else {
             eq = e1.equals(e2);
+        }
         return eq;
     }
 
@@ -4236,18 +4205,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(long[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(a[i]);
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4266,18 +4237,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(int[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(a[i]);
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4296,18 +4269,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(short[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(a[i]);
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4326,18 +4301,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(char[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(a[i]);
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4356,18 +4333,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(byte[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(a[i]);
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4386,18 +4365,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(boolean[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(a[i]);
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4416,19 +4397,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(float[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
-
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(a[i]);
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4447,18 +4429,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(double[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(a[i]);
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4480,19 +4464,20 @@ public class Arrays {
      * @since 1.5
      */
     public static String toString(Object[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
-
+        }
         int iMax = a.length - 1;
-        if (iMax == -1)
+        if (iMax == -1) {
             return "[]";
-
+        }
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
             b.append(String.valueOf(a[i]));
-            if (i == iMax)
+            if (i == iMax) {
                 return b.append(']').toString();
+            }
             b.append(", ");
         }
     }
@@ -4531,19 +4516,19 @@ public class Arrays {
      * @since 1.5
      */
     public static String deepToString(Object[] a) {
-        if (a == null)
+        if (a == null) {
             return "null";
-
+        }
         int bufLen = 20 * a.length;
-        if (a.length != 0 && bufLen <= 0)
+        if (a.length != 0 && bufLen <= 0) {
             bufLen = Integer.MAX_VALUE;
+        }
         StringBuilder buf = new StringBuilder(bufLen);
         deepToString(a, buf, new HashSet<Object[]>());
         return buf.toString();
     }
 
-    private static void deepToString(Object[] a, StringBuilder buf,
-                                     Set<Object[]> dejaVu) {
+    private static void deepToString(Object[] a, StringBuilder buf, Set<Object[]> dejaVu) {
         if (a == null) {
             buf.append("null");
             return;
@@ -4557,7 +4542,6 @@ public class Arrays {
         dejaVu.add(a);
         buf.append('[');
         for (int i = 0; ; i++) {
-
             Object element = a[i];
             if (element == null) {
                 buf.append("null");
@@ -4565,34 +4549,36 @@ public class Arrays {
                 Class<?> eClass = element.getClass();
 
                 if (eClass.isArray()) {
-                    if (eClass == byte[].class)
+                    if (eClass == byte[].class) {
                         buf.append(toString((byte[]) element));
-                    else if (eClass == short[].class)
+                    } else if (eClass == short[].class) {
                         buf.append(toString((short[]) element));
-                    else if (eClass == int[].class)
+                    } else if (eClass == int[].class) {
                         buf.append(toString((int[]) element));
-                    else if (eClass == long[].class)
+                    } else if (eClass == long[].class) {
                         buf.append(toString((long[]) element));
-                    else if (eClass == char[].class)
+                    } else if (eClass == char[].class) {
                         buf.append(toString((char[]) element));
-                    else if (eClass == float[].class)
+                    } else if (eClass == float[].class) {
                         buf.append(toString((float[]) element));
-                    else if (eClass == double[].class)
+                    } else if (eClass == double[].class) {
                         buf.append(toString((double[]) element));
-                    else if (eClass == boolean[].class)
+                    } else if (eClass == boolean[].class) {
                         buf.append(toString((boolean[]) element));
-                    else { // element is an array of object references
-                        if (dejaVu.contains(element))
+                    } else { // element is an array of object references
+                        if (dejaVu.contains(element)) {
                             buf.append("[...]");
-                        else
+                        } else {
                             deepToString((Object[]) element, buf, dejaVu);
+                        }
                     }
                 } else {  // element is non-null and not an array
                     buf.append(element.toString());
                 }
             }
-            if (i == iMax)
+            if (i == iMax) {
                 break;
+            }
             buf.append(", ");
         }
         buf.append(']');
@@ -4616,8 +4602,9 @@ public class Arrays {
      */
     public static <T> void setAll(T[] array, IntFunction<? extends T> generator) {
         Objects.requireNonNull(generator);
-        for (int i = 0; i < array.length; i++)
+        for (int i = 0; i < array.length; i++) {
             array[i] = generator.apply(i);
+        }
     }
 
     /**
@@ -4657,8 +4644,9 @@ public class Arrays {
      */
     public static void setAll(int[] array, IntUnaryOperator generator) {
         Objects.requireNonNull(generator);
-        for (int i = 0; i < array.length; i++)
+        for (int i = 0; i < array.length; i++) {
             array[i] = generator.applyAsInt(i);
+        }
     }
 
     /**
@@ -4697,8 +4685,9 @@ public class Arrays {
      */
     public static void setAll(long[] array, IntToLongFunction generator) {
         Objects.requireNonNull(generator);
-        for (int i = 0; i < array.length; i++)
+        for (int i = 0; i < array.length; i++) {
             array[i] = generator.applyAsLong(i);
+        }
     }
 
     /**
@@ -4737,8 +4726,9 @@ public class Arrays {
      */
     public static void setAll(double[] array, IntToDoubleFunction generator) {
         Objects.requireNonNull(generator);
-        for (int i = 0; i < array.length; i++)
+        for (int i = 0; i < array.length; i++) {
             array[i] = generator.applyAsDouble(i);
+        }
     }
 
     /**
@@ -4775,8 +4765,7 @@ public class Arrays {
      * @since 1.8
      */
     public static <T> Spliterator<T> spliterator(T[] array) {
-        return Spliterators.spliterator(array,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+        return Spliterators.spliterator(array, Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     /**
@@ -4799,8 +4788,7 @@ public class Arrays {
      * @since 1.8
      */
     public static <T> Spliterator<T> spliterator(T[] array, int startInclusive, int endExclusive) {
-        return Spliterators.spliterator(array, startInclusive, endExclusive,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+        return Spliterators.spliterator(array, startInclusive, endExclusive, Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     /**
@@ -4815,8 +4803,7 @@ public class Arrays {
      * @since 1.8
      */
     public static Spliterator.OfInt spliterator(int[] array) {
-        return Spliterators.spliterator(array,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+        return Spliterators.spliterator(array, Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     /**
@@ -4838,8 +4825,7 @@ public class Arrays {
      * @since 1.8
      */
     public static Spliterator.OfInt spliterator(int[] array, int startInclusive, int endExclusive) {
-        return Spliterators.spliterator(array, startInclusive, endExclusive,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+        return Spliterators.spliterator(array, startInclusive, endExclusive, Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     /**
@@ -4854,8 +4840,7 @@ public class Arrays {
      * @since 1.8
      */
     public static Spliterator.OfLong spliterator(long[] array) {
-        return Spliterators.spliterator(array,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+        return Spliterators.spliterator(array, Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     /**
@@ -4877,8 +4862,7 @@ public class Arrays {
      * @since 1.8
      */
     public static Spliterator.OfLong spliterator(long[] array, int startInclusive, int endExclusive) {
-        return Spliterators.spliterator(array, startInclusive, endExclusive,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+        return Spliterators.spliterator(array, startInclusive, endExclusive, Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     /**
@@ -4894,8 +4878,7 @@ public class Arrays {
      * @since 1.8
      */
     public static Spliterator.OfDouble spliterator(double[] array) {
-        return Spliterators.spliterator(array,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+        return Spliterators.spliterator(array, Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     /**
@@ -4917,8 +4900,7 @@ public class Arrays {
      * @since 1.8
      */
     public static Spliterator.OfDouble spliterator(double[] array, int startInclusive, int endExclusive) {
-        return Spliterators.spliterator(array, startInclusive, endExclusive,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE);
+        return Spliterators.spliterator(array, startInclusive, endExclusive, Spliterator.ORDERED | Spliterator.IMMUTABLE);
     }
 
     /**

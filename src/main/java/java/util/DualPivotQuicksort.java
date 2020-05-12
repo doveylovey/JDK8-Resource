@@ -57,35 +57,41 @@ final class DualPivotQuicksort {
 
     /**
      * The maximum number of runs in merge sort.
+     * 合并排序中的最大次数
      */
     private static final int MAX_RUN_COUNT = 67;
 
     /**
      * The maximum length of run in merge sort.
+     * 合并排序的最大长度
      */
     private static final int MAX_RUN_LENGTH = 33;
 
     /**
      * If the length of an array to be sorted is less than this
      * constant, Quicksort is used in preference to merge sort.
+     * 如果要排序的数组的长度小于此常量，则优先使用快速排序而不是归并排序。
      */
     private static final int QUICKSORT_THRESHOLD = 286;
 
     /**
      * If the length of an array to be sorted is less than this
      * constant, insertion sort is used in preference to Quicksort.
+     * 如果要排序的数组的长度小于此常量，则优先使用插入排序而不是快速排序。
      */
     private static final int INSERTION_SORT_THRESHOLD = 47;
 
     /**
      * If the length of a byte array to be sorted is greater than this
      * constant, counting sort is used in preference to insertion sort.
+     * 如果要排序的 byte 数组的长度大于此常量，则优先使用计数排序而不是插入排序。
      */
     private static final int COUNTING_SORT_THRESHOLD_FOR_BYTE = 29;
 
     /**
      * If the length of a short or char array to be sorted is greater
      * than this constant, counting sort is used in preference to Quicksort.
+     * 如果要排序的 short 或 char 数组的长度大于此常数，则优先使用计数排序而不是快速排序。
      */
     private static final int COUNTING_SORT_THRESHOLD_FOR_SHORT_OR_CHAR = 3200;
 
@@ -104,34 +110,37 @@ final class DualPivotQuicksort {
      * @param workBase origin of usable space in work array
      * @param workLen  usable size of work array
      */
-    static void sort(int[] a, int left, int right,
-                     int[] work, int workBase, int workLen) {
+    static void sort(int[] a, int left, int right, int[] work, int workBase, int workLen) {
         // Use Quicksort on small arrays
+        // 首先对数组长度进行判断，如果小于快速排序的阈值(默认是286)，则直接选择快速排序进行排序
         if (right - left < QUICKSORT_THRESHOLD) {
             sort(a, left, right, true);
             return;
         }
-
-        /*
-         * Index run[i] is the start of i-th run
-         * (ascending or descending sequence).
-         */
+        // Index run[i] is the start of i-th run (ascending or descending sequence).
         int[] run = new int[MAX_RUN_COUNT + 1];
         int count = 0;
         run[0] = left;
 
         // Check if the array is nearly sorted
+        // 该循环用于判断这个长数组是否基本有序，如果基本有序则选择归并排序，否则仍选择快速排序。
+        // 如果选择了快速排序，则会在这个 for 循环中的两个 return 处结束这次排序；如果选择了归并排序，则是 for 循环之后的代码实现
         for (int k = left; k < right; run[count] = k) {
-            if (a[k] < a[k + 1]) { // ascending
-                while (++k <= right && a[k - 1] <= a[k]) ;
-            } else if (a[k] > a[k + 1]) { // descending
-                while (++k <= right && a[k - 1] >= a[k]) ;
+            if (a[k] < a[k + 1]) {
+                // ascending：升序
+                while (++k <= right && a[k - 1] <= a[k]) {
+                }
+            } else if (a[k] > a[k + 1]) {
+                // descending：降序
+                while (++k <= right && a[k - 1] >= a[k]) {
+                }
                 for (int lo = run[count] - 1, hi = k; ++lo < --hi; ) {
                     int t = a[lo];
                     a[lo] = a[hi];
                     a[hi] = t;
                 }
-            } else { // equal
+            } else {
+                // equal：相等
                 for (int m = MAX_RUN_LENGTH; ++k <= right && a[k - 1] == a[k]; ) {
                     if (--m == 0) {
                         sort(a, left, right, true);
@@ -139,22 +148,18 @@ final class DualPivotQuicksort {
                     }
                 }
             }
-
-            /*
-             * The array is not highly structured,
-             * use Quicksort instead of merge sort.
-             */
+            // The array is not highly structured, use Quicksort instead of merge sort.
             if (++count == MAX_RUN_COUNT) {
                 sort(a, left, right, true);
                 return;
             }
         }
-
-        // Check special cases
-        // Implementation note: variable "right" is increased by 1.
-        if (run[count] == right++) { // The last run contains one element
+        // Check special cases. Implementation note: variable "right" is increased by 1.
+        if (run[count] == right++) {
+            // The last run contains one element
             run[++count] = right;
-        } else if (count == 1) { // The array is already sorted
+        } else if (count == 1) {
+            // The array is already sorted
             return;
         }
 
@@ -183,6 +188,7 @@ final class DualPivotQuicksort {
         }
 
         // Merging
+        // 该循环是归并排序的实现：因为在上个 for 循环判断数组是否基本有序时，就已经记录了原数组的各个有序子序列，归并排序实际上就是对这些子序列进行自底向上的归并排序。
         for (int last; count > 1; count = last) {
             for (int k = (last = 0) + 2; k <= count; k += 2) {
                 int hi = run[k], mi = run[k - 1];
@@ -195,11 +201,10 @@ final class DualPivotQuicksort {
                 }
                 run[++last] = hi;
             }
+            // 如果 a 中子序列个数是奇数，则最后一个没有完成配对归并的序列直接复制到 b 中
             if ((count & 1) != 0) {
-                for (int i = right, lo = run[count - 1]; --i >= lo;
-                     b[i + bo] = a[i + ao]
-                )
-                    ;
+                for (int i = right, lo = run[count - 1]; --i >= lo; b[i + bo] = a[i + ao]) {
+                }
                 run[++last] = right;
             }
             int[] t = a;
@@ -212,6 +217,7 @@ final class DualPivotQuicksort {
     }
 
     /**
+     * 通过 Dual-Pivot Quicksort 对指定范围的数组进行排序。
      * Sorts the specified range of the array by Dual-Pivot Quicksort.
      *
      * @param a        the array to be sorted
@@ -221,15 +227,10 @@ final class DualPivotQuicksort {
      */
     private static void sort(int[] a, int left, int right, boolean leftmost) {
         int length = right - left + 1;
-
         // Use insertion sort on tiny arrays
         if (length < INSERTION_SORT_THRESHOLD) {
             if (leftmost) {
-                /*
-                 * Traditional (without sentinel) insertion sort,
-                 * optimized for server VM, is used in case of
-                 * the leftmost part.
-                 */
+                // Traditional (without sentinel) insertion sort, optimized for server VM, is used in case of the leftmost part.
                 for (int i = left, j = i; i < right; j = ++i) {
                     int ai = a[i + 1];
                     while (ai < a[j]) {
@@ -241,9 +242,8 @@ final class DualPivotQuicksort {
                     a[j + 1] = ai;
                 }
             } else {
-                /*
-                 * Skip the longest ascending sequence.
-                 */
+                // Skip the longest ascending sequence.
+                // 跳过最长的上升序列。如数组 a 内容为：1245986，经过这步后 a[left] 的内容就成了9，即 Left=4
                 do {
                     if (left >= right) {
                         return;
@@ -251,32 +251,31 @@ final class DualPivotQuicksort {
                 } while (a[++left] >= a[left - 1]);
 
                 /*
-                 * Every element from adjoining part plays the role
-                 * of sentinel, therefore this allows us to avoid the
-                 * left range check on each iteration. Moreover, we use
-                 * the more optimized algorithm, so called pair insertion
-                 * sort, which is faster (in the context of Quicksort)
-                 * than traditional implementation of insertion sort.
+                 * Every element from adjoining part plays the role of sentinel, therefore this allows us to avoid the left range check on each iteration.
+                 * Moreover, we use the more optimized algorithm, so called pair insertion sort,
+                 * which is faster (in the context of Quicksort) than traditional implementation of insertion sort.
                  */
+                // 双插入排序，每次完成两个元素的插入排序
                 for (int k = left; ++left <= right; k = ++left) {
                     int a1 = a[k], a2 = a[left];
-
+                    // 保证 a1>=a2
                     if (a1 < a2) {
                         a2 = a1;
                         a1 = a[left];
                     }
+                    // 将 a1 插入
                     while (a1 < a[--k]) {
                         a[k + 2] = a[k];
                     }
                     a[++k + 1] = a1;
-
+                    //将 a2 插入
                     while (a2 < a[--k]) {
                         a[k + 1] = a[k];
                     }
                     a[k + 1] = a2;
                 }
+                // 如果元素个数为奇数，则最后一个元素没有进行配对，因此需对其单独进行插入排序
                 int last = a[right];
-
                 while (last < a[--right]) {
                     a[right + 1] = a[right];
                 }
@@ -581,8 +580,8 @@ final class DualPivotQuicksort {
     }
 
     /**
-     * Sorts the specified range of the array using the given
-     * workspace array slice if possible for merging
+     * 如果可能的话，使用给定的工作区数组切片对数组的指定范围进行排序
+     * Sorts the specified range of the array using the given workspace array slice if possible for merging
      *
      * @param a        the array to be sorted
      * @param left     the index of the first element, inclusive, to be sorted
@@ -591,34 +590,35 @@ final class DualPivotQuicksort {
      * @param workBase origin of usable space in work array
      * @param workLen  usable size of work array
      */
-    static void sort(long[] a, int left, int right,
-                     long[] work, int workBase, int workLen) {
+    static void sort(long[] a, int left, int right, long[] work, int workBase, int workLen) {
         // Use Quicksort on small arrays
         if (right - left < QUICKSORT_THRESHOLD) {
             sort(a, left, right, true);
             return;
         }
 
-        /*
-         * Index run[i] is the start of i-th run
-         * (ascending or descending sequence).
-         */
+        // Index run[i] is the start of i-th run (ascending or descending sequence).
         int[] run = new int[MAX_RUN_COUNT + 1];
         int count = 0;
         run[0] = left;
 
         // Check if the array is nearly sorted
         for (int k = left; k < right; run[count] = k) {
-            if (a[k] < a[k + 1]) { // ascending
-                while (++k <= right && a[k - 1] <= a[k]) ;
-            } else if (a[k] > a[k + 1]) { // descending
-                while (++k <= right && a[k - 1] >= a[k]) ;
+            if (a[k] < a[k + 1]) {
+                // ascending：升序
+                while (++k <= right && a[k - 1] <= a[k]) {
+                }
+            } else if (a[k] > a[k + 1]) {
+                // descending：降序
+                while (++k <= right && a[k - 1] >= a[k]) {
+                }
                 for (int lo = run[count] - 1, hi = k; ++lo < --hi; ) {
                     long t = a[lo];
                     a[lo] = a[hi];
                     a[hi] = t;
                 }
-            } else { // equal
+            } else {
+                // equal：相等
                 for (int m = MAX_RUN_LENGTH; ++k <= right && a[k - 1] == a[k]; ) {
                     if (--m == 0) {
                         sort(a, left, right, true);
@@ -627,27 +627,26 @@ final class DualPivotQuicksort {
                 }
             }
 
-            /*
-             * The array is not highly structured,
-             * use Quicksort instead of merge sort.
-             */
+            // The array is not highly structured, use Quicksort instead of merge sort.
             if (++count == MAX_RUN_COUNT) {
                 sort(a, left, right, true);
                 return;
             }
         }
 
-        // Check special cases
-        // Implementation note: variable "right" is increased by 1.
-        if (run[count] == right++) { // The last run contains one element
+        // Check special cases. Implementation note: variable "right" is increased by 1.
+        if (run[count] == right++) {
+            // The last run contains one element
             run[++count] = right;
-        } else if (count == 1) { // The array is already sorted
+        } else if (count == 1) {
+            // The array is already sorted
             return;
         }
 
         // Determine alternation base for merge
         byte odd = 0;
-        for (int n = 1; (n <<= 1) < count; odd ^= 1) ;
+        for (int n = 1; (n <<= 1) < count; odd ^= 1) {
+        }
 
         // Use or create temporary array b for merging
         long[] b;                 // temp array; alternates with a
@@ -699,6 +698,7 @@ final class DualPivotQuicksort {
     }
 
     /**
+     * 通过 Dual-Pivot Quicksort 对指定范围的数组进行排序。
      * Sorts the specified range of the array by Dual-Pivot Quicksort.
      *
      * @param a        the array to be sorted

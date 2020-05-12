@@ -176,14 +176,20 @@ class ComparableTimSort {
      * @since 1.8
      */
     static void sort(Object[] a, int lo, int hi, Object[] work, int workBase, int workLen) {
+        // assert 的常规用法：检查传入数据是否合法
         assert a != null && lo >= 0 && lo <= hi && hi <= a.length;
-
+        // 计算数组的排序区间
         int nRemaining = hi - lo;
-        if (nRemaining < 2)
+        if (nRemaining < 2) {
+            // 如果排序区间小于2，实际上无需排序，直接返回
             return;  // Arrays of size 0 and 1 are always sorted
-
+        }
         // If array is small, do a "mini-TimSort" with no merges
+        // 1、当数组长度 <32 时，直接进行排序并返回
+        // 2、当数组长度 >32 时，先根据计算的分片数组长度将数组拆分成很小的区块，然后对每个小块排序，最后进行结果的合并
+        // MIN_MERGE=32 的原因：源码中说是依靠经验判断来设置的，如果重新设置该值，可能会导致数组越界的风险
         if (nRemaining < MIN_MERGE) {
+            // 计算数组中有序子数组的长度
             int initRunLen = countRunAndMakeAscending(a, lo, hi);
             binarySort(a, lo, hi, lo + initRunLen);
             return;
@@ -194,20 +200,25 @@ class ComparableTimSort {
          * extending short natural runs to minRun elements, and merging runs
          * to maintain stack invariant.
          */
+        // 该类主要用来合并排序结果
         ComparableTimSort ts = new ComparableTimSort(a, work, workBase, workLen);
+        // minRun 最终范围为 16 <= minRun <= 32
         int minRun = minRunLength(nRemaining);
         do {
             // Identify next run
+            // 计算有序子数组的长度
             int runLen = countRunAndMakeAscending(a, lo, hi);
-
             // If run is short, extend to min(minRun, nRemaining)
+            // 该判断是为了确认在该排序的子数组中，是否包含了无序排列。如果 runLen==mainRun，则说明数组中的所有元素都处于有序状态
             if (runLen < minRun) {
                 int force = nRemaining <= minRun ? nRemaining : minRun;
+                // 排序：lo 是开始索引，force 为有序数组的长度，所以 lo+runLen 为实际开始排序的元素索引，lo + force 为当次排序的范围
                 binarySort(a, lo, lo + force, lo + runLen);
                 runLen = force;
             }
 
             // Push run onto pending-run stack, and maybe merge
+            // 比较片段并合并结果
             ts.pushRun(lo, runLen);
             ts.mergeCollapse();
 
@@ -236,18 +247,19 @@ class ComparableTimSort {
      * @param a     the array in which a range is to be sorted
      * @param lo    the index of the first element in the range to be sorted
      * @param hi    the index after the last element in the range to be sorted
-     * @param start the index of the first element in the range that is
-     *              not already known to be sorted ({@code lo <= start <= hi})
+     * @param start the index of the first element in the range that is not already known to be sorted ({@code lo <= start <= hi})
      */
     @SuppressWarnings({"fallthrough", "rawtypes", "unchecked"})
     private static void binarySort(Object[] a, int lo, int hi, int start) {
         assert lo <= start && start <= hi;
-        if (start == lo)
+        if (start == lo) {
             start++;
+        }
         for (; start < hi; start++) {
+            // 遍历获取当前无序状态的元素
             Comparable pivot = (Comparable) a[start];
-
             // Set left (and right) to the index where a[start] (pivot) belongs
+            // 元素比较的开始、结束下标
             int left = lo;
             int right = start;
             assert left <= right;
@@ -257,11 +269,15 @@ class ComparableTimSort {
              *   pivot <  all in [right, start).
              */
             while (left < right) {
+                // 计算从 left 到 right 的中间元素的下标。注：(left + right)/2 永远不会超出有效的数组边界
                 int mid = (left + right) >>> 1;
-                if (pivot.compareTo(a[mid]) < 0)
+                // 将无序元素与该次的中间值进行比较，如果当前 pivot 的值小于中间值，则将 right 的坐标移到中间下标
+                // 因为从无序元素开始的 start 开始，其左边元素已经处于升序的有序状态，中间值的比较可以较少比较次数，和比较范围
+                if (pivot.compareTo(a[mid]) < 0) {
                     right = mid;
-                else
+                } else {
                     left = mid + 1;
+                }
             }
             assert left == right;
 
@@ -308,30 +324,37 @@ class ComparableTimSort {
      * @param lo index of the first element in the run
      * @param hi index after the last element that may be contained in the run.
      *           It is required that {@code lo < hi}.
-     * @return the length of the run beginning at the specified position in
-     * the specified array
+     * @return the length of the run beginning at the specified position in the specified array
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static int countRunAndMakeAscending(Object[] a, int lo, int hi) {
         assert lo < hi;
         int runHi = lo + 1;
-        if (runHi == hi)
+        if (runHi == hi) {
             return 1;
-
-        // Find end of run, and reverse range if descending
-        if (((Comparable) a[runHi++]).compareTo(a[lo]) < 0) { // Descending
-            while (runHi < hi && ((Comparable) a[runHi]).compareTo(a[runHi - 1]) < 0)
-                runHi++;
-            reverseRange(a, lo, runHi);
-        } else {                              // Ascending
-            while (runHi < hi && ((Comparable) a[runHi]).compareTo(a[runHi - 1]) >= 0)
-                runHi++;
         }
-
+        // 从开始下标开始检索需要排序的数组，主要实现了2点：
+        // 1、如果为降序排列，则计算有序子数组结束时的元素下标，再将降序子数组反转为升序数组
+        // 2、如果为升序子数组，则计算有序子数组结束时的元素下标
+        // Find end of run, and reverse range if descending
+        if (((Comparable) a[runHi++]).compareTo(a[lo]) < 0) {
+            // Descending：降序
+            while (runHi < hi && ((Comparable) a[runHi]).compareTo(a[runHi - 1]) < 0) {
+                runHi++;
+            }
+            reverseRange(a, lo, runHi);
+        } else {
+            // Ascending：升序
+            while (runHi < hi && ((Comparable) a[runHi]).compareTo(a[runHi - 1]) >= 0) {
+                runHi++;
+            }
+        }
+        // 通过有序子数组的 "结束下标 - 开始下标" 得到有序子数组的长度
         return runHi - lo;
     }
 
     /**
+     * 反转指定范围的指定数组：将数组中的元素进行首尾交换来实现
      * Reverse the specified range of the specified array.
      *
      * @param a  the array in which a range is to be reversed
