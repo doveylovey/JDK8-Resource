@@ -1,5 +1,11 @@
 package com.study.test;
 
+import org.junit.Test;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
 public class HashMapTests {
     static final int MAXIMUM_CAPACITY = 1 << 30;
 
@@ -32,4 +38,14 @@ public class HashMapTests {
         int size53 = tableSizeFor(53);
         System.out.println("53 =====> " + size53);
     }
+
+    @Test
+    public void test01() {
+        Map<String, Object> hashMap = new HashMap();
+        hashMap.put("aaaa", "12345");
+        hashMap.put("aaaa", true);
+        hashMap.put("bvfggg", BigDecimal.ZERO);
+        hashMap.forEach((key, value) -> System.out.println("key: "+key + ", value: " + value));
+    }
+
 }

@@ -231,7 +231,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
     /**
      * The default initial capacity - MUST be a power of two.
      * <p>
-     * 默认的初始容量：必须为2的次方，默认的 HashMap 大小为16
+     * 默认的初始容量：必须为2的次方，默认的 HashMap 大小为 2^4，即16
      */
     static final int DEFAULT_INITIAL_CAPACITY = 1 << 4;
 
@@ -664,6 +664,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
     }
 
     /**
+     * 往 HashMap 中 put 元素时，先根据 key 的 hash 值得到这个元素在数组中的位置(即下标)，然后把这个元素放到对应的位置中。
+     * 如果这个元素所在的位置中已经存放有其他元素，那么在同一位置上的元素将以链表的形式存放，新加入的放在链头，最先加入的放在链尾。
+     * 从 HashMap 中 get 元素时，首先计算 key 的 hashcode，找到数组中对应位置的元素，然后通过 key 的 equals 方法在对应位置的链表中找到需要的元素。
+     * 由此可以想到：如果每个位置上的链表只有一个元素，那么 HashMap 的 get 效率将是最高的。
+     * <p>
      * Implements Map.put and related methods.
      *
      * @param hash         hash for key
@@ -680,6 +685,12 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         if ((tab = table) == null || (n = tab.length) == 0) {
             n = (tab = resize()).length;
         }
+        // (n - 1) & hash 的作用：计算该元素在数组中的位置。n 是集合的容量，hash 是待添加元素经过 hash 函数计算得到的值。
+        // 参考 https://blog.csdn.net/apeopl/article/details/88935422
+        // HashMap 的容量为什么是2的n次幂？这就和 (n - 1) & hash 的计算方法有着千丝万缕的关系：
+        // 符号 & 是按位与运算(属于位运算)，计算机能直接运算，特别高效。
+        // 按位与的计算方法是：只有当对应位置的数都为1时，运算结果才为1。当 HashMap 的容量是2的n次幂时，(n-1)的二进制位全为1，
+        // 在与待添加元素的 hash 值进行位运算时就能够充分的散列，使得添加的元素均匀分布在 HashMap 的数组上，减少 hash 碰撞，避免形成链表结构使查询效率降低
         if ((p = tab[i = (n - 1) & hash]) == null) {
             tab[i] = newNode(hash, key, value, null);
         } else {
@@ -693,7 +704,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                 for (int binCount = 0; ; ++binCount) {
                     if ((e = p.next) == null) {
                         p.next = newNode(hash, key, value, null);
-                        if (binCount >= TREEIFY_THRESHOLD - 1) {// -1 for 1st
+                        if (binCount >= TREEIFY_THRESHOLD - 1) {
+                            // -1 for 1st
                             treeifyBin(tab, hash);
                         }
                         break;
@@ -704,7 +716,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                     p = e;
                 }
             }
-            if (e != null) { // existing mapping for key
+            if (e != null) {
+                // existing mapping for key
                 V oldValue = e.value;
                 if (!onlyIfAbsent || oldValue == null) {
                     e.value = value;
@@ -722,11 +735,11 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
     }
 
     /**
-     * Initializes or doubles table size.  If null, allocates in
-     * accord with initial capacity target held in field threshold.
-     * Otherwise, because we are using power-of-two expansion, the
-     * elements from each bin must either stay at same index, or move
-     * with a power of two offset in the new table.
+     * Initializes or doubles table size.
+     * If null, allocates in accord with initial capacity target held in field threshold.
+     * Otherwise, because we are using power-of-two expansion,
+     * the elements from each bin must either stay at same index,
+     * or move with a power of two offset in the new table.
      *
      * @return the table
      */
@@ -737,50 +750,68 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         int newCap, newThr = 0;
         if (oldCap > 0) {
             if (oldCap >= MAXIMUM_CAPACITY) {
+                // 若原 hash 表的容量已经达到最大值(1 << 30 即 2^30)，则修改阈值为Integer.MAX_VALUE(即 2^31-1)，让以后不再扩容
                 threshold = Integer.MAX_VALUE;
                 return oldTab;
-            } else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY && oldCap >= DEFAULT_INITIAL_CAPACITY)
-                newThr = oldThr << 1; // double threshold
-        } else if (oldThr > 0) // initial capacity was placed in threshold
+            } else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY && oldCap >= DEFAULT_INITIAL_CAPACITY) {
+                // 容量没有达到最大值，则新 hash 表的长度就是原 hash 表的2倍(因为：newCap = oldCap << 1)
+                // double threshold
+                // // 计算新 hash 表下次扩容时的阈值：即 threshold 也扩大为原来的2倍(因为：newThr = oldThr << 1，等价于 newThr = oldThr * 2)
+                newThr = oldThr << 1;
+            }
+        } else if (oldThr > 0) {
+            // initial capacity was placed in threshold
             newCap = oldThr;
-        else {               // zero initial threshold signifies using defaults
+        } else {
+            // zero initial threshold signifies using defaults
             newCap = DEFAULT_INITIAL_CAPACITY;
+            // 计算新 hash 表下次扩容时的阈值
             newThr = (int) (DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
         }
         if (newThr == 0) {
+            // 计算新 hash 表下次扩容时的阈值
             float ft = (float) newCap * loadFactor;
             newThr = (newCap < MAXIMUM_CAPACITY && ft < (float) MAXIMUM_CAPACITY ? (int) ft : Integer.MAX_VALUE);
         }
         threshold = newThr;
+        // 初始化一个新的 hash 表(即：newTab)，其大小是所需的新容量大小(即：newCap)
         @SuppressWarnings({"rawtypes", "unchecked"})
         Node<K, V>[] newTab = (Node<K, V>[]) new Node[newCap];
+        // 让 HashMap 的 table 属性引用新的 hash 表
         table = newTab;
         if (oldTab != null) {
             for (int j = 0; j < oldCap; ++j) {
+                // 遍历原 hash 表(oldTab)，把所有 Entry 重新 Hash 到新 hash 表(newTab)
+                // 为什么要重新 Hash 呢？因为扩容后 Hash 的规则也就改变了
                 Node<K, V> e;
                 if ((e = oldTab[j]) != null) {
+                    // 释放原 hash 表中的对象引用(for 循环后，原 hash 表就不再引用任何对象)
                     oldTab[j] = null;
-                    if (e.next == null)
+                    if (e.next == null) {
+                        // 重新 Hash 方法：e.hash & (newCap - 1)
                         newTab[e.hash & (newCap - 1)] = e;
-                    else if (e instanceof TreeNode)
+                    } else if (e instanceof TreeNode) {
                         ((TreeNode<K, V>) e).split(this, newTab, j, oldCap);
-                    else { // preserve order
+                    } else {
+                        // preserve order
                         Node<K, V> loHead = null, loTail = null;
                         Node<K, V> hiHead = null, hiTail = null;
                         Node<K, V> next;
                         do {
                             next = e.next;
                             if ((e.hash & oldCap) == 0) {
-                                if (loTail == null)
+                                if (loTail == null) {
                                     loHead = e;
-                                else
+                                } else {
                                     loTail.next = e;
+                                }
                                 loTail = e;
                             } else {
-                                if (hiTail == null)
+                                if (hiTail == null) {
                                     hiHead = e;
-                                else
+                                } else {
                                     hiTail.next = e;
+                                }
                                 hiTail = e;
                             }
                         } while ((e = next) != null);
