@@ -683,6 +683,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         Node<K, V> p;
         int n, i;
         if ((tab = table) == null || (n = tab.length) == 0) {
+            // table 为空时进行 resize() 重新获取 hash 表容量大小
             n = (tab = resize()).length;
         }
         // (n - 1) & hash 的作用：计算该元素在数组中的位置。n 是集合的容量，hash 是待添加元素经过 hash 函数计算得到的值。
@@ -692,19 +693,26 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         // 按位与的计算方法是：只有当对应位置的数都为1时，运算结果才为1。当 HashMap 的容量是2的n次幂时，(n-1)的二进制位全为1，
         // 在与待添加元素的 hash 值进行位运算时就能够充分的散列，使得添加的元素均匀分布在 HashMap 的数组上，减少 hash 碰撞，避免形成链表结构使查询效率降低
         if ((p = tab[i = (n - 1) & hash]) == null) {
+            // 若指定下标(即：下标 i = (n - 1) & hash)处对应的值为 null，则直接生成新节点放入桶中
             tab[i] = newNode(hash, key, value, null);
         } else {
             Node<K, V> e;
             K k;
             if (p.hash == hash && ((k = p.key) == key || (key != null && key.equals(k)))) {
+                // key 完全相同，保存原来的 Node，后面会用于返回值
                 e = p;
             } else if (p instanceof TreeNode) {
+                // 若桶内对象已经是红黑树，则在树上添加元素
                 e = ((TreeNode<K, V>) p).putTreeVal(this, tab, hash, key, value);
             } else {
+                // 桶内已存在链表节点则遍历链表并往链尾添加节点
                 for (int binCount = 0; ; ++binCount) {
                     if ((e = p.next) == null) {
+                        // 第1次循环就已经是获取第2个节点了(因为：0->root.next)，所以 binCount 为0时插入的是第二个节点
                         p.next = newNode(hash, key, value, null);
                         if (binCount >= TREEIFY_THRESHOLD - 1) {
+                            // 如果链表中元素个数已经超过树化阈值 TREEIFY_THRESHOLD，则将链表转化成红黑树。
+                            // 注意 binCount 等于7时插入的是第9个节点
                             // -1 for 1st
                             treeifyBin(tab, hash);
                         }
@@ -745,6 +753,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      */
     final Node<K, V>[] resize() {
         Node<K, V>[] oldTab = table;
+        // 记住扩容前的容量大小、容量阈值
         int oldCap = (oldTab == null) ? 0 : oldTab.length;
         int oldThr = threshold;
         int newCap, newThr = 0;
@@ -773,6 +782,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
             float ft = (float) newCap * loadFactor;
             newThr = (newCap < MAXIMUM_CAPACITY && ft < (float) MAXIMUM_CAPACITY ? (int) ft : Integer.MAX_VALUE);
         }
+        // 修改容量阈值 threshold 为扩容计算后的容量阈值 newThr
         threshold = newThr;
         // 初始化一个新的 hash 表(即：newTab)，其大小是所需的新容量大小(即：newCap)
         @SuppressWarnings({"rawtypes", "unchecked"})
@@ -784,22 +794,29 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                 // 遍历原 hash 表(oldTab)，把所有 Entry 重新 Hash 到新 hash 表(newTab)
                 // 为什么要重新 Hash 呢？因为扩容后 Hash 的规则也就改变了
                 Node<K, V> e;
+                // 取出原 hash 表中 j 下标处的元素放在 e 中
                 if ((e = oldTab[j]) != null) {
                     // 释放原 hash 表中的对象引用(for 循环后，原 hash 表就不再引用任何对象)
                     oldTab[j] = null;
                     if (e.next == null) {
-                        // 重新 Hash 方法：e.hash & (newCap - 1)
+                        // 若原 hash 表中 j 下标处只有一个元素，则直接计算其在新 hash 表中的位置并放置
+                        // 重新 Hash 方法：e.hash & (newCap - 1)。因为扩容后 Hash 的规则改变，故要重新 Hash
                         newTab[e.hash & (newCap - 1)] = e;
                     } else if (e instanceof TreeNode) {
+                        // 若元素不为空且是树结构，则进行单独处理
                         ((TreeNode<K, V>) e).split(this, newTab, j, oldCap);
                     } else {
+                        // 能进来就说明原 hash 表中 j 下标处存在哈希冲突的链表结构
                         // preserve order
                         Node<K, V> loHead = null, loTail = null;
                         Node<K, V> hiHead = null, hiTail = null;
                         Node<K, V> next;
+                        // 循环处理原 hash 表中 j 下标处哈希冲突的链表中的每个元素
                         do {
                             next = e.next;
+                            // 根据 key 的 hash 值和原 hash 表长度进行 & 操作后的结果决定该元素是放在原索引处还是新索引
                             if ((e.hash & oldCap) == 0) {
+                                // 建立新链表，但元素放在原索引处的
                                 if (loTail == null) {
                                     loHead = e;
                                 } else {
@@ -807,6 +824,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                                 }
                                 loTail = e;
                             } else {
+                                // 建立新链表，但元素放在新索引(即：原索引 + oldCap)处
                                 if (hiTail == null) {
                                     hiHead = e;
                                 } else {
@@ -816,11 +834,15 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                             }
                         } while ((e = next) != null);
                         if (loTail != null) {
+                            // 放入原索引处
                             loTail.next = null;
                             newTab[j] = loHead;
                         }
                         if (hiTail != null) {
+                            // 放入新索引处
                             hiTail.next = null;
+                            // 下面这行水很深，你细品。新位置为原位置+原hash表长度，为什么？？？
+                            // 参考 https://blog.csdn.net/qq32933432/article/details/86668385
                             newTab[j + oldCap] = hiHead;
                         }
                     }
