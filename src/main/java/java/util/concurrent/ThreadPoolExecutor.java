@@ -379,17 +379,37 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * below).
      */
     private final AtomicInteger ctl = new AtomicInteger(ctlOf(RUNNING, 0));
-    private static final int COUNT_BITS = Integer.SIZE - 3;
+    private static final int COUNT_BITS = Integer.SIZE - 3;// 32-3=29
+    // (1<<29)-1解释：1的32位二进制是 0000 0000 0000 0000 0000 0000 0000 0001，
+    // 左移29位的结果是 0010 0000 0000 0000 0000 0000 0000 0000，
+    // 再减去1是 0001 1111 1111 1111 1111 1111 1111 1111
     private static final int CAPACITY = (1 << COUNT_BITS) - 1;
 
-    // runState is stored in the high-order bits
+    /*
+     * 为什么 Integer 的长度是 32 位，但其最大容量是 2^32-1？
+     * 因为：虽然 Integer 占 32 位，但二进制的最高位存储的是符号位(0-正数、1-负数)。
+     * 例如：对于 8 位二进制，其最大容量是 0111 1111，即2^8-1=127。
+     * 补充：系统中都是以补码的形势去存储的。不清楚为什么这么存的读者可以参考文章：https://blog.csdn.net/zl10086111/article/details/80907428。
+     *
+     * 在计算中，-1 是怎么存储的？
+     * -1 的原码：1000 0000 0000 0000 0000 0000 0000 0001
+     * -1 的反码：0111 1111 1111 1111 1111 1111 1111 1110
+     * -1 的补码：0111 1111 1111 1111 1111 1111 1111 1111
+     * -1<<29 得：1110 0000 0000 0000 0000 0000 0000 0000
+     */
+    // runState is stored in the high-order bits. runState存储在高位
+    // RUNNING => 1110 0000 0000 0000 0000 0000 0000 0000
     private static final int RUNNING = -1 << COUNT_BITS;
+    // SHUTDOWN => 0000 0000 0000 0000 0000 0000 0000 0000
     private static final int SHUTDOWN = 0 << COUNT_BITS;
+    // STOP => 0010 0000 0000 0000 0000 0000 0000 0000
     private static final int STOP = 1 << COUNT_BITS;
+    // TIDYING => 0110 0000 0000 0000 0000 0000 0000 0000
     private static final int TIDYING = 2 << COUNT_BITS;
+    // TERMINATED => 1110 0000 0000 0000 0000 0000 0000 0000
     private static final int TERMINATED = 3 << COUNT_BITS;
 
-    // Packing and unpacking ctl
+    // Packing and unpacking ctl. 包装和开箱 ctl
     private static int runStateOf(int c) {
         return c & ~CAPACITY;
     }

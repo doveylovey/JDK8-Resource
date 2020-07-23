@@ -859,22 +859,26 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
     final void treeifyBin(Node<K, V>[] tab, int hash) {
         int n, index;
         Node<K, V> e;
-        if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY)
+        if (tab == null || (n = tab.length) < MIN_TREEIFY_CAPACITY) {
+            // hash 表为空或其长度小于树化阈值，则扩容
             resize();
-        else if ((e = tab[index = (n - 1) & hash]) != null) {
+        } else if ((e = tab[index = (n - 1) & hash]) != null) {
             TreeNode<K, V> hd = null, tl = null;
             do {
+                // 将 Node 对象转为 TreeNode 对象
                 TreeNode<K, V> p = replacementTreeNode(e, null);
-                if (tl == null)
+                if (tl == null) {
                     hd = p;
-                else {
+                } else {
                     p.prev = tl;
                     tl.next = p;
                 }
                 tl = p;
             } while ((e = e.next) != null);
-            if ((tab[index] = hd) != null)
+            if ((tab[index] = hd) != null) {
+                // 将 TreeNode 链表转成红黑树
                 hd.treeify(tab);
+            }
         }
     }
 
@@ -2025,6 +2029,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                 next = (TreeNode<K, V>) x.next;
                 x.left = x.right = null;
                 if (root == null) {
+                    // root 为空时，直接将第一个元素存入 root
                     x.parent = null;
                     x.red = false;
                     root = x;
@@ -2032,6 +2037,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                     K k = x.key;
                     int h = x.hash;
                     Class<?> kc = null;
+                    // 往二叉树中插入当前节点
                     for (TreeNode<K, V> p = root; ; ) {
                         int dir, ph;
                         K pk = p.key;
