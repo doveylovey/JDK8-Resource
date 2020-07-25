@@ -126,15 +126,13 @@ package java.util.concurrent;
  * @since 1.5
  */
 public interface Executor {
-
     /**
-     * Executes the given command at some time in the future.  The command
-     * may execute in a new thread, in a pooled thread, or in the calling
-     * thread, at the discretion of the {@code Executor} implementation.
+     * 在将来的某个时间执行给定命令。根据 Executor 实现的判断，命令可以在新线程、在合并线程中或在调用线程中执行。
+     * Executes the given command at some time in the future. The command may execute in a new thread,
+     * in a pooled thread, or in the calling thread, at the discretion of the {@code Executor} implementation.
      *
      * @param command the runnable task
-     * @throws RejectedExecutionException if this task cannot be
-     *                                    accepted for execution
+     * @throws RejectedExecutionException if this task cannot be accepted for execution
      * @throws NullPointerException       if command is null
      */
     void execute(Runnable command);
