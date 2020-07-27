@@ -1,4 +1,4 @@
-package com.study.test;
+package com.study.test.temp;
 
 import org.junit.Assert;
 import org.junit.Test;
