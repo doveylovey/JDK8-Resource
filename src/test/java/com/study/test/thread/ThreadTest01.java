@@ -18,6 +18,7 @@ import java.util.concurrent.*;
 public class ThreadTest01 {
     @Test
     public void test01() {
+        // currentThread() 方法可以返回代码段正在被哪个线程调用
         // 在控制台中输出的 main，其实就是一个名称叫做 main 的线程在执行 test01()
         System.out.println(Thread.currentThread().getName());
     }
@@ -62,19 +63,15 @@ public class ThreadTest01 {
     }
 
     @Test
-    public void testMyThread02() {
+    public void testMyThread02() throws InterruptedException {
         // 测试线程执行的无序性
         MyThread02 myThread02 = new MyThread02();
         myThread02.setName("MyThread02");
         myThread02.start();
-        try {
-            for (int i = 0; i < 10; i++) {
-                int time = (int) (Math.random() * 1000);
-                TimeUnit.MILLISECONDS.sleep(time);
-                System.out.println("testMyThread02=" + Thread.currentThread().getName());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        for (int i = 0; i < 10; i++) {
+            int time = (int) (Math.random() * 1000);
+            TimeUnit.MILLISECONDS.sleep(time);
+            System.out.println("testMyThread02=" + Thread.currentThread().getName());
         }
     }
 
@@ -152,7 +149,7 @@ public class ThreadTest01 {
     }
 
     @Test
-    public void testMyCallable01() {
+    public void testMyCallable01() throws ExecutionException, InterruptedException {
         // 创建 MyCallable01 实例
         Callable<String> myCallable01 = new MyCallable01();
         // 通过 Callable 创建 FutureTask 实例
@@ -161,13 +158,7 @@ public class ThreadTest01 {
         Thread thread = new Thread(futureTask);
         // 开启线程
         thread.start();
-        try {
-            System.out.println("线程的执行结果为：" + futureTask.get());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        System.out.println("线程的执行结果为：" + futureTask.get());
     }
 
     /**
@@ -186,7 +177,7 @@ public class ThreadTest01 {
      * 6、当设置 allowCoreThreadTimeOut(true) 时，线程池中 corePoolSize 线程空闲时间达到 keepAliveTime 也将关闭
      */
     @Test
-    public void testThreadPool01() {
+    public void testThreadPool01() throws IOException {
         // 底层：返回 ThreadPoolExecutor 实例，corePoolSize 为 0；maximumPoolSize 为 Integer.MAX_VALUE；keepAliveTime 为 60L；unit 为 TimeUnit.SECONDS；workQueue 为 SynchronousQueue(同步队列)
         // 通俗：当有新任务到来，则插入到 SynchronousQueue 中，由于 SynchronousQueue 是同步队列，因此会在池中寻找可用线程来执行，若有可以线程则执行，若没有可用线程则创建一个线程来执行该任务；若池中线程空闲时间超过指定大小，则该线程会被销毁。
         // 适用：执行很多短期异步的小程序或者负载较轻的服务器
@@ -236,11 +227,6 @@ public class ThreadTest01 {
                 System.out.println("【newScheduledThreadPool()线程池执行方法示例】当前线程：" + Thread.currentThread().getName() + "，执行普通任务");
             });
         }*/
-
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.in.read();
     }
 }

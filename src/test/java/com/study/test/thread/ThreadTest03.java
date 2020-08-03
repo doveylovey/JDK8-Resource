@@ -58,13 +58,9 @@ public class ThreadTest03 {
     }
 
     @Test
-    public void testLoginThread01() {
+    public void testLoginThread01() throws IOException {
         new LoginThreadA().start();
         new LoginThreadB().start();
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.in.read();
     }
 }

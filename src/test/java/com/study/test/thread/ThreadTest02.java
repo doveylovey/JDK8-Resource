@@ -36,16 +36,12 @@ public class ThreadTest02 {
     }
 
     @Test
-    public void testNotSharedThread01() {
+    public void testNotSharedThread01() throws IOException {
         // 共创建了 3 个线程，每个线程都有自己的 count 变量，自己减少自己 count 变量的值。此时不存在多个线程访问同一个实例变量
         new NotSharedThread01("A").start();
         new NotSharedThread01("B").start();
         new NotSharedThread01("C").start();
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.in.read();
     }
 
     /**
@@ -83,7 +79,7 @@ public class ThreadTest02 {
     }
 
     @Test
-    public void testSharedThread01() {
+    public void testSharedThread01() throws IOException {
         SharedThread01 sharedThread01 = new SharedThread01();
         new Thread(sharedThread01, "A").start();
         new Thread(sharedThread01, "B").start();
@@ -91,11 +87,6 @@ public class ThreadTest02 {
         new Thread(sharedThread01, "D").start();
         new Thread(sharedThread01, "E").start();
         new Thread(sharedThread01, "F").start();
-        try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.in.read();
     }
 }
-
