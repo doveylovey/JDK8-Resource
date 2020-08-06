@@ -6,7 +6,7 @@ import java.io.IOException;
 
 /**
  * 作用描述：synchronized 同步方法无限等待与解决。
- * 同步方法容易造成死循环.
+ * 同步方法容易造成死循环。
  *
  * @author doveylovey
  * @version v1.0.0
