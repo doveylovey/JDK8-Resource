@@ -30,7 +30,7 @@ public class CommunicationTest01 {
     /**
      * 不使用等待/通知机制实现线程间通信
      */
-    class NotUseWaitAndNotice {
+    class NotUseWaitAndNotify {
         private volatile List<String> list = new ArrayList<>();
 
         public void add() {
@@ -42,12 +42,12 @@ public class CommunicationTest01 {
         }
     }
 
-    class NotUseWaitAndNoticeThreadA extends Thread {
-        private NotUseWaitAndNotice notUseWaitAndNotice;
+    class NotUseWaitAndNotifyThreadA extends Thread {
+        private NotUseWaitAndNotify notUseWaitAndNotify;
 
-        public NotUseWaitAndNoticeThreadA(NotUseWaitAndNotice notUseWaitAndNotice) {
+        public NotUseWaitAndNotifyThreadA(NotUseWaitAndNotify notUseWaitAndNotify) {
             super();
-            this.notUseWaitAndNotice = notUseWaitAndNotice;
+            this.notUseWaitAndNotify = notUseWaitAndNotify;
         }
 
         @Override
@@ -55,7 +55,7 @@ public class CommunicationTest01 {
             super.run();
             try {
                 for (int i = 0; i < 10; i++) {
-                    notUseWaitAndNotice.add();
+                    notUseWaitAndNotify.add();
                     System.out.println("添加了 " + (i + 1) + " 个元素！");
                     Thread.sleep(1000);
                 }
@@ -65,12 +65,12 @@ public class CommunicationTest01 {
         }
     }
 
-    class NotUseWaitAndNoticeThreadB extends Thread {
-        private NotUseWaitAndNotice notUseWaitAndNotice;
+    class NotUseWaitAndNotifyThreadB extends Thread {
+        private NotUseWaitAndNotify notUseWaitAndNotify;
 
-        public NotUseWaitAndNoticeThreadB(NotUseWaitAndNotice notUseWaitAndNotice) {
+        public NotUseWaitAndNotifyThreadB(NotUseWaitAndNotify notUseWaitAndNotify) {
             super();
-            this.notUseWaitAndNotice = notUseWaitAndNotice;
+            this.notUseWaitAndNotify = notUseWaitAndNotify;
         }
 
         @Override
@@ -78,7 +78,7 @@ public class CommunicationTest01 {
             super.run();
             try {
                 while (true) {
-                    if (notUseWaitAndNotice.size() == 5) {
+                    if (notUseWaitAndNotify.size() == 5) {
                         System.out.println("size() == 5，线程 B 要退出了！");
                         throw new InterruptedException();
                     }
@@ -97,12 +97,12 @@ public class CommunicationTest01 {
      * @throws IOException
      */
     @Test
-    public void testNotUseWaitAndNotice01() throws IOException {
-        NotUseWaitAndNotice notUseWaitAndNotice = new NotUseWaitAndNotice();
-        NotUseWaitAndNoticeThreadA threadA = new NotUseWaitAndNoticeThreadA(notUseWaitAndNotice);
+    public void testNotUseWaitAndNotify01() throws IOException {
+        NotUseWaitAndNotify notUseWaitAndNotify = new NotUseWaitAndNotify();
+        NotUseWaitAndNotifyThreadA threadA = new NotUseWaitAndNotifyThreadA(notUseWaitAndNotify);
         threadA.setName("A");
         threadA.start();
-        NotUseWaitAndNoticeThreadB threadB = new NotUseWaitAndNoticeThreadB(notUseWaitAndNotice);
+        NotUseWaitAndNotifyThreadB threadB = new NotUseWaitAndNotifyThreadB(notUseWaitAndNotify);
         threadB.setName("B");
         threadB.start();
         System.in.read();
@@ -145,6 +145,138 @@ public class CommunicationTest01 {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.in.read();
+    }
+
+    class UseWaitAndNotifySimpleThreadA extends Thread {
+        private Object lock;
+
+        public UseWaitAndNotifySimpleThreadA(Object lock) {
+            super();
+            this.lock = lock;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            try {
+                synchronized (lock) {
+                    System.out.println("wait()方法开始，time=" + System.currentTimeMillis());
+                    lock.wait();
+                    System.out.println("wait()方法结束，time=" + System.currentTimeMillis());
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    class UseWaitAndNotifySimpleThreadB extends Thread {
+        private Object lock;
+
+        public UseWaitAndNotifySimpleThreadB(Object lock) {
+            super();
+            this.lock = lock;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            synchronized (lock) {
+                System.out.println("notify()方法开始，time=" + System.currentTimeMillis());
+                lock.notify();
+                System.out.println("notify()方法结束，time=" + System.currentTimeMillis());
+            }
+        }
+    }
+
+    /**
+     * 从控制台打印的结果来看，3秒后线程被 notify 通知唤醒
+     *
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @Test
+    public void testUseWaitAndNotify01() throws IOException, InterruptedException {
+        Object lock = new Object();
+        new UseWaitAndNotifySimpleThreadA(lock).start();
+        Thread.sleep(3000);
+        new UseWaitAndNotifySimpleThreadB(lock).start();
+        System.in.read();
+    }
+
+    static class UseWaitAndNotifySize {
+        private static List<String> list = new ArrayList<>();
+
+        public static void add() {
+            list.add("不使用等待/通知机制实现线程间通信");
+        }
+
+        public static int size() {
+            return list.size();
+        }
+    }
+
+    class UseWaitAndNotifySizeThreadA extends Thread {
+        private Object lock;
+
+        public UseWaitAndNotifySizeThreadA(Object lock) {
+            super();
+            this.lock = lock;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            try {
+                synchronized (lock) {
+                    if (UseWaitAndNotifySize.size() != 5) {
+                        System.out.println("wait()方法开始，time=" + System.currentTimeMillis());
+                        lock.wait();
+                        System.out.println("wait()方法结束，time=" + System.currentTimeMillis());
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    class UseWaitAndNotifySizeThreadB extends Thread {
+        private Object lock;
+
+        public UseWaitAndNotifySizeThreadB(Object lock) {
+            super();
+            this.lock = lock;
+        }
+
+        @Override
+        public void run() {
+            super.run();
+            try {
+                synchronized (lock) {
+                    for (int i = 0; i < 10; i++) {
+                        UseWaitAndNotifySize.add();
+                        if (UseWaitAndNotifySize.size() == 5) {
+                            lock.notify();
+                            System.out.println("已发出通知！");
+                        }
+                        System.out.println("添加了" + (i + 1) + "个元素！");
+                        Thread.sleep(1000);
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Test
+    public void testUseWaitAndNotifySize01() throws IOException, InterruptedException {
+        Object lock = new Object();
+        new UseWaitAndNotifySizeThreadA(lock).start();
+        Thread.sleep(3000);
+        new UseWaitAndNotifySizeThreadB(lock).start();
         System.in.read();
     }
 }
