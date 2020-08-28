@@ -151,8 +151,7 @@ import java.util.Collections;
  * @since 1.4
  */
 
-public abstract class FileChannel
-        extends AbstractInterruptibleChannel
+public abstract class FileChannel extends AbstractInterruptibleChannel
         implements SeekableByteChannel, GatheringByteChannel, ScatteringByteChannel {
     /**
      * Initializes a new instance of this class.
@@ -267,9 +266,7 @@ public abstract class FileChannel
      *                                       write access if the file is opened for writing
      * @since 1.7
      */
-    public static FileChannel open(Path path,
-                                   Set<? extends OpenOption> options,
-                                   FileAttribute<?>... attrs)
+    public static FileChannel open(Path path, Set<? extends OpenOption> options, FileAttribute<?>... attrs)
             throws IOException {
         FileSystemProvider provider = path.getFileSystem().provider();
         return provider.newFileChannel(path, options, attrs);
@@ -306,8 +303,7 @@ public abstract class FileChannel
      *                                       write access if the file is opened for writing
      * @since 1.7
      */
-    public static FileChannel open(Path path, OpenOption... options)
-            throws IOException {
+    public static FileChannel open(Path path, OpenOption... options) throws IOException {
         Set<OpenOption> set = new HashSet<OpenOption>(options.length);
         Collections.addAll(set, options);
         return open(path, set, NO_ATTRIBUTES);
@@ -334,8 +330,7 @@ public abstract class FileChannel
      * read.  Otherwise this method behaves exactly as specified in the {@link
      * ScatteringByteChannel} interface.  </p>
      */
-    public abstract long read(ByteBuffer[] dsts, int offset, int length)
-            throws IOException;
+    public abstract long read(ByteBuffer[] dsts, int offset, int length) throws IOException;
 
     /**
      * Reads a sequence of bytes from this channel into the given buffers.
@@ -374,8 +369,7 @@ public abstract class FileChannel
      * behaves exactly as specified in the {@link GatheringByteChannel}
      * interface.  </p>
      */
-    public abstract long write(ByteBuffer[] srcs, int offset, int length)
-            throws IOException;
+    public abstract long write(ByteBuffer[] srcs, int offset, int length) throws IOException;
 
     /**
      * Writes a sequence of bytes to this channel from the given buffers.
@@ -543,9 +537,7 @@ public abstract class FileChannel
      *                                     setting the current thread's interrupt status
      * @throws IOException                 If some other I/O error occurs
      */
-    public abstract long transferTo(long position, long count,
-                                    WritableByteChannel target)
-            throws IOException;
+    public abstract long transferTo(long position, long count, WritableByteChannel target) throws IOException;
 
     /**
      * Transfers bytes into this channel's file from the given readable byte
@@ -590,9 +582,7 @@ public abstract class FileChannel
      *                                     setting the current thread's interrupt status
      * @throws IOException                 If some other I/O error occurs
      */
-    public abstract long transferFrom(ReadableByteChannel src,
-                                      long position, long count)
-            throws IOException;
+    public abstract long transferFrom(ReadableByteChannel src, long position, long count) throws IOException;
 
     /**
      * Reads a sequence of bytes from this channel into the given buffer,
@@ -662,24 +652,20 @@ public abstract class FileChannel
      * @since 1.4
      */
     public static class MapMode {
-
         /**
          * Mode for a read-only mapping.
          */
-        public static final MapMode READ_ONLY
-                = new MapMode("READ_ONLY");
+        public static final MapMode READ_ONLY = new MapMode("READ_ONLY");
 
         /**
          * Mode for a read/write mapping.
          */
-        public static final MapMode READ_WRITE
-                = new MapMode("READ_WRITE");
+        public static final MapMode READ_WRITE = new MapMode("READ_WRITE");
 
         /**
          * Mode for a private (copy-on-write) mapping.
          */
-        public static final MapMode PRIVATE
-                = new MapMode("PRIVATE");
+        public static final MapMode PRIVATE = new MapMode("PRIVATE");
 
         private final String name;
 
@@ -695,7 +681,6 @@ public abstract class FileChannel
         public String toString() {
             return name;
         }
-
     }
 
     /**
@@ -771,9 +756,7 @@ public abstract class FileChannel
      * @see java.nio.channels.FileChannel.MapMode
      * @see java.nio.MappedByteBuffer
      */
-    public abstract MappedByteBuffer map(MapMode mode,
-                                         long position, long size)
-            throws IOException;
+    public abstract MappedByteBuffer map(MapMode mode, long position, long size) throws IOException;
 
 
     // -- Locks --
@@ -844,8 +827,7 @@ public abstract class FileChannel
      * @see #tryLock()
      * @see #tryLock(long, long, boolean)
      */
-    public abstract FileLock lock(long position, long size, boolean shared)
-            throws IOException;
+    public abstract FileLock lock(long position, long size, boolean shared) throws IOException;
 
     /**
      * Acquires an exclusive lock on this channel's file.
@@ -927,8 +909,7 @@ public abstract class FileChannel
      * @see #lock(long, long, boolean)
      * @see #tryLock()
      */
-    public abstract FileLock tryLock(long position, long size, boolean shared)
-            throws IOException;
+    public abstract FileLock tryLock(long position, long size, boolean shared) throws IOException;
 
     /**
      * Attempts to acquire an exclusive lock on this channel's file.
@@ -955,5 +936,4 @@ public abstract class FileChannel
     public final FileLock tryLock() throws IOException {
         return tryLock(0L, Long.MAX_VALUE, false);
     }
-
 }

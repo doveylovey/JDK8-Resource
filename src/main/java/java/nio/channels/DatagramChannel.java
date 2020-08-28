@@ -110,10 +110,8 @@ import java.nio.channels.spi.SelectorProvider;
  * @since 1.4
  */
 
-public abstract class DatagramChannel
-        extends AbstractSelectableChannel
+public abstract class DatagramChannel extends AbstractSelectableChannel
         implements ByteChannel, ScatteringByteChannel, GatheringByteChannel, MulticastChannel {
-
     /**
      * Initializes a new instance of this class.
      *
@@ -183,8 +181,7 @@ public abstract class DatagramChannel
      * @return The valid-operation set
      */
     public final int validOps() {
-        return (SelectionKey.OP_READ
-                | SelectionKey.OP_WRITE);
+        return (SelectionKey.OP_READ | SelectionKey.OP_WRITE);
     }
 
 
@@ -200,8 +197,7 @@ public abstract class DatagramChannel
      *                                         operation
      * @since 1.7
      */
-    public abstract DatagramChannel bind(SocketAddress local)
-            throws IOException;
+    public abstract DatagramChannel bind(SocketAddress local) throws IOException;
 
     /**
      * @throws UnsupportedOperationException {@inheritDoc}
@@ -210,8 +206,7 @@ public abstract class DatagramChannel
      * @throws IOException                   {@inheritDoc}
      * @since 1.7
      */
-    public abstract <T> DatagramChannel setOption(SocketOption<T> name, T value)
-            throws IOException;
+    public abstract <T> DatagramChannel setOption(SocketOption<T> name, T value) throws IOException;
 
     /**
      * Retrieves a datagram socket associated with this channel.
@@ -269,8 +264,7 @@ public abstract class DatagramChannel
      *                                    and it does not permit access to the given remote address
      * @throws IOException                If some other I/O error occurs
      */
-    public abstract DatagramChannel connect(SocketAddress remote)
-            throws IOException;
+    public abstract DatagramChannel connect(SocketAddress remote) throws IOException;
 
     /**
      * Disconnects this channel's socket.
@@ -403,8 +397,7 @@ public abstract class DatagramChannel
      *                                    to the given address
      * @throws IOException                If some other I/O error occurs
      */
-    public abstract int send(ByteBuffer src, SocketAddress target)
-            throws IOException;
+    public abstract int send(ByteBuffer src, SocketAddress target) throws IOException;
 
 
     // -- ByteChannel operations --
@@ -435,8 +428,7 @@ public abstract class DatagramChannel
      *
      * @throws NotYetConnectedException If this channel's socket is not connected
      */
-    public abstract long read(ByteBuffer[] dsts, int offset, int length)
-            throws IOException;
+    public abstract long read(ByteBuffer[] dsts, int offset, int length) throws IOException;
 
     /**
      * Reads a datagram from this channel.
@@ -481,8 +473,7 @@ public abstract class DatagramChannel
      * underlying output buffer
      * @throws NotYetConnectedException If this channel's socket is not connected
      */
-    public abstract long write(ByteBuffer[] srcs, int offset, int length)
-            throws IOException;
+    public abstract long write(ByteBuffer[] srcs, int offset, int length) throws IOException;
 
     /**
      * Writes a datagram to this channel.
@@ -522,5 +513,4 @@ public abstract class DatagramChannel
      */
     @Override
     public abstract SocketAddress getLocalAddress() throws IOException;
-
 }

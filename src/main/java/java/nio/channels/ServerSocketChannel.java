@@ -71,10 +71,8 @@ import java.nio.channels.spi.SelectorProvider;
  * @since 1.4
  */
 
-public abstract class ServerSocketChannel
-        extends AbstractSelectableChannel
+public abstract class ServerSocketChannel extends AbstractSelectableChannel
         implements NetworkChannel {
-
     /**
      * Initializes a new instance of this class.
      *
@@ -142,8 +140,7 @@ public abstract class ServerSocketChannel
      *                                         operation
      * @since 1.7
      */
-    public final ServerSocketChannel bind(SocketAddress local)
-            throws IOException {
+    public final ServerSocketChannel bind(SocketAddress local) throws IOException {
         return bind(local, 0);
     }
 
@@ -175,8 +172,7 @@ public abstract class ServerSocketChannel
      *                                         operation
      * @since 1.7
      */
-    public abstract ServerSocketChannel bind(SocketAddress local, int backlog)
-            throws IOException;
+    public abstract ServerSocketChannel bind(SocketAddress local, int backlog) throws IOException;
 
     /**
      * @throws UnsupportedOperationException {@inheritDoc}
@@ -185,8 +181,7 @@ public abstract class ServerSocketChannel
      * @throws IOException                   {@inheritDoc}
      * @since 1.7
      */
-    public abstract <T> ServerSocketChannel setOption(SocketOption<T> name, T value)
-            throws IOException;
+    public abstract <T> ServerSocketChannel setOption(SocketOption<T> name, T value) throws IOException;
 
     /**
      * Retrieves a server socket associated with this channel.
@@ -254,5 +249,4 @@ public abstract class ServerSocketChannel
      */
     @Override
     public abstract SocketAddress getLocalAddress() throws IOException;
-
 }

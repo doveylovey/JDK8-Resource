@@ -53,7 +53,6 @@ import java.io.Closeable;
  */
 
 public interface Channel extends Closeable {
-
     /**
      * Tells whether or not this channel is open.
      *
@@ -79,5 +78,4 @@ public interface Channel extends Closeable {
      * @throws IOException If an I/O error occurs
      */
     public void close() throws IOException;
-
 }

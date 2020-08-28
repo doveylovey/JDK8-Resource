@@ -113,10 +113,8 @@ import java.nio.channels.spi.SelectorProvider;
  * @since 1.4
  */
 
-public abstract class SocketChannel
-        extends AbstractSelectableChannel
+public abstract class SocketChannel extends AbstractSelectableChannel
         implements ByteChannel, ScatteringByteChannel, GatheringByteChannel, NetworkChannel {
-
     /**
      * Initializes a new instance of this class.
      *
@@ -163,8 +161,7 @@ public abstract class SocketChannel
      *                                         and it does not permit access to the given remote endpoint
      * @throws IOException                     If some other I/O error occurs
      */
-    public static SocketChannel open(SocketAddress remote)
-            throws IOException {
+    public static SocketChannel open(SocketAddress remote) throws IOException {
         SocketChannel sc = open();
         try {
             sc.connect(remote);
@@ -192,9 +189,7 @@ public abstract class SocketChannel
      * @return The valid-operation set
      */
     public final int validOps() {
-        return (SelectionKey.OP_READ
-                | SelectionKey.OP_WRITE
-                | SelectionKey.OP_CONNECT);
+        return (SelectionKey.OP_READ | SelectionKey.OP_WRITE | SelectionKey.OP_CONNECT);
     }
 
 
@@ -213,8 +208,7 @@ public abstract class SocketChannel
      * @since 1.7
      */
     @Override
-    public abstract SocketChannel bind(SocketAddress local)
-            throws IOException;
+    public abstract SocketChannel bind(SocketAddress local) throws IOException;
 
     /**
      * @throws UnsupportedOperationException {@inheritDoc}
@@ -224,8 +218,7 @@ public abstract class SocketChannel
      * @since 1.7
      */
     @Override
-    public abstract <T> SocketChannel setOption(SocketOption<T> name, T value)
-            throws IOException;
+    public abstract <T> SocketChannel setOption(SocketOption<T> name, T value) throws IOException;
 
     /**
      * Shutdown the connection for reading without closing the channel.
@@ -401,8 +394,7 @@ public abstract class SocketChannel
     /**
      * @throws NotYetConnectedException If this channel is not yet connected
      */
-    public abstract long read(ByteBuffer[] dsts, int offset, int length)
-            throws IOException;
+    public abstract long read(ByteBuffer[] dsts, int offset, int length) throws IOException;
 
     /**
      * @throws NotYetConnectedException If this channel is not yet connected
@@ -419,8 +411,7 @@ public abstract class SocketChannel
     /**
      * @throws NotYetConnectedException If this channel is not yet connected
      */
-    public abstract long write(ByteBuffer[] srcs, int offset, int length)
-            throws IOException;
+    public abstract long write(ByteBuffer[] srcs, int offset, int length) throws IOException;
 
     /**
      * @throws NotYetConnectedException If this channel is not yet connected
@@ -448,5 +439,4 @@ public abstract class SocketChannel
      */
     @Override
     public abstract SocketAddress getLocalAddress() throws IOException;
-
 }
