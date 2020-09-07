@@ -1,4 +1,4 @@
-package com.study.test.io;
+package com.study.test.io.pio;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,10 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @email 1135782208@qq.com
  * @date 2020年08月28日
  */
-public class JavaThreadPoolIoTests {
-}
-
-class ThreadPoolTimeServer {
+public class ThreadPoolTimeServer {
     public static void main(String[] args) throws IOException {
         int serverPort = 8080;
         ServerSocket serverSocket = null;
@@ -36,7 +33,7 @@ class ThreadPoolTimeServer {
             System.out.println("【ThreadPoolIO】time server is start in port：" + serverPort);
             Socket socket = null;
             // 创建处理类的线程池
-            ThreadPoolTimeServerHandler serverHandler = new ThreadPoolTimeServerHandler(50, 10000);
+            TimeServerThreadPool serverHandler = new TimeServerThreadPool(50, 10000);
             while (true) {
                 socket = serverSocket.accept();
                 // 当接收到新客户端连接的时候，将请求 Socket 封装成一个 Task，然后调用线程池的 execute() 方法执行，从而避免为每个请求都创建一个线程
@@ -51,29 +48,11 @@ class ThreadPoolTimeServer {
     }
 }
 
-class ThreadPoolTimeClient {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        int serverPort = 8080;
-        // 创建 Socket 客户端
-        try (Socket socket = new Socket("127.0.0.1", serverPort);
-             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-             PrintWriter out = new PrintWriter(socket.getOutputStream(), true)) {
-            for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                // 向服务端发送 "query time" 指令
-                out.println("query time");
-                // 读取服务端响应结果并打印
-                String response = in.readLine();
-                System.out.println("客户端接收到的响应：" + response);
-                //TimeUnit.SECONDS.sleep(3);
-            }
-        }
-    }
-}
 
-class ThreadPoolTimeServerHandler {
+class TimeServerThreadPool {
     private ExecutorService executorService;
 
-    public ThreadPoolTimeServerHandler(int maxPoolSize, int queueSize) {
+    public TimeServerThreadPool(int maxPoolSize, int queueSize) {
         // 由于线程池和消息队列都是有界的，因此，无论客户端的并发连接数有多大，都不会导致线程个数过多或内存溢出，相比传统的一连接一线程模型是一种改良
         this.executorService = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(),
                 maxPoolSize,
