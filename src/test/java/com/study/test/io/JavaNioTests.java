@@ -140,12 +140,12 @@ class NioTimeServerHandler implements Runnable {
                     readBuffer.get(bytes);
                     // 调用字符串的构造函数创建请求消息体
                     String request = new String(bytes, StandardCharsets.UTF_8);
+                    System.out.println("服务端接收到的请求：" + request);
                     String currentTime = "System Error！";
                     if ("query time".equalsIgnoreCase(request)) {
                         // 如果请求指令是 "query time"，则把服务器的当前时间编码后返回给客户端
                         currentTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now());
                     }
-                    System.out.println("服务端接收到的请求：" + request);
                     // 将应答消息异步发送给客户端
                     this.doWrite(socketChannel, currentTime);
                 } else if (read < 0) {
