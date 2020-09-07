@@ -14,6 +14,11 @@ import java.util.concurrent.TimeUnit;
  * 先启动服务端，再启动客户端。我们发现 BIO 的主要问题：
  * 每当有一个新的客户端请求接入时，服务端就要创建一个新的线程去处理新接入的客户端链路，即一个线程只能处理一个客户端连接。
  * 在高性能服务器应用领域，往往需要面向成千上万个客户端的并发连接，BIO 模型显然无法满足高性能、高并发的接入场景。
+ *
+ * @author doveylovey
+ * @version v1.0.0
+ * @email 1135782208@qq.com
+ * @date 2020年08月28日
  */
 public class JavaBioTests {
 }

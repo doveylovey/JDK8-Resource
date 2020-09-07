@@ -63,9 +63,7 @@ import sun.misc.Unsafe;
  * @since 1.4
  */
 
-public abstract class MappedByteBuffer
-        extends ByteBuffer {
-
+public abstract class MappedByteBuffer extends ByteBuffer {
     // This is a little bit backwards: By rights MappedByteBuffer should be a
     // subclass of DirectByteBuffer, but to keep the spec clear and simple, and
     // for optimization purposes, it's easier to do it the other way around.

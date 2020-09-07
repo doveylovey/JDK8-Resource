@@ -256,10 +256,8 @@ import java.util.stream.IntStream;
  * @since 1.4
  */
 
-public abstract class CharBuffer
-        extends Buffer
+public abstract class CharBuffer extends Buffer
         implements Comparable<CharBuffer>, Appendable, CharSequence, Readable {
-
     // These fields are declared here rather than in Heap-X-Buffer in order to
     // reduce the number of virtual method invocations needed to access these
     // values, which is especially costly when coding small buffers.
