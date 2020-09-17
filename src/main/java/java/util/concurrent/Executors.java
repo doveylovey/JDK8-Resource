@@ -71,7 +71,6 @@ import sun.security.util.SecurityConstants;
  * @since 1.5
  */
 public class Executors {
-
     /**
      * Creates a thread pool that reuses a fixed number of threads
      * operating off a shared unbounded queue.  At any point, at most
@@ -88,9 +87,7 @@ public class Executors {
      * @throws IllegalArgumentException if {@code nThreads <= 0}
      */
     public static ExecutorService newFixedThreadPool(int nThreads) {
-        return new ThreadPoolExecutor(nThreads, nThreads,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>());
+        return new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
     }
 
     /**
@@ -109,10 +106,7 @@ public class Executors {
      * @since 1.8
      */
     public static ExecutorService newWorkStealingPool(int parallelism) {
-        return new ForkJoinPool
-                (parallelism,
-                        ForkJoinPool.defaultForkJoinWorkerThreadFactory,
-                        null, true);
+        return new ForkJoinPool(parallelism, ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);
     }
 
     /**
@@ -125,10 +119,7 @@ public class Executors {
      * @since 1.8
      */
     public static ExecutorService newWorkStealingPool() {
-        return new ForkJoinPool
-                (Runtime.getRuntime().availableProcessors(),
-                        ForkJoinPool.defaultForkJoinWorkerThreadFactory,
-                        null, true);
+        return new ForkJoinPool(Runtime.getRuntime().availableProcessors(), ForkJoinPool.defaultForkJoinWorkerThreadFactory, null, true);
     }
 
     /**
@@ -151,10 +142,7 @@ public class Executors {
      * @throws IllegalArgumentException if {@code nThreads <= 0}
      */
     public static ExecutorService newFixedThreadPool(int nThreads, ThreadFactory threadFactory) {
-        return new ThreadPoolExecutor(nThreads, nThreads,
-                0L, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>(),
-                threadFactory);
+        return new ThreadPoolExecutor(nThreads, nThreads, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), threadFactory);
     }
 
     /**
@@ -171,10 +159,7 @@ public class Executors {
      * @return the newly created single-threaded Executor
      */
     public static ExecutorService newSingleThreadExecutor() {
-        return new FinalizableDelegatedExecutorService
-                (new ThreadPoolExecutor(1, 1,
-                        0L, TimeUnit.MILLISECONDS,
-                        new LinkedBlockingQueue<Runnable>()));
+        return new FinalizableDelegatedExecutorService(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>()));
     }
 
     /**
@@ -191,11 +176,7 @@ public class Executors {
      * @throws NullPointerException if threadFactory is null
      */
     public static ExecutorService newSingleThreadExecutor(ThreadFactory threadFactory) {
-        return new FinalizableDelegatedExecutorService
-                (new ThreadPoolExecutor(1, 1,
-                        0L, TimeUnit.MILLISECONDS,
-                        new LinkedBlockingQueue<Runnable>(),
-                        threadFactory));
+        return new FinalizableDelegatedExecutorService(new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(), threadFactory));
     }
 
     /**
@@ -215,9 +196,7 @@ public class Executors {
      * @return the newly created thread pool
      */
     public static ExecutorService newCachedThreadPool() {
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                60L, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>());
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
     }
 
     /**
@@ -231,10 +210,7 @@ public class Executors {
      * @throws NullPointerException if threadFactory is null
      */
     public static ExecutorService newCachedThreadPool(ThreadFactory threadFactory) {
-        return new ThreadPoolExecutor(0, Integer.MAX_VALUE,
-                60L, TimeUnit.SECONDS,
-                new SynchronousQueue<Runnable>(),
-                threadFactory);
+        return new ThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>(), threadFactory);
     }
 
     /**
@@ -252,8 +228,7 @@ public class Executors {
      * @return the newly created scheduled executor
      */
     public static ScheduledExecutorService newSingleThreadScheduledExecutor() {
-        return new DelegatedScheduledExecutorService
-                (new ScheduledThreadPoolExecutor(1));
+        return new DelegatedScheduledExecutorService(new ScheduledThreadPoolExecutor(1));
     }
 
     /**
@@ -274,8 +249,7 @@ public class Executors {
      * @throws NullPointerException if threadFactory is null
      */
     public static ScheduledExecutorService newSingleThreadScheduledExecutor(ThreadFactory threadFactory) {
-        return new DelegatedScheduledExecutorService
-                (new ScheduledThreadPoolExecutor(1, threadFactory));
+        return new DelegatedScheduledExecutorService(new ScheduledThreadPoolExecutor(1, threadFactory));
     }
 
     /**
@@ -303,8 +277,7 @@ public class Executors {
      * @throws IllegalArgumentException if {@code corePoolSize < 0}
      * @throws NullPointerException     if threadFactory is null
      */
-    public static ScheduledExecutorService newScheduledThreadPool(
-            int corePoolSize, ThreadFactory threadFactory) {
+    public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize, ThreadFactory threadFactory) {
         return new ScheduledThreadPoolExecutor(corePoolSize, threadFactory);
     }
 
@@ -550,12 +523,11 @@ public class Executors {
 
         public T call() throws Exception {
             try {
-                return AccessController.doPrivileged(
-                        new PrivilegedExceptionAction<T>() {
-                            public T run() throws Exception {
-                                return task.call();
-                            }
-                        }, acc);
+                return AccessController.doPrivileged(new PrivilegedExceptionAction<T>() {
+                    public T run() throws Exception {
+                        return task.call();
+                    }
+                }, acc);
             } catch (PrivilegedActionException e) {
                 throw e.getException();
             }
@@ -624,17 +596,12 @@ public class Executors {
 
         DefaultThreadFactory() {
             SecurityManager s = System.getSecurityManager();
-            group = (s != null) ? s.getThreadGroup() :
-                    Thread.currentThread().getThreadGroup();
-            namePrefix = "pool-" +
-                    poolNumber.getAndIncrement() +
-                    "-thread-";
+            group = (s != null) ? s.getThreadGroup() : Thread.currentThread().getThreadGroup();
+            namePrefix = "pool-" + poolNumber.getAndIncrement() + "-thread-";
         }
 
         public Thread newThread(Runnable r) {
-            Thread t = new Thread(group, r,
-                    namePrefix + threadNumber.getAndIncrement(),
-                    0);
+            Thread t = new Thread(group, r, namePrefix + threadNumber.getAndIncrement(), 0);
             if (t.isDaemon())
                 t.setDaemon(false);
             if (t.getPriority() != Thread.NORM_PRIORITY)
@@ -712,8 +679,7 @@ public class Executors {
             return e.isTerminated();
         }
 
-        public boolean awaitTermination(long timeout, TimeUnit unit)
-                throws InterruptedException {
+        public boolean awaitTermination(long timeout, TimeUnit unit) throws InterruptedException {
             return e.awaitTermination(timeout, unit);
         }
 
@@ -729,31 +695,24 @@ public class Executors {
             return e.submit(task, result);
         }
 
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks)
-                throws InterruptedException {
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
             return e.invokeAll(tasks);
         }
 
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks,
-                                             long timeout, TimeUnit unit)
-                throws InterruptedException {
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
             return e.invokeAll(tasks, timeout, unit);
         }
 
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks)
-                throws InterruptedException, ExecutionException {
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
             return e.invokeAny(tasks);
         }
 
-        public <T> T invokeAny(Collection<? extends Callable<T>> tasks,
-                               long timeout, TimeUnit unit)
-                throws InterruptedException, ExecutionException, TimeoutException {
+        public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
             return e.invokeAny(tasks, timeout, unit);
         }
     }
 
-    static class FinalizableDelegatedExecutorService
-            extends DelegatedExecutorService {
+    static class FinalizableDelegatedExecutorService extends DelegatedExecutorService {
         FinalizableDelegatedExecutorService(ExecutorService executor) {
             super(executor);
         }
@@ -767,9 +726,7 @@ public class Executors {
      * A wrapper class that exposes only the ScheduledExecutorService
      * methods of a ScheduledExecutorService implementation.
      */
-    static class DelegatedScheduledExecutorService
-            extends DelegatedExecutorService
-            implements ScheduledExecutorService {
+    static class DelegatedScheduledExecutorService extends DelegatedExecutorService implements ScheduledExecutorService {
         private final ScheduledExecutorService e;
 
         DelegatedScheduledExecutorService(ScheduledExecutorService executor) {

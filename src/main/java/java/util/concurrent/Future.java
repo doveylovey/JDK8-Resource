@@ -94,7 +94,6 @@ package java.util.concurrent;
  * @since 1.5
  */
 public interface Future<V> {
-
     /**
      * Attempts to cancel execution of this task.  This attempt will
      * fail if the task has already completed, has already been cancelled,
@@ -109,20 +108,21 @@ public interface Future<V> {
      * always return {@code true}.  Subsequent calls to {@link #isCancelled}
      * will always return {@code true} if this method returned {@code true}.
      *
-     * @param mayInterruptIfRunning {@code true} if the thread executing this
-     *                              task should be interrupted; otherwise, in-progress tasks are allowed
-     *                              to complete
+     * @param mayInterruptIfRunning {@code true} if the thread executing this task should be interrupted;
+     *                                          otherwise, in-progress tasks are allowed to complete
      * @return {@code false} if the task could not be cancelled,
-     * typically because it has already completed normally;
-     * {@code true} otherwise
+     * typically because it has already completed normally; {@code true} otherwise
+     *
+     * 试图取消 Future 里关联的 Callable 任务
      */
     boolean cancel(boolean mayInterruptIfRunning);
 
     /**
-     * Returns {@code true} if this task was cancelled before it completed
-     * normally.
+     * Returns {@code true} if this task was cancelled before it completed normally.
      *
      * @return {@code true} if this task was cancelled before it completed
+     *
+     * 如果 Callable 任务正常完成前被取消，则返回 true
      */
     boolean isCancelled();
 
@@ -134,19 +134,20 @@ public interface Future<V> {
      * {@code true}.
      *
      * @return {@code true} if this task completed
+     *
+     * 如果 Callable 任务已经完成， 则返回 true
      */
     boolean isDone();
 
     /**
-     * Waits if necessary for the computation to complete, and then
-     * retrieves its result.
+     * Waits if necessary for the computation to complete, and then retrieves its result.
      *
      * @return the computed result
      * @throws CancellationException if the computation was cancelled
-     * @throws ExecutionException    if the computation threw an
-     *                               exception
-     * @throws InterruptedException  if the current thread was interrupted
-     *                               while waiting
+     * @throws ExecutionException    if the computation threw an exception
+     * @throws InterruptedException  if the current thread was interrupted while waiting
+     *
+     * 返回 Callable 任务里 call() 方法的返回值，调用该方法将导致程序阻塞，必须等到子线程结束以后才会得到返回值
      */
     V get() throws InterruptedException, ExecutionException;
 
@@ -158,12 +159,11 @@ public interface Future<V> {
      * @param unit    the time unit of the timeout argument
      * @return the computed result
      * @throws CancellationException if the computation was cancelled
-     * @throws ExecutionException    if the computation threw an
-     *                               exception
-     * @throws InterruptedException  if the current thread was interrupted
-     *                               while waiting
+     * @throws ExecutionException    if the computation threw an exception
+     * @throws InterruptedException  if the current thread was interrupted while waiting
      * @throws TimeoutException      if the wait timed out
+     *
+     * 返回 Callable 任务里 call() 方法的返回值，该方法让程序最多阻塞 timeout 和 unit 指定的时间，如果经过指定时间后，Callable 任务依然没有返回值，将会抛出 TimeoutException 异常
      */
-    V get(long timeout, TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException;
+    V get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException;
 }

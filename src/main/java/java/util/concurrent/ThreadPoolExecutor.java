@@ -1229,11 +1229,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * @throws IllegalArgumentException if one of the following holds: {@code corePoolSize < 0}、{@code keepAliveTime < 0}、{@code maximumPoolSize <= 0}、{@code maximumPoolSize < corePoolSize}
      * @throws NullPointerException     if {@code workQueue} is null
      */
-    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
-                              long keepAliveTime, TimeUnit unit,
-                              BlockingQueue<Runnable> workQueue) {
-        this(corePoolSize, maximumPoolSize, keepAliveTime, unit,
-                workQueue, Executors.defaultThreadFactory(), defaultHandler);
+    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue) {
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(), defaultHandler);
     }
 
     /**
@@ -1248,12 +1245,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * @throws IllegalArgumentException if one of the following holds: {@code corePoolSize < 0}、{@code keepAliveTime < 0}、{@code maximumPoolSize <= 0}、{@code maximumPoolSize < corePoolSize}
      * @throws NullPointerException     if {@code workQueue} or {@code threadFactory} is null
      */
-    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
-                              long keepAliveTime, TimeUnit unit,
-                              BlockingQueue<Runnable> workQueue,
-                              ThreadFactory threadFactory) {
-        this(corePoolSize, maximumPoolSize, keepAliveTime, unit,
-                workQueue, threadFactory, defaultHandler);
+    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory) {
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, threadFactory, defaultHandler);
     }
 
     /**
@@ -1268,12 +1261,8 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * @throws IllegalArgumentException if one of the following holds: {@code corePoolSize < 0}、{@code keepAliveTime < 0}、{@code maximumPoolSize <= 0}、{@code maximumPoolSize < corePoolSize}
      * @throws NullPointerException     if {@code workQueue} or {@code handler} is null
      */
-    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
-                              long keepAliveTime, TimeUnit unit,
-                              BlockingQueue<Runnable> workQueue,
-                              RejectedExecutionHandler handler) {
-        this(corePoolSize, maximumPoolSize, keepAliveTime, unit,
-                workQueue, Executors.defaultThreadFactory(), handler);
+    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, RejectedExecutionHandler handler) {
+        this(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue, Executors.defaultThreadFactory(), handler);
     }
 
     /**
@@ -1299,15 +1288,13 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      * @throws NullPointerException     if {@code workQueue} or {@code threadFactory} or {@code handler} is null
      *                                  当 workQueue 或 threadFactory 或 handler 为 null 时就会抛出该异常
      */
-    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize,
-                              long keepAliveTime, TimeUnit unit,
-                              BlockingQueue<Runnable> workQueue,
-                              ThreadFactory threadFactory,
-                              RejectedExecutionHandler handler) {
-        if (corePoolSize < 0 || maximumPoolSize <= 0 || maximumPoolSize < corePoolSize || keepAliveTime < 0)
+    public ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue, ThreadFactory threadFactory, RejectedExecutionHandler handler) {
+        if (corePoolSize < 0 || maximumPoolSize <= 0 || maximumPoolSize < corePoolSize || keepAliveTime < 0) {
             throw new IllegalArgumentException();
-        if (workQueue == null || threadFactory == null || handler == null)
+        }
+        if (workQueue == null || threadFactory == null || handler == null) {
             throw new NullPointerException();
+        }
         this.acc = System.getSecurityManager() == null ? null : AccessController.getContext();
         this.corePoolSize = corePoolSize;
         this.maximumPoolSize = maximumPoolSize;
