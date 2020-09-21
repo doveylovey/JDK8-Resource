@@ -47,8 +47,26 @@ ThreadPoolExecutor 构造方法的七个参数介绍：
 # 如何正确使用线程池：避免使用无界队列、明确提交新任务时的拒绝策略、获取处理结果和异常
 ### 避免使用无界队列
 不要使用 Executors.newXxxThreadPool() 快捷方法创建线程池，因为这种方式会使用无界的任务队列，为避免 OOM，应该通过 ThreadPoolExecutor 构造方法手动创建线程池，并指定队列的最大长度，例如：
-```
+```text
 ExecutorService executorService = new ThreadPoolExecutor(2, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<>(512), new ThreadPoolExecutor.DiscardPolicy());
+```
+线程池参数 workQueue 表示当线程数超过核心线程数时用于保存任务的队列，主要有 3 种类型的 BlockingQueue 可供选择：无界队列、有界队列、同步移交。从构造方法的参数中可以看到，此队列仅保存实现 Runnable 接口的任务。
+- 无界队列：队列大小无限制，最常用的是 LinkedBlockingQueue，使用该队列时要特别注意，当任务耗时较长则可能导致大量新任务在队列中堆积从而导致 OOM。
+```text
+通过源码可以发现，Executors 中的 newSingleThreadExecutor()、newFixedThreadPool() 采用的就是 LinkedBlockingQueue。
+这种队列的 maximumPoolSize 值是无效的，当每个任务完全独立于其他任务(即任务执行互不影响)时，适合使用无界队列。
+这种排队可用于处理瞬态突发请求，当命令以超过队列所能处理的平均数连续到达时，此策略允许无界线程具有增长的可能性。
+```
+- 有界队列：当使用有限的 maximumPoolSize 时，有界队列有助于防止资源耗尽，但是可能较难调整和控制。
+```text
+常用的有两类，一类是遵循 FIFO 原则的队列(如：ArrayBlockingQueue)，另一类是优先级队列(如：PriorityBlockingQueue)，PriorityBlockingQueue 中的优先级由任务的 Comparator 决定。
+使用有界队列时，队列大小需和线程池大小相互配合，线程池较小有界队列较大时可减少内存消耗，降低 CPU 使用率和上下文切换，但是可能会限制系统吞吐量。
+```
+- 同步移交队列：如果不希望任务在队列中等待而是希望将任务直接移交给工作线程，则可以使用 SynchronousQueue 作为等待队列。
+```text
+通过源码可以发现，Executors 中的 newCachedThreadPool() 采用的就是 SynchronousQueue。
+SynchronousQueue 不是一个真正的队列，而是一种线程间移交的机制，要将一个元素放入 SynchronousQueue 中，必须有另一个线程正在等待接收这个元素。
+只有在使用无界线程池或者有饱和策略时才建议使用该队列。
 ```
 
 ### 明确提交新任务时的拒绝策略
@@ -71,7 +89,7 @@ ExecutorService executorService = new ThreadPoolExecutor(2, 2, 0, TimeUnit.SECON
 
 ### 获取处理结果和异常
 线程池的处理结果、处理过程中的异常都被包装到 Future 中，并在调用 future.get() 方法时获取，执行过程中的异常会被包装成 ExecutionException，submit() 方法本身不会传递结果和任务执行过程中的异常，例如：
-```
+```text
 @Test
 public void testSubmit() throws InterruptedException, ExecutionException {
    ExecutorService executorService = Executors.newFixedThreadPool(4);
@@ -94,7 +112,7 @@ public void testSubmit() throws InterruptedException, ExecutionException {
 
 # 线程池的常用场景
 ### 正确构造线程池
-```
+```text
 int poolSize = Runtime.getRuntime().availableProcessors() * 2;
 BlockingQueue<Runnable> queue = new ArrayBlockingQueue<>(512);
 RejectedExecutionHandler policy = new ThreadPoolExecutor.DiscardPolicy();
@@ -106,7 +124,7 @@ ExecutorService executorService = new ThreadPoolExecutor(poolSize, poolSize, 0, 
 
 ### 获取多个结果
 如果向线程池提交了多个任务，要获取这些任务的执行结果，可依次调用 future.get() 获得。但这种场景更应该使用 ExecutorCompletionService，该类的 take() 方法总是阻塞等待某一个任务完成，然后返回该任务的 Future 对象。向 CompletionService 批量提交任务后，只需调用相同次数的 CompletionService 的 take() 方法，就能获取所有任务的执行结果，获取顺序是任意的，取决于任务的完成顺序：
-```
+```text
 @Test
 public void completionServiceTest03() throws InterruptedException, ExecutionException {
     // 任务
@@ -151,7 +169,7 @@ V Future.get(long timeout, TimeUnit unit) 方法可以指定等待的超时时�
 
 ### 多个任务的超时时间
 等待多个任务完成，并设置最大等待时间，可以通过 CountDownLatch 完成：
-```
+```text
 @Test
 public void countDownLatchTest() throws InterruptedException {
     // 创建线程池
@@ -198,27 +216,32 @@ public void countDownLatchTest() throws InterruptedException {
 - 当线程池中的线程数超过 corePoolSize 时，空闲时间达到 keepAliveTime 的线程将被关闭
 - 当设置 allowCoreThreadTimeOut(true) 时，线程池中 corePoolSize 线程空闲时间达到 keepAliveTime 也将关闭
 
+# 使用线程池的好处
+- 降低资源消耗：重复利用已创建的线程，降低线程创建和销毁造成的消耗
+- 提高响应速度：任务到达时，任务不需要等待线程创建
+- 提高线程的可管理性：可以对线程统一分配、调优和监控
+
 # ThreadPoolExecutor 的重要参数
 - corePoolSize：核心线程数
-```
+```text
 1、核心线程会一直存活，及时没有任务需要执行
 2、当线程数小于核心线程数时，即使有线程空闲，线程池也会优先创建新线程处理
 3、如果设置了 allowCoreThreadTimeout=true(默认false)，则核心线程也会超时关闭
 ```
 
 - queueCapacity：任务队列容量(阻塞队列)
-```code
+```text
 1、当核心线程数达到最大时，新任务会放在队列中排队等待执行
 ```
 
 - maxPoolSize：最大线程数
-```code
+```text
 1、当线程数 >= corePoolSize 且任务队列已满时，线程池会创建新线程来处理任务
 2、当线程数 = maxPoolSize 且任务队列已满时，线程池会拒绝处理任务而抛出异常
 ```
 
 - keepAliveTime：线程空闲时间
-```code
+```text
 1、当线程的空闲时间达到 keepAliveTime 时，线程会退出，直到线程数量等于 corePoolSize
 2、如果设置了 allowCoreThreadTimeout=true，则线程会退出，直到线程数量等于0
 ```
@@ -226,16 +249,15 @@ public void countDownLatchTest() throws InterruptedException {
 - allowCoreThreadTimeout：允许核心线程超时
 
 - rejectedExecutionHandler：任务拒绝处理器
-```code
+```text
 1、两种情况下会拒绝处理任务：当线程数已经达到 maxPoolSize 且队列已满，会拒绝新任务；当线程池被调用 shutdown() 后，会等待线程池里的任务执行完毕后再 shutdown。如果在调用 shutdown() 和线程池真正 shutdown 之间提交任务，则会拒绝这些任务
 2、线程池会调用 rejectedExecutionHandler 来处理这个任务，如果未设置则默认是 AbortPolicy，会抛出异常
 3、ThreadPoolExecutor 类有几个内部实现类来处理这类情况，分别是：AbortPolicy-丢弃任务并抛出 RejectedExecutionException 异常；CallerRunsPolicy-由调用线程处理该任务；DiscardPolicy-静默丢弃任务，且不抛出异常；DiscardOldestPolicy-丢弃队列最前面的任务，然后重新提交被拒绝的任务
 4、通过实现 RejectedExecutionHandler 接口来自定义拒绝策略
 ```
 
-参考
-- https://www.cnblogs.com/zincredible/p/10984459.html
+# 参考
 - https://www.cnblogs.com/CarpenterLee/p/9558026.html
-- https://www.cnblogs.com/waytobestcoder/p/5323130.html
+- https://blog.csdn.net/riemann_/article/details/104704197
 
 

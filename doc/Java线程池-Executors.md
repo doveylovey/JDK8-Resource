@@ -68,8 +68,7 @@ public class Executors {
 - 通俗：创建一个固定大小的线程池，线程池内线程存活时间无限制，线程池可以支持定时及周期性任务执行，如果所有线程均处于繁忙状态，对于新任务会进入DelayedWorkQueue队列中，这是一种按照超时时间排序的队列结构
 - 适用：周期性执行任务的场景
 
-参考
+# 参考
 - https://www.cnblogs.com/zincredible/p/10984459.html
-- https://www.cnblogs.com/CarpenterLee/p/9558026.html
 
 

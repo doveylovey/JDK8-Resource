@@ -1985,10 +1985,11 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     /* Predefined RejectedExecutionHandlers */
 
     /**
+     * 使用该策略时，线程池饱和后将由调用线程池的主线程自己来执行任务，因此在执行任务的这段时间里主线程无法再提交新任务，从而使线程池中工作线程有时间将正在处理的任务处理完成。
+     * <p>
      * A handler for rejected tasks that runs the rejected task
      * directly in the calling thread of the {@code execute} method,
-     * unless the executor has been shut down, in which case the task
-     * is discarded.
+     * unless the executor has been shut down, in which case the task is discarded.
      */
     public static class CallerRunsPolicy implements RejectedExecutionHandler {
         /**
@@ -1998,12 +1999,15 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         }
 
         /**
+         * 既不抛弃任务也不抛出异常，直接运行任务的 run() 方法，即：将任务直接交给调用者来运行。除非线程池已关闭，在这种情况下，该任务将被丢弃。
+         * <p>
          * Executes task r in the caller's thread, unless the executor
          * has been shut down, in which case the task is discarded.
          *
-         * @param r the runnable task requested to be executed
-         * @param e the executor attempting to execute this task
+         * @param r the runnable task requested to be executed 请求执行的可运行任务
+         * @param e the executor attempting to execute this task 试图执行此任务的执行者
          */
+        @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
             if (!e.isShutdown()) {
                 r.run();
@@ -2012,8 +2016,9 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
     }
 
     /**
-     * A handler for rejected tasks that throws a
-     * {@code RejectedExecutionException}.
+     * 该策略是默认拒绝策略。使用该策略时，线程池饱和后会抛出 RejectedExecutionException 异常，调用者可捕获该异常自行处理。
+     * <p>
+     * A handler for rejected tasks that throws a {@code RejectedExecutionException}.
      */
     public static class AbortPolicy implements RejectedExecutionHandler {
         /**
@@ -2029,14 +2034,16 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
          * @param e the executor attempting to execute this task
          * @throws RejectedExecutionException always
          */
+        @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
             throw new RejectedExecutionException("Task " + r.toString() + " rejected from " + e.toString());
         }
     }
 
     /**
-     * A handler for rejected tasks that silently discards the
-     * rejected task.
+     * 使用该策略时，线程池饱和后不做任何处理，直接抛弃任务
+     * <p>
+     * A handler for rejected tasks that silently discards the rejected task.
      */
     public static class DiscardPolicy implements RejectedExecutionHandler {
         /**
@@ -2046,19 +2053,24 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         }
 
         /**
+         * 不做任何处理，直接抛弃任务
+         * <p>
          * Does nothing, which has the effect of discarding task r.
          *
          * @param r the runnable task requested to be executed
          * @param e the executor attempting to execute this task
          */
+        @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
         }
     }
 
     /**
-     * A handler for rejected tasks that discards the oldest unhandled
-     * request and then retries {@code execute}, unless the executor
-     * is shut down, in which case the task is discarded.
+     * 使用该策略时，线程池饱和后先将阻塞队列中的头元素出队抛弃，再尝试提交任务。
+     * 如果此时阻塞队列使用 PriorityBlockingQueue 优先级队列，将会导致优先级最高的任务被抛弃，因此不建议将该种策略配合优先级队列使用。
+     * <p>
+     * A handler for rejected tasks that discards the oldest unhandled request and then
+     * retries {@code execute}, unless the executor is shut down, in which case the task is discarded.
      */
     public static class DiscardOldestPolicy implements RejectedExecutionHandler {
         /**
@@ -2068,14 +2080,14 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         }
 
         /**
-         * Obtains and ignores the next task that the executor
-         * would otherwise execute, if one is immediately available,
-         * and then retries execution of task r, unless the executor
-         * is shut down, in which case task r is instead discarded.
+         * Obtains and ignores the next task that the executor would otherwise execute,
+         * if one is immediately available, and then retries execution of task r,
+         * unless the executor is shut down, in which case task r is instead discarded.
          *
          * @param r the runnable task requested to be executed
          * @param e the executor attempting to execute this task
          */
+        @Override
         public void rejectedExecution(Runnable r, ThreadPoolExecutor e) {
             if (!e.isShutdown()) {
                 e.getQueue().poll();

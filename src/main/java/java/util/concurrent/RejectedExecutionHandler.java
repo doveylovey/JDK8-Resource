@@ -42,7 +42,6 @@ package java.util.concurrent;
  * @since 1.5
  */
 public interface RejectedExecutionHandler {
-
     /**
      * Method that may be invoked by a {@link ThreadPoolExecutor} when
      * {@link ThreadPoolExecutor#execute execute} cannot accept a
