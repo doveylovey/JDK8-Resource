@@ -82,8 +82,7 @@ import java.util.Spliterators;
  * @author Doug Lea and Bill Scherer and Michael Scott
  * @since 1.5
  */
-public class SynchronousQueue<E> extends AbstractQueue<E>
-        implements BlockingQueue<E>, java.io.Serializable {
+public class SynchronousQueue<E> extends AbstractQueue<E> implements BlockingQueue<E>, java.io.Serializable {
     private static final long serialVersionUID = -3223113410248163686L;
 
     /*
@@ -261,8 +260,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
             }
 
             boolean casNext(SNode cmp, SNode val) {
-                return cmp == next &&
-                        UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
+                return cmp == next && UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
             }
 
             /**
@@ -274,8 +272,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              * @return true if successfully matched to s
              */
             boolean tryMatch(SNode s) {
-                if (match == null &&
-                        UNSAFE.compareAndSwapObject(this, matchOffset, null, s)) {
+                if (match == null && UNSAFE.compareAndSwapObject(this, matchOffset, null, s)) {
                     Thread w = waiter;
                     if (w != null) {    // waiters need at most one unpark
                         waiter = null;
@@ -306,10 +303,8 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                 try {
                     UNSAFE = sun.misc.Unsafe.getUnsafe();
                     Class<?> k = SNode.class;
-                    matchOffset = UNSAFE.objectFieldOffset
-                            (k.getDeclaredField("match"));
-                    nextOffset = UNSAFE.objectFieldOffset
-                            (k.getDeclaredField("next"));
+                    matchOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("match"));
+                    nextOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("next"));
                 } catch (Exception e) {
                     throw new Error(e);
                 }
@@ -322,8 +317,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
         volatile SNode head;
 
         boolean casHead(SNode h, SNode nh) {
-            return h == head &&
-                    UNSAFE.compareAndSwapObject(this, headOffset, h, nh);
+            return h == head && UNSAFE.compareAndSwapObject(this, headOffset, h, nh);
         }
 
         /**
@@ -454,8 +448,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              */
             final long deadline = timed ? System.nanoTime() + nanos : 0L;
             Thread w = Thread.currentThread();
-            int spins = (shouldSpin(s) ?
-                    (timed ? maxTimedSpins : maxUntimedSpins) : 0);
+            int spins = (shouldSpin(s) ? (timed ? maxTimedSpins : maxUntimedSpins) : 0);
             for (; ; ) {
                 if (w.isInterrupted())
                     s.tryCancel();
@@ -534,8 +527,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
             try {
                 UNSAFE = sun.misc.Unsafe.getUnsafe();
                 Class<?> k = TransferStack.class;
-                headOffset = UNSAFE.objectFieldOffset
-                        (k.getDeclaredField("head"));
+                headOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("head"));
             } catch (Exception e) {
                 throw new Error(e);
             }
@@ -570,13 +562,11 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
             }
 
             boolean casNext(QNode cmp, QNode val) {
-                return next == cmp &&
-                        UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
+                return next == cmp && UNSAFE.compareAndSwapObject(this, nextOffset, cmp, val);
             }
 
             boolean casItem(Object cmp, Object val) {
-                return item == cmp &&
-                        UNSAFE.compareAndSwapObject(this, itemOffset, cmp, val);
+                return item == cmp && UNSAFE.compareAndSwapObject(this, itemOffset, cmp, val);
             }
 
             /**
@@ -608,10 +598,8 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                 try {
                     UNSAFE = sun.misc.Unsafe.getUnsafe();
                     Class<?> k = QNode.class;
-                    itemOffset = UNSAFE.objectFieldOffset
-                            (k.getDeclaredField("item"));
-                    nextOffset = UNSAFE.objectFieldOffset
-                            (k.getDeclaredField("next"));
+                    itemOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("item"));
+                    nextOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("next"));
                 } catch (Exception e) {
                     throw new Error(e);
                 }
@@ -644,8 +632,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
          * old head's next node to avoid garbage retention.
          */
         void advanceHead(QNode h, QNode nh) {
-            if (h == head &&
-                    UNSAFE.compareAndSwapObject(this, headOffset, h, nh))
+            if (h == head && UNSAFE.compareAndSwapObject(this, headOffset, h, nh))
                 h.next = h; // forget old next
         }
 
@@ -661,8 +648,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
          * Tries to CAS cleanMe slot.
          */
         boolean casCleanMe(QNode cmp, QNode val) {
-            return cleanMe == cmp &&
-                    UNSAFE.compareAndSwapObject(this, cleanMeOffset, cmp, val);
+            return cleanMe == cmp && UNSAFE.compareAndSwapObject(this, cleanMeOffset, cmp, val);
         }
 
         /**
@@ -767,8 +753,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
             /* Same idea as TransferStack.awaitFulfill */
             final long deadline = timed ? System.nanoTime() + nanos : 0L;
             Thread w = Thread.currentThread();
-            int spins = ((head.next == s) ?
-                    (timed ? maxTimedSpins : maxUntimedSpins) : 0);
+            int spins = ((head.next == s) ? (timed ? maxTimedSpins : maxUntimedSpins) : 0);
             for (; ; ) {
                 if (w.isInterrupted())
                     s.tryCancel(e);
@@ -856,12 +841,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
             try {
                 UNSAFE = sun.misc.Unsafe.getUnsafe();
                 Class<?> k = TransferQueue.class;
-                headOffset = UNSAFE.objectFieldOffset
-                        (k.getDeclaredField("head"));
-                tailOffset = UNSAFE.objectFieldOffset
-                        (k.getDeclaredField("tail"));
-                cleanMeOffset = UNSAFE.objectFieldOffset
-                        (k.getDeclaredField("cleanMe"));
+                headOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("head"));
+                tailOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("tail"));
+                cleanMeOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("cleanMe"));
             } catch (Exception e) {
                 throw new Error(e);
             }
@@ -918,8 +900,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @throws InterruptedException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
-    public boolean offer(E e, long timeout, TimeUnit unit)
-            throws InterruptedException {
+    public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
         if (e == null) throw new NullPointerException();
         if (transferer.transfer(e, true, unit.toNanos(timeout)) != null)
             return true;
@@ -1199,8 +1180,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      * @param s the stream
      * @throws java.io.IOException if an I/O error occurs
      */
-    private void writeObject(java.io.ObjectOutputStream s)
-            throws java.io.IOException {
+    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
         boolean fair = transferer instanceof TransferQueue;
         if (fair) {
             qlock = new ReentrantLock(true);
@@ -1222,8 +1202,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
      *                                could not be found
      * @throws java.io.IOException    if an I/O error occurs
      */
-    private void readObject(java.io.ObjectInputStream s)
-            throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();
         if (waitingProducers instanceof FifoWaitQueue)
             transferer = new TransferQueue<E>();
@@ -1232,8 +1211,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
     }
 
     // Unsafe mechanics
-    static long objectFieldOffset(sun.misc.Unsafe UNSAFE,
-                                  String field, Class<?> klazz) {
+    static long objectFieldOffset(sun.misc.Unsafe UNSAFE, String field, Class<?> klazz) {
         try {
             return UNSAFE.objectFieldOffset(klazz.getDeclaredField(field));
         } catch (NoSuchFieldException e) {
@@ -1243,5 +1221,4 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
             throw error;
         }
     }
-
 }

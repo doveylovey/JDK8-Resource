@@ -69,9 +69,7 @@ import java.util.*;
  * @author Doug Lea
  * @since 1.5
  */
-public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
-        implements BlockingQueue<E> {
-
+public class DelayQueue<E extends Delayed> extends AbstractQueue<E> implements BlockingQueue<E> {
     private final transient ReentrantLock lock = new ReentrantLock();
     private final PriorityQueue<E> q = new PriorityQueue<E>();
 
@@ -326,8 +324,7 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
     private E peekExpired() {
         // assert lock.isHeldByCurrentThread();
         E first = q.peek();
-        return (first == null || first.getDelay(NANOSECONDS) > 0) ?
-                null : first;
+        return (first == null || first.getDelay(NANOSECONDS) > 0) ? null : first;
     }
 
     /**
@@ -556,5 +553,4 @@ public class DelayQueue<E extends Delayed> extends AbstractQueue<E>
             lastRet = -1;
         }
     }
-
 }

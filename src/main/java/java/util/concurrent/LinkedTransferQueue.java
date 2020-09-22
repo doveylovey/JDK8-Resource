@@ -85,8 +85,7 @@ import java.util.function.Consumer;
  * @author Doug Lea
  * @since 1.7
  */
-public class LinkedTransferQueue<E> extends AbstractQueue<E>
-        implements TransferQueue<E>, java.io.Serializable {
+public class LinkedTransferQueue<E> extends AbstractQueue<E> implements TransferQueue<E>, java.io.Serializable {
     private static final long serialVersionUID = -3223113410248163686L;
 
     /*
@@ -413,8 +412,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
     /**
      * True if on multiprocessor
      */
-    private static final boolean MP =
-            Runtime.getRuntime().availableProcessors() > 1;
+    private static final boolean MP = Runtime.getRuntime().availableProcessors() > 1;
 
     /**
      * The number of times to spin (with randomly interspersed calls
@@ -549,12 +547,9 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
             try {
                 UNSAFE = sun.misc.Unsafe.getUnsafe();
                 Class<?> k = Node.class;
-                itemOffset = UNSAFE.objectFieldOffset
-                        (k.getDeclaredField("item"));
-                nextOffset = UNSAFE.objectFieldOffset
-                        (k.getDeclaredField("next"));
-                waiterOffset = UNSAFE.objectFieldOffset
-                        (k.getDeclaredField("waiter"));
+                itemOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("item"));
+                nextOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("next"));
+                waiterOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("waiter"));
             } catch (Exception e) {
                 throw new Error(e);
             }
@@ -620,7 +615,6 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
 
         retry:
         for (; ; ) {                            // restart on append race
-
             for (Node h = head, p = h; p != null; ) { // find & match first node
                 boolean isData = p.isData;
                 Object item = p.item;
@@ -634,8 +628,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
                                 h.forgetNext();
                                 break;
                             }                 // advance and retry
-                            if ((h = head) == null ||
-                                    (q = h.next) == null || !q.isMatched())
+                            if ((h = head) == null || (q = h.next) == null || !q.isMatched())
                                 break;        // unless slack < 2
                         }
                         LockSupport.unpark(p.waiter);
@@ -645,7 +638,6 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
                 Node n = p.next;
                 p = (p != n) ? n : (h = head); // Use head if p offlist
             }
-
             if (how != NOW) {                 // No matches available
                 if (s == null)
                     s = new Node(e, haveData);
@@ -869,9 +861,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
                 lastPred = null; // at start of list
             else {
                 Node s, n;       // help with removal of lastPred.next
-                while ((s = b.next) != null &&
-                        s != b && s.isMatched() &&
-                        (n = s.next) != null && n != s)
+                while ((s = b.next) != null && s != b && s.isMatched() && (n = s.next) != null && n != s)
                     b.casNext(s, n);
             }
 
@@ -953,9 +943,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
             final LinkedTransferQueue<E> q = this.queue;
             int b = batch;
             int n = (b <= 0) ? 1 : (b >= MAX_BATCH) ? MAX_BATCH : b + 1;
-            if (!exhausted &&
-                    ((p = current) != null || (p = q.firstDataNode()) != null) &&
-                    p.next != null) {
+            if (!exhausted && ((p = current) != null || (p = q.firstDataNode()) != null) && p.next != null) {
                 Object[] a = new Object[n];
                 int i = 0;
                 do {
@@ -969,9 +957,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
                     exhausted = true;
                 if (i > 0) {
                     batch = i;
-                    return Spliterators.spliterator
-                            (a, 0, i, Spliterator.ORDERED | Spliterator.NONNULL |
-                                    Spliterator.CONCURRENT);
+                    return Spliterators.spliterator(a, 0, i, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.CONCURRENT);
                 }
             }
             return null;
@@ -982,8 +968,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
             Node p;
             if (action == null) throw new NullPointerException();
             final LinkedTransferQueue<E> q = this.queue;
-            if (!exhausted &&
-                    ((p = current) != null || (p = q.firstDataNode()) != null)) {
+            if (!exhausted && ((p = current) != null || (p = q.firstDataNode()) != null)) {
                 exhausted = true;
                 do {
                     Object e = p.item;
@@ -1000,8 +985,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
             Node p;
             if (action == null) throw new NullPointerException();
             final LinkedTransferQueue<E> q = this.queue;
-            if (!exhausted &&
-                    ((p = current) != null || (p = q.firstDataNode()) != null)) {
+            if (!exhausted && ((p = current) != null || (p = q.firstDataNode()) != null)) {
                 Object e;
                 do {
                     if ((e = p.item) == p)
@@ -1024,8 +1008,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         }
 
         public int characteristics() {
-            return Spliterator.ORDERED | Spliterator.NONNULL |
-                    Spliterator.CONCURRENT;
+            return Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.CONCURRENT;
         }
     }
 
@@ -1068,8 +1051,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
          */
         if (pred != null && pred != s && pred.next == s) {
             Node n = s.next;
-            if (n == null ||
-                    (n != s && pred.casNext(s, n) && pred.isMatched())) {
+            if (n == null || (n != s && pred.casNext(s, n) && pred.isMatched())) {
                 for (; ; ) {               // check if at, or could be, head
                     Node h = head;
                     if (h == pred || h == s || h == null)
@@ -1125,8 +1107,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
             for (Node pred = null, p = head; p != null; ) {
                 Object item = p.item;
                 if (p.isData) {
-                    if (item != null && item != p && e.equals(item) &&
-                            p.tryMatchData()) {
+                    if (item != null && item != p && e.equals(item) && p.tryMatchData()) {
                         unsplice(pred, p);
                         return true;
                     }
@@ -1258,8 +1239,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      *
      * @throws NullPointerException if the specified element is null
      */
-    public boolean tryTransfer(E e, long timeout, TimeUnit unit)
-            throws InterruptedException {
+    public boolean tryTransfer(E e, long timeout, TimeUnit unit) throws InterruptedException {
         if (xfer(e, true, TIMED, unit.toNanos(timeout)) == null)
             return true;
         if (!Thread.interrupted())
@@ -1430,8 +1410,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * @serialData All of the elements (each an {@code E}) in
      * the proper order, followed by a null
      */
-    private void writeObject(java.io.ObjectOutputStream s)
-            throws java.io.IOException {
+    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
         s.defaultWriteObject();
         for (E e : this)
             s.writeObject(e);
@@ -1447,8 +1426,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      *                                could not be found
      * @throws java.io.IOException    if an I/O error occurs
      */
-    private void readObject(java.io.ObjectInputStream s)
-            throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();
         for (; ; ) {
             @SuppressWarnings("unchecked")
@@ -1471,12 +1449,9 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         try {
             UNSAFE = sun.misc.Unsafe.getUnsafe();
             Class<?> k = LinkedTransferQueue.class;
-            headOffset = UNSAFE.objectFieldOffset
-                    (k.getDeclaredField("head"));
-            tailOffset = UNSAFE.objectFieldOffset
-                    (k.getDeclaredField("tail"));
-            sweepVotesOffset = UNSAFE.objectFieldOffset
-                    (k.getDeclaredField("sweepVotes"));
+            headOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("head"));
+            tailOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("tail"));
+            sweepVotesOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("sweepVotes"));
         } catch (Exception e) {
             throw new Error(e);
         }

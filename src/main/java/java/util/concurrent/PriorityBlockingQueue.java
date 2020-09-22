@@ -108,8 +108,7 @@ import sun.misc.SharedSecrets;
  * @since 1.5
  */
 @SuppressWarnings("unchecked")
-public class PriorityBlockingQueue<E> extends AbstractQueue<E>
-        implements BlockingQueue<E>, java.io.Serializable {
+public class PriorityBlockingQueue<E> extends AbstractQueue<E> implements BlockingQueue<E>, java.io.Serializable {
     private static final long serialVersionUID = 5595510919245408276L;
 
     /*
@@ -218,10 +217,8 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
      * @throws IllegalArgumentException if {@code initialCapacity} is less
      *                                  than 1
      */
-    public PriorityBlockingQueue(int initialCapacity,
-                                 Comparator<? super E> comparator) {
-        if (initialCapacity < 1)
-            throw new IllegalArgumentException();
+    public PriorityBlockingQueue(int initialCapacity, Comparator<? super E> comparator) {
+        if (initialCapacity < 1) throw new IllegalArgumentException();
         this.lock = new ReentrantLock();
         this.notEmpty = lock.newCondition();
         this.comparator = comparator;
@@ -254,8 +251,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
             this.comparator = (Comparator<? super E>) ss.comparator();
             heapify = false;
         } else if (c instanceof PriorityBlockingQueue<?>) {
-            PriorityBlockingQueue<? extends E> pq =
-                    (PriorityBlockingQueue<? extends E>) c;
+            PriorityBlockingQueue<? extends E> pq = (PriorityBlockingQueue<? extends E>) c;
             this.comparator = (Comparator<? super E>) pq.comparator();
             screen = false;
             if (pq.getClass() == PriorityBlockingQueue.class) // exact match
@@ -289,9 +285,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
     private void tryGrow(Object[] array, int oldCap) {
         lock.unlock(); // must release and then re-acquire main lock
         Object[] newArray = null;
-        if (allocationSpinLock == 0 &&
-                UNSAFE.compareAndSwapInt(this, allocationSpinLockOffset,
-                        0, 1)) {
+        if (allocationSpinLock == 0 && UNSAFE.compareAndSwapInt(this, allocationSpinLockOffset, 0, 1)) {
             try {
                 int newCap = oldCap + ((oldCap < 64) ?
                         (oldCap + 2) : // grow faster if small
@@ -367,8 +361,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
         array[k] = key;
     }
 
-    private static <T> void siftUpUsingComparator(int k, T x, Object[] array,
-                                                  Comparator<? super T> cmp) {
+    private static <T> void siftUpUsingComparator(int k, T x, Object[] array, Comparator<? super T> cmp) {
         while (k > 0) {
             int parent = (k - 1) >>> 1;
             Object e = array[parent];
@@ -390,8 +383,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
      * @param array the heap array
      * @param n     heap size
      */
-    private static <T> void siftDownComparable(int k, T x, Object[] array,
-                                               int n) {
+    private static <T> void siftDownComparable(int k, T x, Object[] array, int n) {
         if (n > 0) {
             Comparable<? super T> key = (Comparable<? super T>) x;
             int half = n >>> 1;           // loop while a non-leaf
@@ -399,8 +391,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
                 int child = (k << 1) + 1; // assume left child is least
                 Object c = array[child];
                 int right = child + 1;
-                if (right < n &&
-                        ((Comparable<? super T>) c).compareTo((T) array[right]) > 0)
+                if (right < n && ((Comparable<? super T>) c).compareTo((T) array[right]) > 0)
                     c = array[child = right];
                 if (key.compareTo((T) c) <= 0)
                     break;
@@ -411,9 +402,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
         }
     }
 
-    private static <T> void siftDownUsingComparator(int k, T x, Object[] array,
-                                                    int n,
-                                                    Comparator<? super T> cmp) {
+    private static <T> void siftDownUsingComparator(int k, T x, Object[] array, int n, Comparator<? super T> cmp) {
         if (n > 0) {
             int half = n >>> 1;
             while (k < half) {
@@ -475,8 +464,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
      * @throws NullPointerException if the specified element is null
      */
     public boolean offer(E e) {
-        if (e == null)
-            throw new NullPointerException();
+        if (e == null) throw new NullPointerException();
         final ReentrantLock lock = this.lock;
         lock.lock();
         int n, cap;
@@ -916,8 +904,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
      * @param s the stream
      * @throws java.io.IOException if an I/O error occurs
      */
-    private void writeObject(java.io.ObjectOutputStream s)
-            throws java.io.IOException {
+    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
         lock.lock();
         try {
             // avoid zero capacity argument
@@ -938,8 +925,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
      *                                could not be found
      * @throws java.io.IOException    if an I/O error occurs
      */
-    private void readObject(java.io.ObjectInputStream s)
-            throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
         try {
             s.defaultReadObject();
             int sz = q.size();
@@ -960,8 +946,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
         int index;
         int fence;
 
-        PBQSpliterator(PriorityBlockingQueue<E> queue, Object[] array,
-                       int index, int fence) {
+        PBQSpliterator(PriorityBlockingQueue<E> queue, Object[] array, int index, int fence) {
             this.queue = queue;
             this.array = array;
             this.index = index;
@@ -977,8 +962,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
 
         public Spliterator<E> trySplit() {
             int hi = getFence(), lo = index, mid = (lo + hi) >>> 1;
-            return (lo >= mid) ? null :
-                    new PBQSpliterator<E>(queue, array, lo, index = mid);
+            return (lo >= mid) ? null : new PBQSpliterator<E>(queue, array, lo, index = mid);
         }
 
         @SuppressWarnings("unchecked")
@@ -989,8 +973,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
                 throw new NullPointerException();
             if ((a = array) == null)
                 fence = (a = queue.toArray()).length;
-            if ((hi = fence) <= a.length &&
-                    (i = index) >= 0 && i < (index = hi)) {
+            if ((hi = fence) <= a.length && (i = index) >= 0 && i < (index = hi)) {
                 do {
                     action.accept((E) a[i]);
                 } while (++i < hi);
@@ -998,8 +981,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
         }
 
         public boolean tryAdvance(Consumer<? super E> action) {
-            if (action == null)
-                throw new NullPointerException();
+            if (action == null) throw new NullPointerException();
             if (getFence() > index && index >= 0) {
                 @SuppressWarnings("unchecked") E e = (E) array[index++];
                 action.accept(e);
@@ -1042,8 +1024,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
         try {
             UNSAFE = sun.misc.Unsafe.getUnsafe();
             Class<?> k = PriorityBlockingQueue.class;
-            allocationSpinLockOffset = UNSAFE.objectFieldOffset
-                    (k.getDeclaredField("allocationSpinLock"));
+            allocationSpinLockOffset = UNSAFE.objectFieldOffset(k.getDeclaredField("allocationSpinLock"));
         } catch (Exception e) {
             throw new Error(e);
         }

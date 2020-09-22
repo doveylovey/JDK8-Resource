@@ -77,8 +77,7 @@ import java.util.function.Consumer;
  * @author Doug Lea
  * @since 1.5
  */
-public class LinkedBlockingQueue<E> extends AbstractQueue<E>
-        implements BlockingQueue<E>, java.io.Serializable {
+public class LinkedBlockingQueue<E> extends AbstractQueue<E> implements BlockingQueue<E>, java.io.Serializable {
     private static final long serialVersionUID = -6903933977591709194L;
 
     /*
@@ -385,9 +384,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
      * @throws InterruptedException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
-    public boolean offer(E e, long timeout, TimeUnit unit)
-            throws InterruptedException {
-
+    public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
         if (e == null) throw new NullPointerException();
         long nanos = unit.toNanos(timeout);
         int c = -1;
@@ -666,9 +663,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
         try {
             int size = count.get();
             if (a.length < size)
-                a = (T[]) java.lang.reflect.Array.newInstance
-                        (a.getClass().getComponentType(), size);
-
+                a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), size);
             int k = 0;
             for (Node<E> p = head.next; p != null; p = p.next)
                 a[k++] = (T) p.item;
@@ -686,7 +681,6 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
             Node<E> p = head.next;
             if (p == null)
                 return "[]";
-
             StringBuilder sb = new StringBuilder();
             sb.append('[');
             for (; ; ) {
@@ -896,9 +890,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
             final LinkedBlockingQueue<E> q = this.queue;
             int b = batch;
             int n = (b <= 0) ? 1 : (b >= MAX_BATCH) ? MAX_BATCH : b + 1;
-            if (!exhausted &&
-                    ((h = current) != null || (h = q.head.next) != null) &&
-                    h.next != null) {
+            if (!exhausted && ((h = current) != null || (h = q.head.next) != null) && h.next != null) {
                 Object[] a = new Object[n];
                 int i = 0;
                 Node<E> p = current;
@@ -920,9 +912,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
                     est = 0L;
                 if (i > 0) {
                     batch = i;
-                    return Spliterators.spliterator
-                            (a, 0, i, Spliterator.ORDERED | Spliterator.NONNULL |
-                                    Spliterator.CONCURRENT);
+                    return Spliterators.spliterator(a, 0, i, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.CONCURRENT);
                 }
             }
             return null;
@@ -984,8 +974,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
         }
 
         public int characteristics() {
-            return Spliterator.ORDERED | Spliterator.NONNULL |
-                    Spliterator.CONCURRENT;
+            return Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.CONCURRENT;
         }
     }
 
@@ -1016,18 +1005,14 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
      * its elements (each an {@code Object}) in the proper order,
      * followed by a null
      */
-    private void writeObject(java.io.ObjectOutputStream s)
-            throws java.io.IOException {
-
+    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
         fullyLock();
         try {
             // Write out any hidden stuff, plus capacity
             s.defaultWriteObject();
-
             // Write out all elements in the proper order.
             for (Node<E> p = head.next; p != null; p = p.next)
                 s.writeObject(p.item);
-
             // Use trailing null as sentinel
             s.writeObject(null);
         } finally {
@@ -1043,8 +1028,7 @@ public class LinkedBlockingQueue<E> extends AbstractQueue<E>
      *                                could not be found
      * @throws java.io.IOException    if an I/O error occurs
      */
-    private void readObject(java.io.ObjectInputStream s)
-            throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
         // Read in capacity, and any hidden stuff
         s.defaultReadObject();
 

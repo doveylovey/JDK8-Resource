@@ -74,10 +74,7 @@ import java.util.function.Consumer;
  * @author Doug Lea
  * @since 1.6
  */
-public class LinkedBlockingDeque<E>
-        extends AbstractQueue<E>
-        implements BlockingDeque<E>, java.io.Serializable {
-
+public class LinkedBlockingDeque<E> extends AbstractQueue<E> implements BlockingDeque<E>, java.io.Serializable {
     /*
      * Implemented as a simple doubly-linked list protected by a
      * single lock and using conditions to manage blocking.
@@ -334,8 +331,7 @@ public class LinkedBlockingDeque<E>
      * @throws NullPointerException  {@inheritDoc}
      */
     public void addFirst(E e) {
-        if (!offerFirst(e))
-            throw new IllegalStateException("Deque full");
+        if (!offerFirst(e)) throw new IllegalStateException("Deque full");
     }
 
     /**
@@ -343,8 +339,7 @@ public class LinkedBlockingDeque<E>
      * @throws NullPointerException  {@inheritDoc}
      */
     public void addLast(E e) {
-        if (!offerLast(e))
-            throw new IllegalStateException("Deque full");
+        if (!offerLast(e)) throw new IllegalStateException("Deque full");
     }
 
     /**
@@ -415,8 +410,7 @@ public class LinkedBlockingDeque<E>
      * @throws NullPointerException {@inheritDoc}
      * @throws InterruptedException {@inheritDoc}
      */
-    public boolean offerFirst(E e, long timeout, TimeUnit unit)
-            throws InterruptedException {
+    public boolean offerFirst(E e, long timeout, TimeUnit unit) throws InterruptedException {
         if (e == null) throw new NullPointerException();
         Node<E> node = new Node<E>(e);
         long nanos = unit.toNanos(timeout);
@@ -438,8 +432,7 @@ public class LinkedBlockingDeque<E>
      * @throws NullPointerException {@inheritDoc}
      * @throws InterruptedException {@inheritDoc}
      */
-    public boolean offerLast(E e, long timeout, TimeUnit unit)
-            throws InterruptedException {
+    public boolean offerLast(E e, long timeout, TimeUnit unit) throws InterruptedException {
         if (e == null) throw new NullPointerException();
         Node<E> node = new Node<E>(e);
         long nanos = unit.toNanos(timeout);
@@ -521,8 +514,7 @@ public class LinkedBlockingDeque<E>
         }
     }
 
-    public E pollFirst(long timeout, TimeUnit unit)
-            throws InterruptedException {
+    public E pollFirst(long timeout, TimeUnit unit) throws InterruptedException {
         long nanos = unit.toNanos(timeout);
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
@@ -539,8 +531,7 @@ public class LinkedBlockingDeque<E>
         }
     }
 
-    public E pollLast(long timeout, TimeUnit unit)
-            throws InterruptedException {
+    public E pollLast(long timeout, TimeUnit unit) throws InterruptedException {
         long nanos = unit.toNanos(timeout);
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
@@ -665,8 +656,7 @@ public class LinkedBlockingDeque<E>
      * @throws NullPointerException {@inheritDoc}
      * @throws InterruptedException {@inheritDoc}
      */
-    public boolean offer(E e, long timeout, TimeUnit unit)
-            throws InterruptedException {
+    public boolean offer(E e, long timeout, TimeUnit unit) throws InterruptedException {
         return offerLast(e, timeout, unit);
     }
 
@@ -956,9 +946,7 @@ public class LinkedBlockingDeque<E>
         lock.lock();
         try {
             if (a.length < count)
-                a = (T[]) java.lang.reflect.Array.newInstance
-                        (a.getClass().getComponentType(), count);
-
+                a = (T[]) java.lang.reflect.Array.newInstance(a.getClass().getComponentType(), count);
             int k = 0;
             for (Node<E> p = first; p != null; p = p.next)
                 a[k++] = (T) p.item;
@@ -977,7 +965,6 @@ public class LinkedBlockingDeque<E>
             Node<E> p = first;
             if (p == null)
                 return "[]";
-
             StringBuilder sb = new StringBuilder();
             sb.append('[');
             for (; ; ) {
@@ -1197,9 +1184,7 @@ public class LinkedBlockingDeque<E>
             final LinkedBlockingDeque<E> q = this.queue;
             int b = batch;
             int n = (b <= 0) ? 1 : (b >= MAX_BATCH) ? MAX_BATCH : b + 1;
-            if (!exhausted &&
-                    ((h = current) != null || (h = q.first) != null) &&
-                    h.next != null) {
+            if (!exhausted && ((h = current) != null || (h = q.first) != null) && h.next != null) {
                 Object[] a = new Object[n];
                 final ReentrantLock lock = q.lock;
                 int i = 0;
@@ -1222,9 +1207,7 @@ public class LinkedBlockingDeque<E>
                     est = 0L;
                 if (i > 0) {
                     batch = i;
-                    return Spliterators.spliterator
-                            (a, 0, i, Spliterator.ORDERED | Spliterator.NONNULL |
-                                    Spliterator.CONCURRENT);
+                    return Spliterators.spliterator(a, 0, i, Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.CONCURRENT);
                 }
             }
             return null;
@@ -1288,8 +1271,7 @@ public class LinkedBlockingDeque<E>
         }
 
         public int characteristics() {
-            return Spliterator.ORDERED | Spliterator.NONNULL |
-                    Spliterator.CONCURRENT;
+            return Spliterator.ORDERED | Spliterator.NONNULL | Spliterator.CONCURRENT;
         }
     }
 
@@ -1319,8 +1301,7 @@ public class LinkedBlockingDeque<E>
      * @serialData The capacity (int), followed by elements (each an
      * {@code Object}) in the proper order, followed by a null
      */
-    private void writeObject(java.io.ObjectOutputStream s)
-            throws java.io.IOException {
+    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -1344,8 +1325,7 @@ public class LinkedBlockingDeque<E>
      *                                could not be found
      * @throws java.io.IOException    if an I/O error occurs
      */
-    private void readObject(java.io.ObjectInputStream s)
-            throws java.io.IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();
         count = 0;
         first = null;
@@ -1359,5 +1339,4 @@ public class LinkedBlockingDeque<E>
             add(item);
         }
     }
-
 }
