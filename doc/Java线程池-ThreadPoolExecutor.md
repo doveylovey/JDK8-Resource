@@ -34,15 +34,15 @@ ThreadPoolExecutor 构造方法的七个参数介绍：
 > 在这七个参数中，比较容易引起问题的有：corePoolSize 和 maximumPoolSize 设置不当会影响效率，甚至耗尽线程；workQueue 设置不当容易导致 OOM；handler 设置不当会导致提交任务时抛出异常。
 
 ### 线程池接受任务的形式：Runnable、Callable
-- 方法签名不同：Runnable 接口中的定义是 void run()；Callable 接口中的定义是 V call() throws Exception
-- 是否允许有返回值，Callable 允许有返回值
-- 是否允许抛出异常，Callable 允许抛出异常 
+- 方法签名不同：Runnable 接口中的定义是 void run()，而 Callable 接口中的定义是 V call() throws Exception
+- 是否允许有返回值：Runnable 接口中的 run() 方法不允许有返回值，而 Callable 接口中的 call() 方法允许有返回值
+- 是否允许抛出异常：Runnable 接口中的 run() 方法不允许抛出异常，而 Callable 接口中的 call() 方法允许抛出异常 
 > Callable 是 JDK1.5 时加入的接口，作为 Runnable 的一种补充，允许有返回值，允许抛出异常。
 
 ### 向线程池提交任务的三种方式：submit() 和 execute()
-- Future<T> submit(Callable<T> task)：关心返回结果
-- void execute(Runnable command)：不关心返回结果
-- Future<?> submit(Runnable task)：不关心返回结果，虽然返回值类型是 Future，但是其 get() 方法总是返回 null
+- Future<T> submit(Callable<T> task)：有结果返回
+- void execute(Runnable command)：没有结果返回
+- Future<?> submit(Runnable task)：没有结果返回，虽然返回值类型是 Future，但是其 get() 方法总是返回 null
 
 # 如何正确使用线程池：避免使用无界队列、明确提交新任务时的拒绝策略、获取处理结果和异常
 ### 避免使用无界队列
@@ -211,7 +211,7 @@ public void countDownLatchTest() throws InterruptedException {
 # 线程池任务执行流程
 - 当线程池中的线程数小于 corePoolSize 时，新提交的任务将会创建一个新线程执行，即使此时线程池中存在空闲线程
 - 当线程池中的线程数达到 corePoolSize 时，新提交的任务将被放入 workQueue 中，等待线程池中的线程调度执行
-- 当 workQueue 已满且 maximumPoolSize 大于 corePoolSize 时，新提交的任务将会创建新线程执行
+- 当 workQueue 已满且 corePoolSize 小于 maximumPoolSize 时，新提交的任务将会创建新线程执行
 - 当提交任务数超过 maximumPoolSize 时，新提交任务由 RejectedExecutionHandler 处理
 - 当线程池中的线程数超过 corePoolSize 时，空闲时间达到 keepAliveTime 的线程将被关闭
 - 当设置 allowCoreThreadTimeOut(true) 时，线程池中 corePoolSize 线程空闲时间达到 keepAliveTime 也将关闭
