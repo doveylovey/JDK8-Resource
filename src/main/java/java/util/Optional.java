@@ -69,8 +69,9 @@ public final class Optional<T> {
     }
 
     /**
-     * Returns an empty {@code Optional} instance.  No value is present for this
-     * Optional.
+     * 返回一个空的 Optional 实例
+     * Returns an empty {@code Optional} instance.
+     * No value is present for this Optional.
      *
      * @param <T> Type of the non-existent value
      * @return an empty {@code Optional}
@@ -96,6 +97,7 @@ public final class Optional<T> {
     }
 
     /**
+     * 返回指定非 null 值的 Optional
      * Returns an {@code Optional} with the specified present non-null value.
      *
      * @param <T>   the class of the value
@@ -108,8 +110,9 @@ public final class Optional<T> {
     }
 
     /**
-     * Returns an {@code Optional} describing the specified value, if non-null,
-     * otherwise returns an empty {@code Optional}.
+     * 如果非空，则返回描述指定值的 Optional，否则返回空的 Optional
+     * Returns an {@code Optional} describing the specified value,
+     * if non-null, otherwise returns an empty {@code Optional}.
      *
      * @param <T>   the class of the value
      * @param value the possibly-null value to describe
@@ -121,6 +124,7 @@ public final class Optional<T> {
     }
 
     /**
+     * 如果此 Optional 中存在一个值，则返回该值，否则抛出 NoSuchElementException 异常
      * If a value is present in this {@code Optional}, returns the value,
      * otherwise throws {@code NoSuchElementException}.
      *
@@ -136,6 +140,7 @@ public final class Optional<T> {
     }
 
     /**
+     * 如果存在值，则返回 true，否则返回 false
      * Return {@code true} if there is a value present, otherwise {@code false}.
      *
      * @return {@code true} if there is a value present, otherwise {@code false}
@@ -145,12 +150,11 @@ public final class Optional<T> {
     }
 
     /**
-     * If a value is present, invoke the specified consumer with the value,
-     * otherwise do nothing.
+     * 如果存在值，则使用该值调用 consumer，否则不执行任何操作
+     * If a value is present, invoke the specified consumer with the value, otherwise do nothing.
      *
      * @param consumer block to be executed if a value is present
-     * @throws NullPointerException if value is present and {@code consumer} is
-     *                              null
+     * @throws NullPointerException if value is present and {@code consumer} is null
      */
     public void ifPresent(Consumer<? super T> consumer) {
         if (value != null)
@@ -158,9 +162,9 @@ public final class Optional<T> {
     }
 
     /**
+     * 如果存在一个值，并且该值与给定的 predicate 匹配，则返回描述该值的 Optional，否则返回空的 Optional
      * If a value is present, and the value matches the given predicate,
-     * return an {@code Optional} describing the value, otherwise return an
-     * empty {@code Optional}.
+     * return an {@code Optional} describing the value, otherwise return an empty {@code Optional}.
      *
      * @param predicate a predicate to apply to the value, if present
      * @return an {@code Optional} describing the value of this {@code Optional}
@@ -177,9 +181,9 @@ public final class Optional<T> {
     }
 
     /**
-     * If a value is present, apply the provided mapping function to it,
-     * and if the result is non-null, return an {@code Optional} describing the
-     * result.  Otherwise return an empty {@code Optional}.
+     * 如果存在值，则将提供的映射函数应用于该值，如果结果为非 null，则返回描述结果的 Optional。否则，返回一个空的 Optional
+     * If a value is present, apply the provided mapping function to it, and if the result is non-null,
+     * return an {@code Optional} describing the result. Otherwise return an empty {@code Optional}.
      *
      * @param <U>    The type of the result of the mapping function
      * @param mapper a mapping function to apply to the value, if present
@@ -200,9 +204,8 @@ public final class Optional<T> {
      *                       .map(name -> new FileInputStream(name));
      * }</pre>
      * <p>
-     * Here, {@code findFirst} returns an {@code Optional<String>}, and then
-     * {@code map} returns an {@code Optional<FileInputStream>} for the desired
-     * file if one exists.
+     * Here, {@code findFirst} returns an {@code Optional<String>}, and then {@code map}
+     * returns an {@code Optional<FileInputStream>} for the desired file if one exists.
      */
     public <U> Optional<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper);
@@ -214,21 +217,17 @@ public final class Optional<T> {
     }
 
     /**
-     * If a value is present, apply the provided {@code Optional}-bearing
-     * mapping function to it, return that result, otherwise return an empty
-     * {@code Optional}.  This method is similar to {@link #map(Function)},
-     * but the provided mapper is one whose result is already an {@code Optional},
-     * and if invoked, {@code flatMap} does not wrap it with an additional
-     * {@code Optional}.
+     * 如果存在值，则返回基于 Optional 包含的映射方法的值，否则返回一个空的 Optional
+     * If a value is present, apply the provided {@code Optional}-bearing mapping function to it,
+     * return that result, otherwise return an empty {@code Optional}.
+     * This method is similar to {@link #map(Function)}, but the provided mapper is one whose result is already
+     * an {@code Optional}, and if invoked, {@code flatMap} does not wrap it with an additional {@code Optional}.
      *
      * @param <U>    The type parameter to the {@code Optional} returned by
-     * @param mapper a mapping function to apply to the value, if present
-     *               the mapping function
+     * @param mapper a mapping function to apply to the value, if present the mapping function
      * @return the result of applying an {@code Optional}-bearing mapping
-     * function to the value of this {@code Optional}, if a value is present,
-     * otherwise an empty {@code Optional}
-     * @throws NullPointerException if the mapping function is null or returns
-     *                              a null result
+     * function to the value of this {@code Optional}, if a value is present, otherwise an empty {@code Optional}
+     * @throws NullPointerException if the mapping function is null or returns a null result
      */
     public <U> Optional<U> flatMap(Function<? super T, Optional<U>> mapper) {
         Objects.requireNonNull(mapper);
@@ -240,10 +239,10 @@ public final class Optional<T> {
     }
 
     /**
+     * 如果值存在，则返回该值，否则返回 other
      * Return the value if present, otherwise return {@code other}.
      *
-     * @param other the value to be returned if there is no value present, may
-     *              be null
+     * @param other the value to be returned if there is no value present, may be null
      * @return the value, if present, otherwise {@code other}
      */
     public T orElse(T other) {
@@ -251,33 +250,28 @@ public final class Optional<T> {
     }
 
     /**
-     * Return the value if present, otherwise invoke {@code other} and return
-     * the result of that invocation.
+     * 如果值存在，则返回该值，否则调用 other 并返回该调用的结果
+     * Return the value if present, otherwise invoke {@code other} and return the result of that invocation.
      *
-     * @param other a {@code Supplier} whose result is returned if no value
-     *              is present
+     * @param other a {@code Supplier} whose result is returned if no value is present
      * @return the value if present otherwise the result of {@code other.get()}
-     * @throws NullPointerException if value is not present and {@code other} is
-     *                              null
+     * @throws NullPointerException if value is not present and {@code other} is null
      */
     public T orElseGet(Supplier<? extends T> other) {
         return value != null ? value : other.get();
     }
 
     /**
-     * Return the contained value, if present, otherwise throw an exception
-     * to be created by the provided supplier.
+     * 如果值存在，则返回所包含的值，否则抛出由 exceptionSupplier 继承的异常
+     * Return the contained value, if present, otherwise throw an exception to be created by the provided supplier.
      *
      * @param <X>               Type of the exception to be thrown
-     * @param exceptionSupplier The supplier which will return the exception to
-     *                          be thrown
+     * @param exceptionSupplier The supplier which will return the exception to be thrown
      * @return the present value
      * @throws X                    if there is no value present
-     * @throws NullPointerException if no value is present and
-     *                              {@code exceptionSupplier} is null
+     * @throws NullPointerException if no value is present and {@code exceptionSupplier} is null
      * @apiNote A method reference to the exception constructor with an empty
-     * argument list can be used as the supplier. For example,
-     * {@code IllegalStateException::new}
+     * argument list can be used as the supplier. For example, {@code IllegalStateException::new}
      */
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
         if (value != null) {
@@ -288,8 +282,9 @@ public final class Optional<T> {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this Optional. The
-     * other object is considered equal if:
+     * 判断其他某个对象是否等于此 Optional
+     * Indicates whether some other object is "equal to" this Optional.
+     * The other object is considered equal if:
      * <ul>
      * <li>it is also an {@code Optional} and;
      * <li>both instances have no value present or;
@@ -305,18 +300,16 @@ public final class Optional<T> {
         if (this == obj) {
             return true;
         }
-
         if (!(obj instanceof Optional)) {
             return false;
         }
-
         Optional<?> other = (Optional<?>) obj;
         return Objects.equals(value, other.value);
     }
 
     /**
-     * Returns the hash code value of the present value, if any, or 0 (zero) if
-     * no value is present.
+     * 返回当前值的哈希码值(如果有)，如果没有值则返回0(零)
+     * Returns the hash code value of the present value, if any, or 0 (zero) if no value is present.
      *
      * @return hash code value of the present value or 0 if no value is present
      */
@@ -326,19 +319,16 @@ public final class Optional<T> {
     }
 
     /**
-     * Returns a non-empty string representation of this Optional suitable for
-     * debugging. The exact presentation format is unspecified and may vary
-     * between implementations and versions.
+     * 返回此 Optional 的非空字符串表示形式以便调试
+     * Returns a non-empty string representation of this Optional suitable for debugging.
+     * The exact presentation format is unspecified and may vary between implementations and versions.
      *
      * @return the string representation of this instance
-     * @implSpec If a value is present the result must include its string
-     * representation in the result. Empty and present Optionals must be
-     * unambiguously differentiable.
+     * @implSpec If a value is present the result must include its string representation in the result.
+     * Empty and present Optionals must be unambiguously differentiable.
      */
     @Override
     public String toString() {
-        return value != null
-                ? String.format("Optional[%s]", value)
-                : "Optional.empty";
+        return value != null ? String.format("Optional[%s]", value) : "Optional.empty";
     }
 }

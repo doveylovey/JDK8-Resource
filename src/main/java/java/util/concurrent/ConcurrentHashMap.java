@@ -867,10 +867,13 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
      * @throws IllegalArgumentException if the initial capacity of elements is negative
      */
     public ConcurrentHashMap(int initialCapacity) {
+        // 校验参数是否合法
         if (initialCapacity < 0)
             throw new IllegalArgumentException();
+        // 容量超过最大值则取最大值，否则根据参数调整容量大小，调整结果为：大于输入参数且最小的2的n次幂的数
         int cap = ((initialCapacity >= (MAXIMUM_CAPACITY >>> 1)) ? MAXIMUM_CAPACITY : tableSizeFor(initialCapacity + (initialCapacity >>> 1) + 1));
         this.sizeCtl = cap;
+        // ConcurrentHashMap 在构造函数中只会初始化 sizeCtl 值，并不会直接初始化 table
     }
 
     /**
