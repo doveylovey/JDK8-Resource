@@ -19,7 +19,7 @@
 
 ### 5、如何编写一个泛型方法，让它能接受泛型参数并返回泛型类型？
 编写泛型方法并不困难，你需要用泛型类型来替代原始类型，比如使用T, E or K,V等被广泛认可的类型占位符。泛型方法的例子请参阅Java集合类框架。最简单的情况下，一个泛型方法可能会像这样:
-```java
+```text
 public V put(K key, V value) {
     return cache.put(key, value);
 }
@@ -37,7 +37,7 @@ LinkedHashMap提供了一个称为removeEldestEntry()的方法，该方法会被
 对任何一个不太熟悉泛型的人来说，这个Java泛型题目看起来令人疑惑，因为乍看起来String是一种Object，所以List<String>应当可以用在需要List<Object>的地方，但是事实并非如此。真这样做的话会导致编译错误。
 
 如果你再深一步考虑，你会发现Java这样做是有意义的，因为List<Object>可以存储任何类型的对象包括String, Integer等等，而List<String>却只能用来存储Strings。　
-```java
+```text
 List<Object> objectList;
 List<String> stringList;
 objectList = stringList;
@@ -48,6 +48,6 @@ objectList = stringList;
 
 ### 10、如何阻止 Java 中的类型未检查的警告？
 如果你把泛型和原始类型混合起来使用，例如下列代码，Java 5的javac编译器会产生类型未检查的警告，例如　　
-```java
+```text
 List<String> rawList = new ArrayList();
 ```

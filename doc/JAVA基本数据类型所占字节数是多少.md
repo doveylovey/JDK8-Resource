@@ -70,11 +70,11 @@ float 和 double 的范围是由指数的位数来决定的：float 的指数位
 - double：1bit(符号位) + 11bits(指数位) + 52bits(尾数位)
 
 在数学中，特别是在计算机相关的数字(浮点数)问题的表述中，有一个基本表达法：
-```
+```text
 value of floating-point = significand x base ^ exponent, with sign.
 ```
 中文表达为：
-```
+```text
 (浮点)数值 = 尾数 × 底数 ^ 指数，附加正负号。
 ```
 
