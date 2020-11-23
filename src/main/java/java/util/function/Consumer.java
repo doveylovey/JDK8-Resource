@@ -36,10 +36,11 @@ import java.util.Objects;
  *
  * @param <T> the type of the input to the operation
  * @since 1.8
+ * <p>
+ * 支持 lambda 表达式的接口只允许定义一个抽象方法：即带有 @FunctionalInterface 注解的接口只允许定义一个抽象方法
  */
 @FunctionalInterface
 public interface Consumer<T> {
-
     /**
      * Performs this operation on the given argument.
      *
@@ -48,15 +49,12 @@ public interface Consumer<T> {
     void accept(T t);
 
     /**
-     * Returns a composed {@code Consumer} that performs, in sequence, this
-     * operation followed by the {@code after} operation. If performing either
-     * operation throws an exception, it is relayed to the caller of the
-     * composed operation.  If performing this operation throws an exception,
-     * the {@code after} operation will not be performed.
+     * Returns a composed {@code Consumer} that performs, in sequence, this operation followed by the {@code after} operation.
+     * If performing either operation throws an exception, it is relayed to the caller of the composed operation.
+     * If performing this operation throws an exception, the {@code after} operation will not be performed.
      *
      * @param after the operation to perform after this operation
-     * @return a composed {@code Consumer} that performs in sequence this
-     * operation followed by the {@code after} operation
+     * @return a composed {@code Consumer} that performs in sequence this operation followed by the {@code after} operation
      * @throws NullPointerException if {@code after} is null
      */
     default Consumer<T> andThen(Consumer<? super T> after) {

@@ -152,7 +152,6 @@ import java.util.function.UnaryOperator;
  * @since 1.8
  */
 public interface Stream<T> extends BaseStream<T, Stream<T>> {
-
     /**
      * Returns a stream consisting of the elements of this stream that match
      * the given predicate.
@@ -680,9 +679,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @see #reduce(BinaryOperator)
      * @see #reduce(Object, BinaryOperator)
      */
-    <U> U reduce(U identity,
-                 BiFunction<U, ? super T, U> accumulator,
-                 BinaryOperator<U> combiner);
+    <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner);
 
     /**
      * Performs a <a href="package-summary.html#MutableReduction">mutable
@@ -722,21 +719,16 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * well-suited for use with method references as arguments to {@code collect()}.
      * For example, the following will accumulate strings into an {@code ArrayList}:
      * <pre>{@code
-     *     List<String> asList = stringStream.collect(ArrayList::new, ArrayList::add,
-     *                                                ArrayList::addAll);
+     *     List<String> asList = stringStream.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
      * }</pre>
      *
      * <p>The following will take a stream of strings and concatenates them into a
      * single string:
      * <pre>{@code
-     *     String concat = stringStream.collect(StringBuilder::new, StringBuilder::append,
-     *                                          StringBuilder::append)
-     *                                 .toString();
+     *     String concat = stringStream.collect(StringBuilder::new, StringBuilder::append, StringBuilder::append).toString();
      * }</pre>
      */
-    <R> R collect(Supplier<R> supplier,
-                  BiConsumer<R, ? super T> accumulator,
-                  BiConsumer<R, R> combiner);
+    <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner);
 
     /**
      * Performs a <a href="package-summary.html#MutableReduction">mutable
@@ -991,8 +983,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      *
      * @param <T>  the type of stream elements
      * @param seed the initial element
-     * @param f    a function to be applied to the previous element to produce
-     *             a new element
+     * @param f    a function to be applied to the previous element to produce a new element
      * @return a new sequential {@code Stream}
      */
     public static <T> Stream<T> iterate(final T seed, final UnaryOperator<T> f) {
@@ -1011,9 +1002,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
                 return t = (t == Streams.NONE) ? seed : f.apply(t);
             }
         };
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(
-                iterator,
-                Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
+        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED | Spliterator.IMMUTABLE), false);
     }
 
     /**
@@ -1027,8 +1016,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      */
     public static <T> Stream<T> generate(Supplier<T> s) {
         Objects.requireNonNull(s);
-        return StreamSupport.stream(
-                new StreamSpliterators.InfiniteSupplyingSpliterator.OfRef<>(Long.MAX_VALUE, s), false);
+        return StreamSupport.stream(new StreamSpliterators.InfiniteSupplyingSpliterator.OfRef<>(Long.MAX_VALUE, s), false);
     }
 
     /**
@@ -1052,8 +1040,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
         Objects.requireNonNull(b);
 
         @SuppressWarnings("unchecked")
-        Spliterator<T> split = new Streams.ConcatSpliterator.OfRef<>(
-                (Spliterator<T>) a.spliterator(), (Spliterator<T>) b.spliterator());
+        Spliterator<T> split = new Streams.ConcatSpliterator.OfRef<>((Spliterator<T>) a.spliterator(), (Spliterator<T>) b.spliterator());
         Stream<T> stream = StreamSupport.stream(split, a.isParallel() || b.isParallel());
         return stream.onClose(Streams.composedClose(a, b));
     }
@@ -1076,12 +1063,10 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
      * @since 1.8
      */
     public interface Builder<T> extends Consumer<T> {
-
         /**
          * Adds an element to the stream being built.
          *
-         * @throws IllegalStateException if the builder has already transitioned to
-         *                               the built state
+         * @throws IllegalStateException if the builder has already transitioned to the built state
          */
         @Override
         void accept(T t);
@@ -1091,8 +1076,7 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
          *
          * @param t the element to add
          * @return {@code this} builder
-         * @throws IllegalStateException if the builder has already transitioned to
-         *                               the built state
+         * @throws IllegalStateException if the builder has already transitioned to the built state
          * @implSpec The default implementation behaves as if:
          * <pre>{@code
          *     accept(t)
@@ -1110,10 +1094,8 @@ public interface Stream<T> extends BaseStream<T, Stream<T>> {
          * to operate on the builder after it has entered the built state.
          *
          * @return the built stream
-         * @throws IllegalStateException if the builder has already transitioned to
-         *                               the built state
+         * @throws IllegalStateException if the builder has already transitioned to the built state
          */
         Stream<T> build();
-
     }
 }

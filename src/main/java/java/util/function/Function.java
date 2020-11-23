@@ -35,10 +35,11 @@ import java.util.Objects;
  * @param <T> the type of the input to the function
  * @param <R> the type of the result of the function
  * @since 1.8
+ * <p>
+ * 支持 lambda 表达式的接口只允许定义一个抽象方法：即带有 @FunctionalInterface 注解的接口只允许定义一个抽象方法
  */
 @FunctionalInterface
 public interface Function<T, R> {
-
     /**
      * Applies this function to the given argument.
      *
@@ -48,16 +49,13 @@ public interface Function<T, R> {
     R apply(T t);
 
     /**
-     * Returns a composed function that first applies the {@code before}
-     * function to its input, and then applies this function to the result.
-     * If evaluation of either function throws an exception, it is relayed to
-     * the caller of the composed function.
+     * Returns a composed function that first applies the {@code before} function to its input,
+     * and then applies this function to the result.
+     * If evaluation of either function throws an exception, it is relayed to the caller of the composed function.
      *
-     * @param <V>    the type of input to the {@code before} function, and to the
-     *               composed function
+     * @param <V>    the type of input to the {@code before} function, and to the composed function
      * @param before the function to apply before this function is applied
-     * @return a composed function that first applies the {@code before}
-     * function and then applies this function
+     * @return a composed function that first applies the {@code before} function and then applies this function
      * @throws NullPointerException if before is null
      * @see #andThen(Function)
      */
@@ -67,16 +65,13 @@ public interface Function<T, R> {
     }
 
     /**
-     * Returns a composed function that first applies this function to
-     * its input, and then applies the {@code after} function to the result.
-     * If evaluation of either function throws an exception, it is relayed to
-     * the caller of the composed function.
+     * Returns a composed function that first applies this function to its input,
+     * and then applies the {@code after} function to the result.
+     * If evaluation of either function throws an exception, it is relayed to the caller of the composed function.
      *
-     * @param <V>   the type of output of the {@code after} function, and of the
-     *              composed function
+     * @param <V>   the type of output of the {@code after} function, and of the composed function
      * @param after the function to apply after this function is applied
-     * @return a composed function that first applies this function and then
-     * applies the {@code after} function
+     * @return a composed function that first applies this function and then applies the {@code after} function
      * @throws NullPointerException if after is null
      * @see #compose(Function)
      */

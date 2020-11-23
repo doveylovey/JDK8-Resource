@@ -2,6 +2,9 @@ package com.study.test.lambda;
 
 import org.junit.Test;
 
+/**
+ * 支持 lambda 表达式的接口只允许定义一个抽象方法：即带有 @FunctionalInterface 注解的接口只允许定义一个抽象方法
+ */
 public class LambdaTest01 {
     @Test
     public void test01() {

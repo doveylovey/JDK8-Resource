@@ -25,4 +25,18 @@ public class DateTest01 {
         long year = ChronoUnit.YEARS.between(startDate, endDate);
         System.out.println(year + ", " + month + ", " + days);
     }
+
+    @Test
+    public void test02() {
+        // 当前日期的前一天：昨天
+        LocalDate start = LocalDate.of(2020, 11, 16);
+        LocalDate end = LocalDate.of(2020, 11, 20);
+        while (start.isBefore(end)) {
+            System.out.println(start);
+            start = start.plusDays(1);
+        }
+        System.out.println(end.isBefore(end));
+        System.out.println(end.equals(end));
+        System.out.println(end.isAfter(end));
+    }
 }
