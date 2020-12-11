@@ -417,6 +417,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * 测试该方法：该算法的作用让最高位的1后面的位全变为1，然后再加1，最后得到的就是2的n次幂。如：5(即0101) ===> 0111 ===> 1000(即8)
      */
     static final int tableSizeFor(int cap) {
+        // 注意：HashMap要求容量必须是2的幂。参考 https://www.imooc.com/article/267756
         int n = cap - 1;
         n |= n >>> 1;
         n |= n >>> 2;
@@ -494,13 +495,19 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * @throws IllegalArgumentException if the initial capacity is negative or the load factor is nonpositive
      */
     public HashMap(int initialCapacity, float loadFactor) {
+        // 构造一个初始容量为 initialCapacity，负载因子为 loadFactor 的空的 HashMap
         if (initialCapacity < 0)
+            // 当指定的初始容量小于 0 时抛出 IllegalArgumentException 异常
             throw new IllegalArgumentException("Illegal initial capacity: " + initialCapacity);
         if (initialCapacity > MAXIMUM_CAPACITY)
+            // 当指定的初始容量大于 MAXIMUM_CAPACITY时，就让初始容量等于 MAXIMUM_CAPACITY
             initialCapacity = MAXIMUM_CAPACITY;
         if (loadFactor <= 0 || Float.isNaN(loadFactor))
+            // 当负载因子小于0或者不是数字时，抛出 IllegalArgumentException 异常
             throw new IllegalArgumentException("Illegal load factor: " + loadFactor);
         this.loadFactor = loadFactor;
+        // 设定 threshold：threshold = capacity * loadFactor。当 HashMap 的 size 到了 threshold 时就要进行扩容(resize)。
+        // tableSizeFor()：返回一个比给定整数大且最接近的2的幂次方整数(如给定10，则返回16)
         this.threshold = tableSizeFor(initialCapacity);
     }
 
@@ -511,6 +518,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * @throws IllegalArgumentException if the initial capacity is negative.
      */
     public HashMap(int initialCapacity) {
+        // 构造一个初始容量为 initialCapacity，负载因子为0.75的空的 HashMap
         this(initialCapacity, DEFAULT_LOAD_FACTOR);
     }
 
@@ -525,6 +533,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * 如果 capacity > MIN_TREEIFY_CAPACITY ，才有资格进行树化(当bin的个数大于8时)。
      */
     public HashMap() {
+        // 无参构造方法：构造一个空的 HashMap，初始容量为16，负载因子为0.75
         this.loadFactor = DEFAULT_LOAD_FACTOR;
     }
 
@@ -734,7 +743,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                 return oldValue;
             }
         }
-        ++modCount;
+        ++modCount; // 保证并发访问时，若 HashMap 内部结构发生变化，快速响应失败
         if (++size > threshold) {
             resize();
         }
@@ -765,7 +774,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
             } else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY && oldCap >= DEFAULT_INITIAL_CAPACITY) {
                 // 容量没有达到最大值，则新 hash 表的长度就是原 hash 表的2倍(因为：newCap = oldCap << 1)
                 // double threshold
-                // // 计算新 hash 表下次扩容时的阈值：即 threshold 也扩大为原来的2倍(因为：newThr = oldThr << 1，等价于 newThr = oldThr * 2)
+                // 计算新 hash 表下次扩容时的阈值：即 threshold 也扩大为原来的2倍(因为：newThr = oldThr << 1，等价于 newThr = oldThr * 2)
                 newThr = oldThr << 1;
             }
         } else if (oldThr > 0) {

@@ -1,4 +1,4 @@
-package com.study.test.temp;
+package com.study.test.number;
 
 import org.junit.Test;
 
@@ -78,5 +78,14 @@ public class IntegerTests {
         System.out.println("二进制输出" + Integer.toBinaryString(b >> 2));
         System.out.println("无符号右移" + b + ">>>2" + "=" + (b >>> 2));
         System.out.println("二进制输出" + Integer.toBinaryString(b >>> 2));
+    }
+
+    @Test
+    public void highestOneBit01() {
+        // 确保 capacity 为大于或等于 toSize 的最接近 toSize 的二次幂。
+        // 如：toSize=13，则 capacity=16；to_size=16，则 capacity=16；to_size=17，则 capacity=32
+        int toSize = 3;
+        int capacity = (toSize > 1) ? Integer.highestOneBit((toSize - 1) << 1) : 1;
+        System.out.println(capacity);
     }
 }
