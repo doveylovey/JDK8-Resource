@@ -8,11 +8,6 @@ import java.util.Map;
 /**
  * 泛型按使用情况可分为 3 种：泛型类、泛型方法、泛型接口。
  * 出于规范的目的，Java 中建议用单个大写字母来代表类型参数，常见的如：T 代表一般的任何类；E 代表 Element 或 Exception；K 代表 Key；V 代表 Value，通常与 K 一起配合使用；S 代表 Subtype。
- *
- * @author doveylovey
- * @version v1.0.0
- * @email 1135782208@qq.com
- * @date 2020年08月12日
  */
 public class GenericTests02 {
     /**

@@ -13,11 +13,6 @@ import java.util.List;
  * 1、<?> 被称作无限定的通配符。
  * 2、<? extends T> 被称作有上限的通配符。
  * 3、<? super T> 被称作有下限的通配符。
- *
- * @author doveylovey
- * @version v1.0.0
- * @email 1135782208@qq.com
- * @date 2020年08月12日
  */
 public class GenericTests03 {
     class Base {

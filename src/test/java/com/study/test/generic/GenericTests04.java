@@ -10,11 +10,6 @@ import java.util.List;
 
 /**
  * 作用描述：类型擦除。泛型类或者泛型方法中，不接受 8 种基本数据类型，需要使用它们对应的包装类。
- *
- * @author doveylovey
- * @version v1.0.0
- * @email 1135782208@qq.com
- * @date 2020年08月12日
  */
 public class GenericTests04 {
     class GenericErasure01<T> {

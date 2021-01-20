@@ -20,11 +20,6 @@ import java.util.List;
  * 该方法也需要在同步方法或同步代码块中使用(即：在调用前，线程也必须获得该对象的对象级别锁)。如果调用 notify() 时没有持有适当的锁，则也会抛出 IllegalMonitorStateException 异常。
  * <p>
  * 一句话总结 wait/notify：wait 使线程停止运行，而 notify 使停止的线程继续运行。
- *
- * @author doveylovey
- * @version v1.0.0
- * @email 1135782208@qq.com
- * @date 2020年08月07日
  */
 public class CommunicationTest01 {
     /**
