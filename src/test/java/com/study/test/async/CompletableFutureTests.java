@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Java8 新的异步编程方式
@@ -79,5 +80,44 @@ public class CompletableFutureTests {
         }
         System.out.println(result1);
         System.out.println(result2);
+    }
+
+    @Test
+    public void combineAsyncTest() throws ExecutionException, InterruptedException {
+        long start = System.currentTimeMillis();
+        CompletableFuture<String> result = CompletableFuture.supplyAsync(() -> {
+            System.out.println("当前线程：" + Thread.currentThread().getName() + "，调用微服务A(2s)");
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "调用微服务A";
+        }).thenCombineAsync(CompletableFuture.supplyAsync(() -> {
+            System.out.println("当前线程：" + Thread.currentThread().getName() + "，调用微服务B(3s)");
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "调用微服务B";
+        }), (r1, r2) -> {
+            // 合并两个结果
+            return r1 + " => " + r2;
+        }).thenCombineAsync(CompletableFuture.supplyAsync(() -> {
+            System.out.println("当前线程：" + Thread.currentThread().getName() + "，调用微服务C(5s)");
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return "调用微服务C";
+        }), (r1, r2) -> {
+            return r1 + " => " + r2;
+        });
+        System.out.println("当前线程：" + Thread.currentThread().getName());
+        System.out.println(result.get());
+        long end = System.currentTimeMillis();
+        System.out.println("总耗时(整体请求时间取决于耗时最长的任务)：" + (end - start) / 1000);
     }
 }

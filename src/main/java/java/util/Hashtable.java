@@ -25,13 +25,13 @@
 
 package java.util;
 
-import java.io.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.BiFunction;
-
 import sun.misc.SharedSecrets;
+
+import java.io.IOException;
+import java.io.StreamCorruptedException;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * This class implements a hash table, which maps keys to values. Any
@@ -129,9 +129,7 @@ import sun.misc.SharedSecrets;
  * @see TreeMap
  * @since JDK1.0
  */
-public class Hashtable<K, V>
-        extends Dictionary<K, V>
-        implements Map<K, V>, Cloneable, java.io.Serializable {
+public class Hashtable<K, V> extends Dictionary<K, V> implements Map<K, V>, Cloneable, java.io.Serializable {
 
     /**
      * The hash table data.
@@ -183,11 +181,9 @@ public class Hashtable<K, V>
      */
     public Hashtable(int initialCapacity, float loadFactor) {
         if (initialCapacity < 0)
-            throw new IllegalArgumentException("Illegal Capacity: " +
-                    initialCapacity);
+            throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         if (loadFactor <= 0 || Float.isNaN(loadFactor))
             throw new IllegalArgumentException("Illegal Load: " + loadFactor);
-
         if (initialCapacity == 0)
             initialCapacity = 1;
         this.loadFactor = loadFactor;
@@ -200,8 +196,7 @@ public class Hashtable<K, V>
      * and default load factor (0.75).
      *
      * @param initialCapacity the initial capacity of the hashtable.
-     * @throws IllegalArgumentException if the initial capacity is less
-     *                                  than zero.
+     * @throws IllegalArgumentException if the initial capacity is less than zero.
      */
     public Hashtable(int initialCapacity) {
         this(initialCapacity, 0.75f);
@@ -296,7 +291,6 @@ public class Hashtable<K, V>
         if (value == null) {
             throw new NullPointerException();
         }
-
         Entry<?, ?> tab[] = table;
         for (int i = tab.length; i-- > 0; ) {
             for (Entry<?, ?> e = tab[i]; e != null; e = e.next) {
@@ -422,17 +416,14 @@ public class Hashtable<K, V>
 
     private void addEntry(int hash, K key, V value, int index) {
         modCount++;
-
         Entry<?, ?> tab[] = table;
         if (count >= threshold) {
             // Rehash the table if the threshold is exceeded
             rehash();
-
             tab = table;
             hash = key.hashCode();
             index = (hash & 0x7FFFFFFF) % tab.length;
         }
-
         // Creates the new entry.
         @SuppressWarnings("unchecked")
         Entry<K, V> e = (Entry<K, V>) tab[index];
@@ -462,7 +453,6 @@ public class Hashtable<K, V>
         if (value == null) {
             throw new NullPointerException();
         }
-
         // Makes sure the key is not already in the hashtable.
         Entry<?, ?> tab[] = table;
         int hash = key.hashCode();
@@ -476,7 +466,6 @@ public class Hashtable<K, V>
                 return old;
             }
         }
-
         addEntry(hash, key, value, index);
         return null;
     }
@@ -550,8 +539,7 @@ public class Hashtable<K, V>
             Hashtable<?, ?> t = (Hashtable<?, ?>) super.clone();
             t.table = new Entry<?, ?>[table.length];
             for (int i = table.length; i-- > 0; ) {
-                t.table[i] = (table[i] != null)
-                        ? (Entry<?, ?>) table[i].clone() : null;
+                t.table[i] = (table[i] != null) ? (Entry<?, ?>) table[i].clone() : null;
             }
             t.keySet = null;
             t.entrySet = null;
@@ -578,7 +566,6 @@ public class Hashtable<K, V>
         int max = size() - 1;
         if (max == -1)
             return "{}";
-
         StringBuilder sb = new StringBuilder();
         Iterator<Map.Entry<K, V>> it = entrySet().iterator();
 
@@ -732,7 +719,6 @@ public class Hashtable<K, V>
                         prev.next = e.next;
                     else
                         tab[index] = e.next;
-
                     count--;
                     e.value = null;
                     return true;
@@ -767,8 +753,7 @@ public class Hashtable<K, V>
      */
     public Collection<V> values() {
         if (values == null)
-            values = Collections.synchronizedCollection(new ValueCollection(),
-                    this);
+            values = Collections.synchronizedCollection(new ValueCollection(), this);
         return values;
     }
 
@@ -804,13 +789,11 @@ public class Hashtable<K, V>
     public synchronized boolean equals(Object o) {
         if (o == this)
             return true;
-
         if (!(o instanceof Map))
             return false;
         Map<?, ?> t = (Map<?, ?>) o;
         if (t.size() != size())
             return false;
-
         try {
             Iterator<Map.Entry<K, V>> i = entrySet().iterator();
             while (i.hasNext()) {
@@ -855,7 +838,6 @@ public class Hashtable<K, V>
         int h = 0;
         if (count == 0 || loadFactor < 0)
             return h;  // Returns zero
-
         loadFactor = -loadFactor;  // Mark hashCode computation in progress
         Entry<?, ?>[] tab = table;
         for (Entry<?, ?> entry : tab) {
@@ -864,9 +846,7 @@ public class Hashtable<K, V>
                 entry = entry.next;
             }
         }
-
         loadFactor = -loadFactor;  // Mark hashCode computation complete
-
         return h;
     }
 
@@ -882,13 +862,11 @@ public class Hashtable<K, V>
         Objects.requireNonNull(action);     // explicit check required in case
         // table is empty.
         final int expectedModCount = modCount;
-
         Entry<?, ?>[] tab = table;
         for (Entry<?, ?> entry : tab) {
             while (entry != null) {
                 action.accept((K) entry.key, (V) entry.value);
                 entry = entry.next;
-
                 if (expectedModCount != modCount) {
                     throw new ConcurrentModificationException();
                 }
@@ -902,14 +880,11 @@ public class Hashtable<K, V>
         Objects.requireNonNull(function);     // explicit check required in case
         // table is empty.
         final int expectedModCount = modCount;
-
         Entry<K, V>[] tab = (Entry<K, V>[]) table;
         for (Entry<K, V> entry : tab) {
             while (entry != null) {
-                entry.value = Objects.requireNonNull(
-                        function.apply(entry.key, entry.value));
+                entry.value = Objects.requireNonNull(function.apply(entry.key, entry.value));
                 entry = entry.next;
-
                 if (expectedModCount != modCount) {
                     throw new ConcurrentModificationException();
                 }
@@ -920,7 +895,6 @@ public class Hashtable<K, V>
     @Override
     public synchronized V putIfAbsent(K key, V value) {
         Objects.requireNonNull(value);
-
         // Makes sure the key is not already in the hashtable.
         Entry<?, ?> tab[] = table;
         int hash = key.hashCode();
@@ -936,7 +910,6 @@ public class Hashtable<K, V>
                 return old;
             }
         }
-
         addEntry(hash, key, value, index);
         return null;
     }
@@ -944,7 +917,6 @@ public class Hashtable<K, V>
     @Override
     public synchronized boolean remove(Object key, Object value) {
         Objects.requireNonNull(value);
-
         Entry<?, ?> tab[] = table;
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
@@ -1009,7 +981,6 @@ public class Hashtable<K, V>
     @Override
     public synchronized V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
         Objects.requireNonNull(mappingFunction);
-
         Entry<?, ?> tab[] = table;
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
@@ -1021,19 +992,16 @@ public class Hashtable<K, V>
                 return e.value;
             }
         }
-
         V newValue = mappingFunction.apply(key);
         if (newValue != null) {
             addEntry(hash, key, newValue, index);
         }
-
         return newValue;
     }
 
     @Override
     public synchronized V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         Objects.requireNonNull(remappingFunction);
-
         Entry<?, ?> tab[] = table;
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
@@ -1062,7 +1030,6 @@ public class Hashtable<K, V>
     @Override
     public synchronized V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         Objects.requireNonNull(remappingFunction);
-
         Entry<?, ?> tab[] = table;
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
@@ -1085,19 +1052,16 @@ public class Hashtable<K, V>
                 return newValue;
             }
         }
-
         V newValue = remappingFunction.apply(key, null);
         if (newValue != null) {
             addEntry(hash, key, newValue, index);
         }
-
         return newValue;
     }
 
     @Override
     public synchronized V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         Objects.requireNonNull(remappingFunction);
-
         Entry<?, ?> tab[] = table;
         int hash = key.hashCode();
         int index = (hash & 0x7FFFFFFF) % tab.length;
@@ -1120,11 +1084,9 @@ public class Hashtable<K, V>
                 return newValue;
             }
         }
-
         if (value != null) {
             addEntry(hash, key, value, index);
         }
-
         return value;
     }
 
@@ -1138,30 +1100,23 @@ public class Hashtable<K, V>
      * for each key-value mapping represented by the Hashtable
      * The key-value mappings are emitted in no particular order.
      */
-    private void writeObject(java.io.ObjectOutputStream s)
-            throws IOException {
+    private void writeObject(java.io.ObjectOutputStream s) throws IOException {
         Entry<Object, Object> entryStack = null;
-
         synchronized (this) {
             // Write out the threshold and loadFactor
             s.defaultWriteObject();
-
             // Write out the length and count of elements
             s.writeInt(table.length);
             s.writeInt(count);
-
             // Stack copies of the entries in the table
             for (int index = 0; index < table.length; index++) {
                 Entry<?, ?> entry = table[index];
-
                 while (entry != null) {
-                    entryStack =
-                            new Entry<>(0, entry.key, entry.value, entryStack);
+                    entryStack = new Entry<>(0, entry.key, entry.value, entryStack);
                     entry = entry.next;
                 }
             }
         }
-
         // Write out the key/value objects from the stacked entries
         while (entryStack != null) {
             s.writeObject(entryStack.key);
@@ -1173,23 +1128,18 @@ public class Hashtable<K, V>
     /**
      * Reconstitute the Hashtable from a stream (i.e., deserialize it).
      */
-    private void readObject(java.io.ObjectInputStream s)
-            throws IOException, ClassNotFoundException {
+    private void readObject(java.io.ObjectInputStream s) throws IOException, ClassNotFoundException {
         // Read in the threshold and loadFactor
         s.defaultReadObject();
-
         // Validate loadFactor (ignore threshold - it will be re-computed)
         if (loadFactor <= 0 || Float.isNaN(loadFactor))
             throw new StreamCorruptedException("Illegal Load: " + loadFactor);
-
         // Read the original length of the array and number of elements
         int origlength = s.readInt();
         int elements = s.readInt();
-
         // Validate # of elements
         if (elements < 0)
             throw new StreamCorruptedException("Illegal # of Elements: " + elements);
-
         // Clamp original length to be more than elements / loadFactor
         // (this is the invariant enforced with auto-growth)
         origlength = Math.max(origlength, (int) (elements / loadFactor) + 1);
@@ -1202,7 +1152,6 @@ public class Hashtable<K, V>
         if (length > elements && (length & 1) == 0)
             length--;
         length = Math.min(length, origlength);
-
         if (length < 0) { // overflow
             length = origlength;
         }
@@ -1236,8 +1185,7 @@ public class Hashtable<K, V>
      * there's no synchronization because we are creating a new instance.
      * Also, no return value is needed.
      */
-    private void reconstitutionPut(Entry<?, ?>[] tab, K key, V value)
-            throws StreamCorruptedException {
+    private void reconstitutionPut(Entry<?, ?>[] tab, K key, V value) throws StreamCorruptedException {
         if (value == null) {
             throw new java.io.StreamCorruptedException();
         }
@@ -1275,8 +1223,7 @@ public class Hashtable<K, V>
 
         @SuppressWarnings("unchecked")
         protected Object clone() {
-            return new Entry<>(hash, key, value,
-                    (next == null ? null : (Entry<K, V>) next.clone()));
+            return new Entry<>(hash, key, value, (next == null ? null : (Entry<K, V>) next.clone()));
         }
 
         // Map.Entry Ops
@@ -1292,7 +1239,6 @@ public class Hashtable<K, V>
         public V setValue(V value) {
             if (value == null)
                 throw new NullPointerException();
-
             V oldValue = this.value;
             this.value = value;
             return oldValue;
@@ -1302,9 +1248,7 @@ public class Hashtable<K, V>
             if (!(o instanceof Map.Entry))
                 return false;
             Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
-
-            return (key == null ? e.getKey() == null : key.equals(e.getKey())) &&
-                    (value == null ? e.getValue() == null : value.equals(e.getValue()));
+            return (key == null ? e.getKey() == null : key.equals(e.getKey())) && (value == null ? e.getValue() == null : value.equals(e.getValue()));
         }
 
         public int hashCode() {
