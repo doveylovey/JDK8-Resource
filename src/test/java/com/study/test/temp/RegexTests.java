@@ -2,17 +2,17 @@ package com.study.test.temp;
 
 import org.junit.Test;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Java 正则表达式
- * <p>
- * 参考：
+ * Java 正则表达式。参考：
  * https://blog.csdn.net/weixin_43860260/article/details/91417485
  * https://www.jianshu.com/p/3c076c6b2dc8
+ * http://51gjie.com/java/758.html
  */
 public class RegexTests {
     /**
@@ -78,6 +78,45 @@ public class RegexTests {
         String[] result = input.split(regex);
         List<String> list = Arrays.asList(result);
         list.forEach(System.out::println);
+    }
+
+    @Test
+    public void volumeFormatter() {
+        // 参考 https://blog.csdn.net/liuxuejin/article/details/8643036
+        // 销量
+        String volume = "100000000";
+        // 匹配加号 +
+        Pattern add = Pattern.compile("\\+$");
+        // 匹配中文
+        Pattern chinese = Pattern.compile("[\\u4e00-\\u9fa5]$");
+        if (add.matcher(volume).find() || chinese.matcher(volume).find()) {
+            System.out.println(volume);
+        }
+        BigDecimal bigDecimal = new BigDecimal(volume);
+        if (bigDecimal.doubleValue() < 10000) {
+            System.out.println(volume);
+        }
+        // 转换为以万为单位的数字(除以10000)，并保留2位小数
+        BigDecimal decimal = bigDecimal.divide(new BigDecimal("10000")).setScale(2, BigDecimal.ROUND_HALF_UP);
+        System.out.println("格式化结果：" + decimal);
+        // 对格式化的结果去除尾部零，再拼接上万字
+        String concat = decimal.stripTrailingZeros().toPlainString().concat("万");
+        System.out.println(concat);
+    }
+
+    @Test
+    public void testMatchesAndFind() {
+        // 当正则只能匹配字符串中的部分内容，matches() 方法是 false，find() 方法是 true
+        // 当正则完全匹配字符串，从头到尾正好匹配上字符串，matches() 方法是 true，find() 方法为 false；
+        Pattern pattern1 = Pattern.compile("Hallo");
+        Matcher matcher1 = pattern1.matcher("Halloween");
+        System.out.println("matches() 部分：" + matcher1.matches());
+        System.out.println("find() 部分：" + matcher1.find());
+
+        Pattern pattern2 = Pattern.compile("Hallo");
+        Matcher matcher2 = pattern2.matcher("Hallo");
+        System.out.println("matches() 全部：" + matcher2.matches());
+        System.out.println("find() 全部：" + matcher2.find());
     }
 
     /**
