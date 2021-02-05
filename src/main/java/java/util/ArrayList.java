@@ -25,11 +25,11 @@
 
 package java.util;
 
+import sun.misc.SharedSecrets;
+
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
-
-import sun.misc.SharedSecrets;
 
 /**
  * Resizable-array implementation of the <tt>List</tt> interface.  Implements
@@ -111,18 +111,20 @@ public class ArrayList<E> extends AbstractList<E>
 
     /**
      * Default initial capacity.
+     * 默认初始容量大小
      */
     private static final int DEFAULT_CAPACITY = 10;
 
     /**
      * Shared empty array instance used for empty instances.
+     * 用于空实例的共享空数组实例。
      */
     private static final Object[] EMPTY_ELEMENTDATA = {};
 
     /**
-     * Shared empty array instance used for default sized empty instances. We
-     * distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when
-     * first element is added.
+     * Shared empty array instance used for default sized empty instances.
+     * We distinguish this from EMPTY_ELEMENTDATA to know how much to inflate when first element is added.
+     * 用于默认大小空实例的共享空数组实例。我们把它与 EMPTY_ELEMENTDATA 区别开来，以知道在添加第一个元素时容量需要增加多少。
      */
     private static final Object[] DEFAULTCAPACITY_EMPTY_ELEMENTDATA = {};
 
@@ -146,14 +148,15 @@ public class ArrayList<E> extends AbstractList<E>
     private int size;
 
     /**
+     * 带初始容量参数的构造函数：可以在创建 ArrayList 对象时指定集合的初始大小
      * Constructs an empty list with the specified initial capacity.
      *
      * @param initialCapacity the initial capacity of the list
-     * @throws IllegalArgumentException if the specified initial capacity
-     *                                  is negative
+     * @throws IllegalArgumentException if the specified initial capacity is negative
      */
     public ArrayList(int initialCapacity) {
-        // 用有参构造方法来创建 ArrayList 对象：若传入的参数是正整数，则使用传入的参数来确定要创建数组的大小；若传入的参数是0，则创建一个长度为 0 的空数组；否则异常
+        // 用有参构造方法来创建 ArrayList 对象：若传入的参数是正整数，则使用传入的参数来确定要创建数组的大小；
+        // 若传入的参数是0，则创建一个长度为 0 的空数组；否则抛出异常
         if (initialCapacity > 0) {
             this.elementData = new Object[initialCapacity];
         } else if (initialCapacity == 0) {
@@ -164,6 +167,8 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
+     * 默认无参构造函数：DEFAULTCAPACITY_EMPTY_ELEMENTDATA 为0。
+     * 初始化为10，也就是说初始其实是空数组，当添加第一个元素的时候数组容量才变成10
      * Constructs an empty list with an initial capacity of ten.
      */
     public ArrayList() {
@@ -172,22 +177,27 @@ public class ArrayList<E> extends AbstractList<E>
     }
 
     /**
-     * Constructs a list containing the elements of the specified
-     * collection, in the order they are returned by the collection's
-     * iterator.
+     * 构造一个包含指定集合的 ArrayList，按照它们由集合的迭代器返回的顺序。
+     * Constructs a list containing the elements of the specified collection,
+     * in the order they are returned by the collection's iterator.
      *
      * @param c the collection whose elements are to be placed into this list
      * @throws NullPointerException if the specified collection is null
      */
     public ArrayList(Collection<? extends E> c) {
+        // 将指定集合转换为数组
         elementData = c.toArray();
+        // 如果 elementData 数组的长度不为0
         if ((size = elementData.length) != 0) {
             // c.toArray might (incorrectly) not return Object[] (see 6260652)
+            // 如果 elementData 不是 Object 类型数据(c.toArray 可能返回的不是 Object 类型的数组所以加上下面的语句用于判断)
             if (elementData.getClass() != Object[].class) {
+                // 将原来不是 Object 类型的 elementData 数组的内容，赋值给新的 Object 类型的 elementData 数组
                 elementData = Arrays.copyOf(elementData, size, Object[].class);
             }
         } else {
             // replace with empty array.
+            // 其他情况，用空数组代替
             this.elementData = EMPTY_ELEMENTDATA;
         }
     }

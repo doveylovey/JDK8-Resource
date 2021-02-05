@@ -4,7 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 题目：3个线程循环打印ABC，其中A打印3次，B打印2次，C打印1次，循环打印2轮。
- * 解法一：synchronized 同步法。参考 https://www.cnblogs.com/yaowen/p/10103196.html
+ * 解法：synchronized 同步法。
+ * 思路：使用 synchronized、wait、notifyAll 的方法利用线程标记变量控制三个线程的执行顺序。
+ * 参考 https://www.cnblogs.com/yaowen/p/10103196.html
  *
  * @author doveylovey
  * @version v1.0.0
@@ -72,7 +74,7 @@ public class LoopPrintlnSynchronized {
 
         public void printA() {
             for (int j = 1; j < 3; j++) {
-                // 表示循环打印 2 轮
+                // 表示循环打印2轮
                 synchronized (this) {
                     while (num != 1) {
                         try {
@@ -82,7 +84,7 @@ public class LoopPrintlnSynchronized {
                         }
                     }
                     for (int i = 1; i < 4; i++) {
-                        // 表示打印 3 次
+                        // 表示打印3次
                         System.out.println(Thread.currentThread().getName() + " 第 " + j + " 轮，第 " + i + " 次：A");
                     }
                     // 打印A线程执行完，通知打印B线程
@@ -94,7 +96,7 @@ public class LoopPrintlnSynchronized {
 
         public void printB() {
             for (int j = 1; j < 3; j++) {
-                // 表示循环打印 2 轮
+                // 表示循环打印2轮
                 synchronized (this) {
                     while (num != 2) {
                         try {
@@ -104,7 +106,7 @@ public class LoopPrintlnSynchronized {
                         }
                     }
                     for (int i = 1; i < 3; i++) {
-                        // 表示打印 2 次
+                        // 表示打印2次
                         System.out.println(Thread.currentThread().getName() + " 第 " + j + " 轮，第 " + i + " 次：B");
                     }
                     // 打印B线程执行完，通知打印C线程
@@ -116,7 +118,7 @@ public class LoopPrintlnSynchronized {
 
         public void printC() {
             for (int j = 1; j < 3; j++) {
-                // 表示循环打印 2 轮
+                // 表示循环打印2轮
                 synchronized (this) {
                     while (num != 3) {
                         try {

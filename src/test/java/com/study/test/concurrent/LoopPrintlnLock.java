@@ -6,7 +6,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 题目：3个线程循环打印ABC，其中A打印3次，B打印2次，C打印1次，循环打印2轮。
- * 解法一：Lock锁方法。参考 https://www.cnblogs.com/yaowen/p/10103196.html
+ * 解法：Lock 锁方法。
+ * 思路：Lock 锁机制是 JDK5 之后新增的锁机制，不同于内置锁，Lock 锁必须显式声明，并在合适的位置释放锁。Lock 是一个接口，通过 ReentrantLock 具体实现进行显式的锁操作(即获取锁和释放锁)
+ * 参考 https://www.cnblogs.com/yaowen/p/10103196.html
  *
  * @author doveylovey
  * @version v1.0.0
@@ -65,7 +67,7 @@ public class LoopPrintlnLock {
     }
 
     static class PrintTask {
-        //通过JDK5中的Lock锁来保证线程的访问的互斥
+        // 通过 JDK5 中的 Lock 锁来保证线程访问的互斥
         private static final Lock lock = new ReentrantLock();
         // 当前正在执行线程的标记
         private int num;
@@ -75,62 +77,63 @@ public class LoopPrintlnLock {
         }
 
         public void printA() {
-            for (int j = 0; j < 2; )//表示 循环打印2轮
+            for (int j = 0; j < 2; ) {
+                // 表示循环打印2轮
+                lock.lock();
                 try {
-                    lock.lock();
                     while (num == 1) {
-                        for (int i = 0; i < 3; i++) {//表示 打印3次
-                            System.out.println("A");
+                        for (int i = 0; i < 3; i++) {
+                            // 表示打印3次
+                            System.out.println(Thread.currentThread().getName() + " 第 " + j + " 轮，第 " + i + " 次：A");
                         }
-                        //打印A线程执行完 ，通知打印B线程
+                        // 打印A线程执行完，通知打印B线程
                         num = 2;
                         j++;
                     }
-                } finally {//调用了lock方法后，需在finally（finally确保一定会执行，除非执行了exit方法)语句里调用unlock方法。否则会造成死锁等问题
+                } finally {
+                    // 调用了 lock() 方法后，需在 finally 语句块(确保一定会执行，除非执行了 exit 方法)里调用 unlock() 方法，否则可能造成死锁等问题
                     lock.unlock();
                 }
+            }
         }
-    }
 
-    public void printB() {
-        for (int j = 1; j < 3; j++) {
-            // 表示循环打印 2 轮
-            synchronized (this) {
-                while (num != 2) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+        public void printB() {
+            for (int j = 0; j < 2; ) {
+                // 表示循环打印2轮
+                lock.lock();
+                try {
+                    while (num == 2) {
+                        for (int i = 0; i < 2; i++) {
+                            // 表示打印2次
+                            System.out.println(Thread.currentThread().getName() + " 第 " + j + " 轮，第 " + i + " 次：B");
+                        }
+                        // 打印B线程执行完 ，通知打印C线程
+                        num = 3;
+                        j++;
                     }
+                } finally {
+                    // 调用了 lock() 方法后，需在 finally 语句块(确保一定会执行，除非执行了 exit 方法)里调用 unlock() 方法，否则可能造成死锁等问题
+                    lock.unlock();
                 }
-                for (int i = 1; i < 3; i++) {
-                    // 表示打印 2 次
-                    System.out.println(Thread.currentThread().getName() + " 第 " + j + " 轮，第 " + i + " 次：B");
+            }
+        }
+
+        public void printC() {
+            for (int j = 0; j < 2; ) {
+                // 表示循环打印2轮
+                lock.lock();
+                try {
+                    while (num == 3) {
+                        System.out.println(Thread.currentThread().getName() + " 第 " + j + " 轮，第 1 次：C");
+                        // 打印C线程执行完 ，通知打印A线程
+                        num = 1;
+                        j++;
+                    }
+                } finally {
+                    // 调用了 lock() 方法后，需在 finally 语句块(确保一定会执行，除非执行了 exit 方法)里调用 unlock() 方法，否则可能造成死锁等问题
+                    lock.unlock();
                 }
-                // 打印B线程执行完，通知打印C线程
-                num = 3;
-                this.notifyAll();
             }
         }
     }
-
-    public void printC() {
-        for (int j = 1; j < 3; j++) {
-            // 表示循环打印 2 轮
-            synchronized (this) {
-                while (num != 3) {
-                    try {
-                        this.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                System.out.println(Thread.currentThread().getName() + " 第 " + j + " 轮，第 1 次：C");
-                // 打印C线程执行完，通知打印A线程
-                num = 1;
-                this.notifyAll();
-            }
-        }
-    }
-}
 }

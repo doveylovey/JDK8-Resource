@@ -5,14 +5,18 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 用 ReentrantLock、condition 实现三个线程的 for 循环交替打印
+ * 题目：3个线程循环打印ABC，其中A打印3次，B打印2次，C打印1次，循环打印2轮。
+ * 解法：ReentrantLock 结合 Condition。
+ * 思路：Condition 中的 await() 方法相当于 Object中的 wait() 方法，Condition 中的 signal() 方法相当于 Object 中的 notify() 方法。
+ * Condition 强大之处在于：能够更加精细的控制多线程的休眠与唤醒。对于同一个锁可以创建多个 Condition，在不同的情况下使用不同的 Condition。
+ * 参考 https://www.cnblogs.com/yaowen/p/10103196.html
  *
  * @author doveylovey
  * @version v1.0.0
  * @email 1135782208@qq.com
  * @date 2021年02月05日
  */
-public class LockConditionTest02 {
+public class LoopPrintlnLockCondition {
     public static void main(String[] args) {
         LockDemo demo = new LockDemo();
 

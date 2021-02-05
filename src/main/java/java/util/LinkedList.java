@@ -80,8 +80,7 @@ import java.util.function.Consumer;
  * @since 1.2
  */
 
-public class LinkedList<E>
-        extends AbstractSequentialList<E>
+public class LinkedList<E> extends AbstractSequentialList<E>
         implements List<E>, Deque<E>, Cloneable, java.io.Serializable {
     transient int size = 0;
 
