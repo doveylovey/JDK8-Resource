@@ -137,7 +137,6 @@ import java.util.stream.StreamSupport;
  * @see AbstractCollection
  * @since 1.2
  */
-
 public interface Collection<E> extends Iterable<E> {
     // Query Operations
 

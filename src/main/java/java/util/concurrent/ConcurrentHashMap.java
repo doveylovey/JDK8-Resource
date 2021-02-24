@@ -629,6 +629,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
     static class Node<K, V> implements Map.Entry<K, V> {
         final int hash;// key 的 hash 值
         final K key;// key
+        // 注意：val 和 next 都用了 volatile 修饰，保证可见性。区别于 jdk1.8 中的 java.util.HashMap.Node
         volatile V val;// value
         volatile Node<K, V> next;// 链表中的下一个节点
 
@@ -1055,12 +1056,15 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
             // key 和 value 都不允许为 null
             throw new NullPointerException();
         }
+        // 根据 key 计算出 hashCode
         int hash = spread(key.hashCode());
         int binCount = 0;
         // 死循环执行
         for (Node<K, V>[] tab = table; ; ) {
+            // 变量 f 为当前 key 定位出的 Node，如果为空表示当前位置可以写入数据，利用 CAS 尝试写入，失败则自旋保证成功
             Node<K, V> f;
             int n, i, fh;
+            // 判断是否需要进行初始化
             if (tab == null || (n = tab.length) == 0) {
                 // 仅在第一次 put 时才初始化 table，初始化时有并发控制，通过 sizeCtl 变量判断(小于0)
                 tab = initTable();
@@ -1070,6 +1074,7 @@ public class ConcurrentHashMap<K, V> extends AbstractMap<K, V> implements Concur
                     break; // no lock when adding to empty bin
                 }
             } else if ((fh = f.hash) == MOVED) {
+                // 如果当前位置的 hashcode == MOVED == -1，则需要进行扩容
                 // 如果发生了 hash 冲突且 hash 值为-1，则说明 table 正在扩容，那么就帮助 table 进行扩容，以加快速度
                 tab = helpTransfer(tab, f);
             } else {

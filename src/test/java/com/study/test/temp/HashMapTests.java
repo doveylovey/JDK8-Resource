@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 public class HashMapTests {
@@ -42,10 +43,30 @@ public class HashMapTests {
     @Test
     public void test01() {
         Map<String, Object> hashMap = new HashMap();
-        hashMap.put("aaaa", "12345");
-        hashMap.put("aaaa", true);
-        hashMap.put("bvfggg", BigDecimal.ZERO);
-        hashMap.forEach((key, value) -> System.out.println("key: "+key + ", value: " + value));
+        hashMap.put("a", "12345");
+        hashMap.put("a", true);
+        hashMap.put("b", BigDecimal.ZERO);
+        hashMap.forEach((key, value) -> System.out.println("key: " + key + ", value: " + value));
     }
 
+    @Test
+    public void test02() {
+        Map<String, Object> hashtable = new Hashtable<>();
+        hashtable.put(null, 12345);
+        //hashtable.put("null", null);
+        hashtable.forEach((key, value) -> System.out.println("key: " + key + ", value: " + value));
+    }
+
+    @Test
+    public void test03() {
+        Map<String, String> hashMap = new HashMap();
+        String old = hashMap.put("a", "old");
+        System.out.println(old);
+        old = hashMap.put("a", "new");
+        System.out.println(old);
+        old = hashMap.put("b", "old");
+        System.out.println(old);
+        old = hashMap.put("b", "new");
+        System.out.println(old);
+    }
 }

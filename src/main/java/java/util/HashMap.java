@@ -630,14 +630,21 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         K k;
         if ((tab = table) != null && (n = tab.length) > 0 && (first = tab[(n - 1) & hash]) != null) {
             // always check first node
-            if (first.hash == hash && ((k = first.key) == key || (key != null && key.equals(k))))
+            // 判断桶的第一个位置(可能是链表、也可能是红黑树)的 key 是否为待查询的 key，是就直接返回
+            if (first.hash == hash && ((k = first.key) == key || (key != null && key.equals(k)))) {
                 return first;
+            }
+            // 如果桶的第一个不匹配，则判断它的下一个是红黑树还是链表
             if ((e = first.next) != null) {
-                if (first instanceof TreeNode)
+                if (first instanceof TreeNode) {
+                    // 红黑树就按照树的查找方式返回值
                     return ((TreeNode<K, V>) first).getTreeNode(hash, key);
+                }
+                // 否则就按照链表的方式遍历匹配返回值
                 do {
-                    if (e.hash == hash && ((k = e.key) == key || (key != null && key.equals(k))))
+                    if (e.hash == hash && ((k = e.key) == key || (key != null && key.equals(k)))) {
                         return e;
+                    }
                 } while ((e = e.next) != null);
             }
         }
@@ -728,12 +735,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
                         break;
                     }
                     if (e.hash == hash && ((k = e.key) == key || (key != null && key.equals(k)))) {
+                        // 如果在遍历过程中找到 key 相同时直接退出遍历
                         break;
                     }
                     p = e;
                 }
             }
             if (e != null) {
+                // 如果 e != null 就相当于存在相同的 key，那就需要将值覆盖
                 // existing mapping for key
                 V oldValue = e.value;
                 if (!onlyIfAbsent || oldValue == null) {
@@ -745,6 +754,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
         }
         ++modCount; // 保证并发访问时，若 HashMap 内部结构发生变化，快速响应失败
         if (++size > threshold) {
+            // 最后判断是否需要进行扩容
             resize();
         }
         afterNodeInsertion(evict);
