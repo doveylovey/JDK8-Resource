@@ -12,3 +12,4 @@ target
 *.dll
 *.class
 *.iml
+*.log
