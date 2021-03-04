@@ -24,12 +24,22 @@ JVM 的 GC 日志的主要参数包括如下几个：
 
 
 ### Java 垃圾回收
-查看 jvm 当前使用的垃圾收集器：java -XX:+PrintCommandLineFlags -version。
+**收集器的分类(按收集区域)**
+- 用于新生代的收集器有：Serial、ParNew、Parallel Scavenge
+- 用于老年代的收集器有：CMS(Concurrent Mark Sweep)、Serial Old、Parallel Old
+- 用于所有区域收集器有：G1 垃圾收集器，相对比其他收集器而言，最大的区别在于它取消了年轻代、老年代的物理划分，取而代之的是将堆划分为若干个区域(Region)，这些区域包含了逻辑上的年轻代、老年代区域。
+
+**收集器的分类(按类型)**
+- 串行垃圾收集器：Serial、Serial Old
+- 并行垃圾收集器：ParNew、Parallel Old、Parallel Scavenge
+- 并发垃圾收集器：CMS(Concurrent Mark Sweep)
+- G1 垃圾收集器：
+
+查看 JVM 当前使用的垃圾收集器：java -XX:+PrintCommandLineFlags -version。
 UseParallelGC 代表新生代使用的是 Parallel Scavenge 进行垃圾收集的，而老年代使用的是 Parallel Old 进行垃圾收集的。
 
 - Java的垃圾收集器：https://www.cnblogs.com/yjc1605961523/p/12427658.html
 - 垃圾收集算法：https://www.cnblogs.com/jing99/p/6071700.html
-- JVM垃圾收集器详解：https://www.jb51.net/article/105581.htm
 - 深入理解 Java垃圾收集器：https://blog.csdn.net/qq_36711757/article/details/80470820
 - java垃圾收集器：https://blog.csdn.net/sunjin9418/article/details/79603651
 - Java虚拟机垃圾回收(一)基础：回收哪些内存/对象、引用计数算法、可达性分析算法、finalize()方法、HotSpot实现分析：https://blog.csdn.net/tjiyu/article/details/53982412
@@ -43,3 +53,6 @@ UseParallelGC 代表新生代使用的是 Parallel Scavenge 进行垃圾收集�
 - 垃圾收集器：https://www.cnblogs.com/wxgblogs/p/5655534.html
 - 垃圾收集器与内存分配策略：https://blog.csdn.net/wsyw126/article/details/62334387
 - 《深入理解JVM》第三章 垃圾收集器与内存分配策略（垃圾收集器）：https://blog.csdn.net/qq_39148187/article/details/81811972
+- JVM垃圾收集器详解：https://www.jb51.net/article/105581.htm
+- JAVA垃圾收集器与内存分配策略详解：https://www.jb51.net/article/70262.htm
+- 面试官：怎么做JDK8的垃圾收集器的调优(面试常问)：https://www.jb51.net/article/193099.htm
