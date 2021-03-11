@@ -270,14 +270,21 @@ public class ReentrantLock implements Lock, java.io.Serializable {
          */
         @Override
         protected final boolean tryAcquire(int acquires) {
+            // 获取当前线程
             final Thread current = Thread.currentThread();
+            // 获取 state 锁的状态
             int c = getState();
-            if (c == 0) {
+            if (c == 0) {// state == 0 即：尚无线程获取锁
+                // 判断 AQS 的同步对列里是否有线程等待，若没有则直接 CAS 获取锁。
+                // 和 java.util.concurrent.locks.ReentrantLock.Sync.nonfairTryAcquire() 方法实现类似，唯一不同的是当发现锁未被占用时，
+                // 使用 java.util.concurrent.locks.AbstractQueuedSynchronizer.hasQueuedPredecessors() 确保了公平性
                 if (!hasQueuedPredecessors() && compareAndSetState(0, acquires)) {
+                    // 获取锁成功，设置独占线程
                     setExclusiveOwnerThread(current);
                     return true;
                 }
-            } else if (current == getExclusiveOwnerThread()) {
+            } else if (current == getExclusiveOwnerThread()) {// 判断已经获取锁是否为当前的线程
+                // 锁的重入，即 state 加 1
                 int nextc = c + acquires;
                 if (nextc < 0) {
                     throw new Error("Maximum lock count exceeded");
@@ -294,6 +301,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * This is equivalent to using {@code ReentrantLock(false)}.
      */
     public ReentrantLock() {
+        // 默认非公平锁
         sync = new NonfairSync();
     }
 
@@ -402,9 +410,35 @@ public class ReentrantLock implements Lock, java.io.Serializable {
      * @return {@code true} if the lock was free and was acquired by the
      * current thread, or the lock was already held by the current
      * thread; and {@code false} otherwise
+     *
+     * <pre>
+     *  典型使用方法：
+     *  Lock lock = ...;
+     *  if (lock.tryLock()) {
+     *    try {
+     *      // manipulate protected state
+     *    } finally {
+     *      lock.unlock();
+     *    }
+     *  } else {
+     *    // 执行可选的操作
+     *  }
+     * </pre>
      */
     @Override
     public boolean tryLock() {
+        // 如果当前线程已经持有该锁，那么持有计数将增加1，方法返回 true。
+        // 如果锁被另一个线程持有，那么这个方法将立即返回值 false。
+        // Lock lock = ...;
+        // if (lock.tryLock()) {
+        //   try {
+        //     // manipulate protected state
+        //   } finally {
+        //     lock.unlock();
+        //   }
+        // } else {
+        //   // 执行可选的操作
+        // }
         return sync.nonfairTryAcquire(1);
     }
 

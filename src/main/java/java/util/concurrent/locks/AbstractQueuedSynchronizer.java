@@ -1612,6 +1612,8 @@ public abstract class AbstractQueuedSynchronizer extends AbstractOwnableSynchron
         // The correctness of this depends on head being initialized
         // before tail and on head.next being accurate if the current
         // thread is first in queue.
+        // 判断当前线程是否属于同步队列头节点的下一个节点(头节点是释放锁的节点)
+        // 如果是(返回 false)，符合 FIFO，可以获得锁；如果不是(返回 true)，则继续等待
         Node t = tail; // Read fields in reverse initialization order
         Node h = head;
         Node s;
