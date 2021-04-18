@@ -31,10 +31,8 @@ import java.nio.channels.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Iterator;
-import java.util.ServiceLoader;
 import java.util.ServiceConfigurationError;
-
-import sun.security.action.GetPropertyAction;
+import java.util.ServiceLoader;
 
 
 /**
@@ -67,7 +65,6 @@ import sun.security.action.GetPropertyAction;
  */
 
 public abstract class SelectorProvider {
-
     private static final Object lock = new Object();
     private static SelectorProvider provider = null;
 
@@ -88,8 +85,7 @@ public abstract class SelectorProvider {
         if (cn == null)
             return false;
         try {
-            Class<?> c = Class.forName(cn, true,
-                    ClassLoader.getSystemClassLoader());
+            Class<?> c = Class.forName(cn, true, ClassLoader.getSystemClassLoader());
             provider = (SelectorProvider) c.newInstance();
             return true;
         } catch (ClassNotFoundException x) {
@@ -104,10 +100,7 @@ public abstract class SelectorProvider {
     }
 
     private static boolean loadProviderAsService() {
-
-        ServiceLoader<SelectorProvider> sl =
-                ServiceLoader.load(SelectorProvider.class,
-                        ClassLoader.getSystemClassLoader());
+        ServiceLoader<SelectorProvider> sl = ServiceLoader.load(SelectorProvider.class, ClassLoader.getSystemClassLoader());
         Iterator<SelectorProvider> i = sl.iterator();
         for (; ; ) {
             try {
@@ -128,8 +121,8 @@ public abstract class SelectorProvider {
     /**
      * Returns the system-wide default selector provider for this invocation of
      * the Java virtual machine.
-     *
-     * <p> The first invocation of this method locates the default provider
+     * <p>
+     * The first invocation of this method locates the default provider
      * object as follows: </p>
      *
      * <ol>
@@ -155,7 +148,8 @@ public abstract class SelectorProvider {
      *
      * </ol>
      *
-     * <p> Subsequent invocations of this method return the provider that was
+     * <p>
+     * Subsequent invocations of this method return the provider that was
      * returned by the first invocation.  </p>
      *
      * @return The system-wide default selector provider
@@ -164,17 +158,18 @@ public abstract class SelectorProvider {
         synchronized (lock) {
             if (provider != null)
                 return provider;
-            return AccessController.doPrivileged(
-                    new PrivilegedAction<SelectorProvider>() {
-                        public SelectorProvider run() {
-                            if (loadProviderFromProperty())
-                                return provider;
-                            if (loadProviderAsService())
-                                return provider;
-                            provider = sun.nio.ch.DefaultSelectorProvider.create();
-                            return provider;
-                        }
-                    });
+            return AccessController.doPrivileged(new PrivilegedAction<SelectorProvider>() {
+                @Override
+                public SelectorProvider run() {
+                    if (loadProviderFromProperty())
+                        return provider;
+                    if (loadProviderAsService())
+                        return provider;
+                    // 该方法会根据操作系统来返回不同的实现类
+                    provider = sun.nio.ch.DefaultSelectorProvider.create();
+                    return provider;
+                }
+            });
         }
     }
 
@@ -196,8 +191,7 @@ public abstract class SelectorProvider {
      * @throws IOException                   If an I/O error occurs
      * @since 1.7
      */
-    public abstract DatagramChannel openDatagramChannel(ProtocolFamily family)
-            throws IOException;
+    public abstract DatagramChannel openDatagramChannel(ProtocolFamily family) throws IOException;
 
     /**
      * Opens a pipe.
@@ -205,8 +199,7 @@ public abstract class SelectorProvider {
      * @return The new pipe
      * @throws IOException If an I/O error occurs
      */
-    public abstract Pipe openPipe()
-            throws IOException;
+    public abstract Pipe openPipe() throws IOException;
 
     /**
      * Opens a selector.
@@ -214,8 +207,7 @@ public abstract class SelectorProvider {
      * @return The new selector
      * @throws IOException If an I/O error occurs
      */
-    public abstract AbstractSelector openSelector()
-            throws IOException;
+    public abstract AbstractSelector openSelector() throws IOException;
 
     /**
      * Opens a server-socket channel.
@@ -223,8 +215,7 @@ public abstract class SelectorProvider {
      * @return The new channel
      * @throws IOException If an I/O error occurs
      */
-    public abstract ServerSocketChannel openServerSocketChannel()
-            throws IOException;
+    public abstract ServerSocketChannel openServerSocketChannel() throws IOException;
 
     /**
      * Opens a socket channel.
@@ -232,14 +223,13 @@ public abstract class SelectorProvider {
      * @return The new channel
      * @throws IOException If an I/O error occurs
      */
-    public abstract SocketChannel openSocketChannel()
-            throws IOException;
+    public abstract SocketChannel openSocketChannel() throws IOException;
 
     /**
      * Returns the channel inherited from the entity that created this
      * Java virtual machine.
-     *
-     * <p> On many operating systems a process, such as a Java virtual
+     * <p>
+     * On many operating systems a process, such as a Java virtual
      * machine, can be started in a manner that allows the process to
      * inherit a channel from the entity that created the process. The
      * manner in which this is done is system dependent, as are the
@@ -248,8 +238,8 @@ public abstract class SelectorProvider {
      * start programs to service requests when a request arrives on an
      * associated network port. In this example, the process that is started,
      * inherits a channel representing a network socket.
-     *
-     * <p> In cases where the inherited channel represents a network socket
+     * <p>
+     * In cases where the inherited channel represents a network socket
      * then the {@link java.nio.channels.Channel Channel} type returned
      * by this method is determined as follows:
      *
@@ -277,10 +267,10 @@ public abstract class SelectorProvider {
      *
      * <p> In addition to the network-oriented channels described, this method
      * may return other kinds of channels in the future.
-     *
-     * <p> The first invocation of this method creates the channel that is
+     * <p>
+     * The first invocation of this method creates the channel that is
      * returned. Subsequent invocations of this method return the same
-     * channel. </p>
+     * channel.
      *
      * @return The inherited channel, if any, otherwise <tt>null</tt>.
      * @throws IOException       If an I/O error occurs
@@ -291,5 +281,4 @@ public abstract class SelectorProvider {
     public Channel inheritedChannel() throws IOException {
         return null;
     }
-
 }
