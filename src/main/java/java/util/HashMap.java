@@ -291,10 +291,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
      * Basic hash bin node, used for most entries.  (See below for TreeNode subclass, and in LinkedHashMap for its Entry subclass.)
      */
     static class Node<K, V> implements Map.Entry<K, V> {
-        final int hash;
-        final K key;
-        V value;
-        Node<K, V> next;// 下一个节点：表明此时 K/V 映射的存储方式是链表
+        final int hash;// 哈希值，HashMap根据该值确定记录应该存放的位置
+        final K key;// key
+        V value;// value
+        Node<K, V> next;// 链表的下一个节点：表明此时 K/V 映射的存储方式是链表
 
         Node(int hash, K key, V value, Node<K, V> next) {
             this.hash = hash;
@@ -303,37 +303,46 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Map<K, V>, Clone
             this.next = next;
         }
 
+        @Override
         public final K getKey() {
             return key;
         }
 
+        @Override
         public final V getValue() {
             return value;
         }
 
+        @Override
         public final String toString() {
             return key + "=" + value;
         }
 
+        @Override
         public final int hashCode() {
             // key 的 hashCode 值和 value 的 hashCode 值进行异或运算
             return Objects.hashCode(key) ^ Objects.hashCode(value);
         }
 
+        @Override
         public final V setValue(V newValue) {
             V oldValue = value;
             value = newValue;
             return oldValue;
         }
 
+        @Override
         public final boolean equals(Object o) {
-            if (o == this)
+            // 判断2个 Entry 是否相等，必须 key 和 value 都相等时才返回 true
+            if (o == this) {
                 return true;
+            }
             // 判断相等的依据：是 Map.Entry 的实例，且键、值分别相等
             if (o instanceof Map.Entry) {
                 Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
-                if (Objects.equals(key, e.getKey()) && Objects.equals(value, e.getValue()))
+                if (Objects.equals(key, e.getKey()) && Objects.equals(value, e.getValue())) {
                     return true;
+                }
             }
             return false;
         }
